@@ -1,0 +1,64 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Nyaa_Streamer.MainPage">
+
+    <ScrollView>
+        <VerticalStackLayout
+            Padding="30,10"
+            Spacing="20">
+
+            <!-- Anime Name Input Box -->
+            <Label
+                Text="Enter Anime Name:"
+                
+                VerticalOptions="Center" />
+
+            <Entry
+                x:Name="AnimeNameEntry"
+                Placeholder="e.g. One Piece"
+                
+                VerticalOptions="Center" />
+
+            <!-- Button to Trigger Search -->
+            <Button
+                x:Name="SearchBtn"
+                Text="Search"
+                
+                Clicked="OnSearchButtonClicked"
+                VerticalOptions="Center" />
+
+            <!-- Results Display List -->
+            <Label
+                Text="Search Results:"
+                
+                VerticalOptions="Center"
+                Margin="0,20,0,0" />
+
+            <ListView
+                x:Name="ResultsListView"
+               
+                VerticalOptions="FillAndExpand"
+                SelectionMode="Single"
+                ItemSelected="OnResultSelected">
+                <!-- Define the template for displaying each item -->
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <TextCell Text="{Binding}" />
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+
+            <!-- Button to Proceed with Selected -->
+            <Button
+                x:Name="ProceedBtn"
+                Text="Proceed with Selected"
+                
+                IsEnabled="False"
+                Clicked="OnProceedButtonClicked"
+                VerticalOptions="End" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

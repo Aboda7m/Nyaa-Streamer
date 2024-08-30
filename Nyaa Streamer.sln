@@ -1,0 +1,27 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.10.35201.131
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nyaa Streamer", "Nyaa Streamer.csproj", "{C2DB5611-6471-43A5-98CB-7A4AC3E64278}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C2DB5611-6471-43A5-98CB-7A4AC3E64278}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C2DB5611-6471-43A5-98CB-7A4AC3E64278}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C2DB5611-6471-43A5-98CB-7A4AC3E64278}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{C2DB5611-6471-43A5-98CB-7A4AC3E64278}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C2DB5611-6471-43A5-98CB-7A4AC3E64278}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C2DB5611-6471-43A5-98CB-7A4AC3E64278}.Release|Any CPU.Deploy.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C21F7B88-10BF-4733-9794-51BB718BBA4A}
+	EndGlobalSection
+EndGlobal
