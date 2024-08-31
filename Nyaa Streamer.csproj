@@ -57,11 +57,13 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<PackageReference Include="BencodeNET" Version="5.0.0" />
+		<PackageReference Include="BitSwarm" Version="2.4.12" />
+		<PackageReference Include="FlyleafLib" Version="3.7.52" />
 		<PackageReference Include="HtmlAgilityPack" Version="1.11.64" />
 		<PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
 		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="$(MauiVersion)" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0" />
-		<PackageReference Include="MonoTorrent" Version="3.0.2" />
 	</ItemGroup>
 
 </Project>
