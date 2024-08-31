@@ -1,20 +1,33 @@
 ﻿using HtmlAgilityPack;
 using Microsoft.Maui.Controls;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using SuRGeoNix;
+using SuRGeoNix.BitSwarmLib;
+using SuRGeoNix.BitSwarmLib.BEP;
+// Include BitSwarm namespace
 
 namespace Nyaa_Streamer
 {
     public partial class MainPage : ContentPage
     {
         private const string NyaaBaseUrl = "https://nyaa.si/?f=0&c=0_0&q={0}&s=seeders&o=desc";
+        private readonly HttpClient httpClient = new HttpClient();
         private Dictionary<string, TorrentDetails> resultsDictionary = new Dictionary<string, TorrentDetails>();
         private TorrentDetails? selectedTorrentDetails;
 
         public MainPage()
         {
             InitializeComponent();
+            // Set a default User-Agent header
+            httpClient.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36");
+
+            // Initialize ListView and Button references
+            ResultsListView.ItemsSource = new List<string>(); // Ensure it's initialized
+            SaveDetailsButton.IsEnabled = false;
+            DownloadButton.IsEnabled = false;
         }
 
         private async void OnSearchButtonClicked(object sender, EventArgs e)
@@ -24,8 +37,15 @@ namespace Nyaa_Streamer
             if (!string.IsNullOrEmpty(animeName))
             {
                 var results = await SearchNyaaAsync(animeName);
-                ResultsListView.ItemsSource = results.Keys; // Set titles as the source
-                resultsDictionary = results; // Store the results dictionary
+
+                // Clear previous results
+                (ResultsListView.ItemsSource as List<string>)?.Clear();
+                resultsDictionary.Clear();
+
+                // Transform and add results directly
+                var titles = results.Keys.ToList();
+                ResultsListView.ItemsSource = titles; // Update ListView with titles
+                resultsDictionary = results; // Assign the results dictionary
             }
             else
             {
@@ -38,72 +58,52 @@ namespace Nyaa_Streamer
             var resultTitles = new Dictionary<string, TorrentDetails>();
             string url = string.Format(NyaaBaseUrl, Uri.EscapeDataString(animeName));
 
-            System.Diagnostics.Debug.WriteLine($"Searching URL: {url}"); // Debug log for URL
-
-            using (var httpClient = new HttpClient())
+            try
             {
-                try
+                var response = await httpClient.GetStringAsync(url);
+                var htmlDoc = new HtmlDocument();
+                htmlDoc.LoadHtml(response);
+
+                var titleNodes = htmlDoc.DocumentNode.SelectNodes("//a[contains(@href, '/view/') and not(contains(@class, 'comments'))]");
+                if (titleNodes != null)
                 {
-                    var response = await httpClient.GetStringAsync(url);
-                    System.Diagnostics.Debug.WriteLine($"Response Length: {response.Length}"); // Debug log for response length
-
-                    var htmlDoc = new HtmlDocument();
-                    htmlDoc.LoadHtml(response);
-
-                    var titleNodes = htmlDoc.DocumentNode.SelectNodes("//a[contains(@href, '/view/') and not(contains(@class, 'comments'))]");
-                    if (titleNodes != null)
+                    var tasks = titleNodes.Take(10).Select(async node =>
                     {
-                        System.Diagnostics.Debug.WriteLine($"Found {titleNodes.Count} title nodes"); // Debug log for number of nodes
-
-                        var tasks = new List<Task>();
-
-                        foreach (var node in titleNodes)
+                        try
                         {
-                            if (resultTitles.Count >= 10)
-                                break;
-
                             var title = node.GetAttributeValue("title", string.Empty);
                             var href = node.GetAttributeValue("href", string.Empty);
 
                             if (!string.IsNullOrEmpty(title) && !string.IsNullOrEmpty(href))
                             {
-                                var fullUrl = "https://nyaa.si" + href; // Construct the full URL
-                                System.Diagnostics.Debug.WriteLine($"Full URL: {fullUrl}"); // Debug log for full URL
-
-                                // Fetch torrent details asynchronously
-                                var task = Task.Run(async () =>
+                                var fullUrl = "https://nyaa.si" + href;
+                                var details = await GetTorrentDetailsAsync(title, fullUrl);
+                                if (details != null)
                                 {
-                                    var details = await GetTorrentDetailsAsync(title, fullUrl);
-                                    if (details != null)
+                                    lock (resultTitles)
                                     {
-                                        lock (resultTitles)
-                                        {
-                                            resultTitles[title] = details;
-                                        }
+                                        resultTitles[title] = details;
                                     }
-                                });
-                                tasks.Add(task);
+                                }
                             }
                         }
+                        catch (Exception ex)
+                        {
+                            // Handle individual task errors
+                            System.Diagnostics.Debug.WriteLine($"Error processing node: {ex.Message}");
+                        }
+                    }).ToList();
 
-                        // Wait for all tasks to complete
-                        await Task.WhenAll(tasks);
-                    }
-                    else
-                    {
-                        System.Diagnostics.Debug.WriteLine("No title nodes found"); // Debug log if no nodes found
-                    }
+                    await Task.WhenAll(tasks);
                 }
-                catch (HttpRequestException ex)
-                {
-                    await DisplayAlert("Error", "Error fetching results: " + ex.Message, "OK");
-                    System.Diagnostics.Debug.WriteLine($"HttpRequestException: {ex.Message}"); // Debug log for HTTP request exceptions
-                }
-                catch (Exception ex)
-                {
-                    await DisplayAlert("Error", "An unexpected error occurred: " + ex.Message, "OK");
-                    System.Diagnostics.Debug.WriteLine($"Exception: {ex.Message}"); // Debug log for general exceptions
-                }
+            }
+            catch (HttpRequestException ex)
+            {
+                await DisplayAlert("Error", "Error fetching results: " + ex.Message, "OK");
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlert("Error", "An unexpected error occurred: " + ex.Message, "OK");
             }
 
             return resultTitles;
@@ -113,38 +113,27 @@ namespace Nyaa_Streamer
         {
             var torrentDetails = new TorrentDetails();
 
-            System.Diagnostics.Debug.WriteLine($"Fetching torrent details for URL: {url}"); // Debug log for torrent details URL
-
-            using (var httpClient = new HttpClient())
+            try
             {
-                try
-                {
-                    var response = await httpClient.GetStringAsync(url);
-                    System.Diagnostics.Debug.WriteLine($"Response Length: {response.Length}"); // Debug log for response length
+                var response = await httpClient.GetStringAsync(url);
+                var htmlDoc = new HtmlDocument();
+                htmlDoc.LoadHtml(response);
 
-                    var htmlDoc = new HtmlDocument();
-                    htmlDoc.LoadHtml(response);
-
-                    // Extract details efficiently
-                    torrentDetails.Title = title ?? "No Title";
-                    torrentDetails.ViewLink = url;
-                    torrentDetails.DownloadLink = htmlDoc.DocumentNode.SelectSingleNode("//a[contains(@href, '.torrent')]")?.GetAttributeValue("href", string.Empty);
-                    torrentDetails.MagnetLink = htmlDoc.DocumentNode.SelectSingleNode("//a[contains(@href, 'magnet:')]")?.GetAttributeValue("href", string.Empty);
-
-                    System.Diagnostics.Debug.WriteLine($"Title: {torrentDetails.Title}"); // Debug log for title
-                    System.Diagnostics.Debug.WriteLine($"Download Link: {torrentDetails.DownloadLink}"); // Debug log for download link
-                    System.Diagnostics.Debug.WriteLine($"Magnet Link: {torrentDetails.MagnetLink}"); // Debug log for magnet link
-                }
-                catch (HttpRequestException ex)
-                {
-                    System.Diagnostics.Debug.WriteLine($"HttpRequestException: {ex.Message}"); // Debug log for HTTP request exceptions
-                    return null;
-                }
-                catch (Exception ex)
-                {
-                    System.Diagnostics.Debug.WriteLine($"Exception: {ex.Message}"); // Debug log for general exceptions
-                    return null;
-                }
+                // Extract details efficiently
+                torrentDetails.Title = title;
+                torrentDetails.ViewLink = url;
+                torrentDetails.DownloadLink = htmlDoc.DocumentNode.SelectSingleNode("//a[contains(@href, '.torrent')]")?.GetAttributeValue("href", string.Empty);
+                torrentDetails.MagnetLink = htmlDoc.DocumentNode.SelectSingleNode("//a[contains(@href, 'magnet:')]")?.GetAttributeValue("href", string.Empty);
+            }
+            catch (HttpRequestException ex)
+            {
+                // Log error if needed
+                System.Diagnostics.Debug.WriteLine($"Error fetching torrent details: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                // Log error if needed
+                System.Diagnostics.Debug.WriteLine($"Unexpected error: {ex.Message}");
             }
 
             return torrentDetails;
@@ -152,21 +141,18 @@ namespace Nyaa_Streamer
 
         private void OnResultSelected(object sender, SelectedItemChangedEventArgs e)
         {
-            if (e.SelectedItem is string selectedItem)
+            if (e.SelectedItem is string selectedItem && resultsDictionary.TryGetValue(selectedItem, out var details))
             {
-                if (resultsDictionary.TryGetValue(selectedItem, out var details))
-                {
-                    selectedTorrentDetails = details;
-                    DetailsLabel.Text = $"Title: {details.Title}\nView Link: {details.ViewLink}\nDownload Link: {details.DownloadLink}\nMagnet Link: {details.MagnetLink}";
-                    SaveDetailsButton.IsEnabled = true;
-                    DownloadButton.IsEnabled = true;
-                }
-                else
-                {
-                    DetailsLabel.Text = "No details available";
-                    SaveDetailsButton.IsEnabled = false;
-                    DownloadButton.IsEnabled = false;
-                }
+                selectedTorrentDetails = details;
+                DetailsLabel.Text = $"Title: {details.Title}\nView Link: {details.ViewLink}\nDownload Link: {details.DownloadLink}\nMagnet Link: {details.MagnetLink}";
+                SaveDetailsButton.IsEnabled = true;
+                DownloadButton.IsEnabled = true;
+            }
+            else
+            {
+                DetailsLabel.Text = "No details available";
+                SaveDetailsButton.IsEnabled = false;
+                DownloadButton.IsEnabled = false;
             }
         }
 
@@ -201,9 +187,31 @@ namespace Nyaa_Streamer
             // Implement logic to save torrent details (e.g., to a file or database)
         }
 
-        private void StartDownload(TorrentDetails details)
+        private async void StartDownload(TorrentDetails details)
         {
-            // Implement logic to start the download
+            try
+            {
+                if (!string.IsNullOrEmpty(details.MagnetLink))
+                {
+                    // Use BitSwarm to handle the torrent download
+                    var bitSwarm = new BitSwarm();
+                    bitSwarm.Open(details.MagnetLink);
+                    bitSwarm.Start();
+
+                    //wait 1000
+                    await Task.Delay(5000);
+                    DisplayAlert("torrent downloading", bitSwarm.torrent.file.name, "Ok");
+                    // Track download progress or any additional logic here
+                }
+                else
+                {
+                    DisplayAlert("Error", "No magnet link found for the torrent.", "OK");
+                }
+            }
+            catch (Exception ex)
+            {
+                DisplayAlert("Download Error", $"An error occurred while starting the download: {ex.Message}", "OK");
+            }
         }
     }
 

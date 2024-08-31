@@ -47,7 +47,7 @@
             <!-- Button to Save Torrent Details -->
             <Button
                 x:Name="SaveDetailsButton"
-                Text="Save Torrent Details"
+                Text="Select Torrent"
                 IsEnabled="False"
                 Clicked="OnSaveDetailsButtonClicked"
                 VerticalOptions="End" />
@@ -71,7 +71,7 @@
             <!-- Button to Start Download -->
             <Button
                 x:Name="DownloadButton"
-                Text="Start Download"
+                Text="Start Playing"
                 IsEnabled="False"
                 Clicked="OnStartDownloadButtonClicked"
                 VerticalOptions="End" />
