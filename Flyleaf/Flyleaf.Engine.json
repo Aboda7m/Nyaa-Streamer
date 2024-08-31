@@ -1,0 +1,16 @@
+{
+  "DisableAudio": false,
+  "FFmpegPath": ":FFmpeg",
+  "FFmpegDevices": true,
+  "FFmpegHLSLiveSeek": true,
+  "FFmpegLogLevel": -8,
+  "LogOutput": null,
+  "LogLevel": 0,
+  "LogAppend": false,
+  "LogCachedLines": 20,
+  "LogDateTimeFormat": "HH.mm.ss.fff",
+  "PluginsPath": ":Plugins",
+  "UICurTimePerSecond": true,
+  "UIRefresh": true,
+  "UIRefreshInterval": 250
+}

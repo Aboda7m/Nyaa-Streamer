@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.Maui.Controls;
+using System.Diagnostics;
 
 namespace Nyaa_Streamer
 {
@@ -88,8 +89,83 @@ namespace Nyaa_Streamer
             var selectedResult = ResultsListView.SelectedItem as string;
             if (selectedResult != null && resultsDictionary.TryGetValue(selectedResult, out var url))
             {
-                await Launcher.OpenAsync(url); // Open the URL in the default browser
+                var torrentDetails = await GetTorrentDetailsAsync(url);
+
+                //torrentDetails.MagnetLink;
+                //C:\Users\D7o_m\source\repos\Nyaa Streamer\Flyleaf
+
+                //string exePath = Path.Combine(Directory.GetCurrentDirectory(), @"Flyleaf\FlyleafPlayer.exe");
+                //string exePath = @"C:\Users\D7o_m\source\repos\Nyaa Streamer\Flyleaf\FlyleafPlayer.exe";
+                string exePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"Flyleaf\FlyleafPlayer.exe");
+                string arguments = torrentDetails.MagnetLink;  // Example argument
+
+                Process process = new Process();
+                process.StartInfo.FileName = exePath;
+                process.StartInfo.Arguments = arguments;
+                process.Start();
+                process.WaitForExit();
+                // Commenting out the alert box output
+                // if (torrentDetails != null)
+                // {
+                //     await DisplayAlert("Torrent Details",
+                //         $"Title: {torrentDetails.Title}\n" +
+                //         $"View Link: {torrentDetails.ViewLink}\n" +
+                //         $"Download Link: {torrentDetails.DownloadLink}\n" +
+                //         $"Magnet Link: {torrentDetails.MagnetLink}",
+                //         "OK");
+                // }
+                // else
+                // {
+                //     await DisplayAlert("Error", "Failed to fetch torrent details.", "OK");
+                // }
+
+                // Record the torrent details for future use
+                // You can process or store these details as needed
+                // For example:
+                // SaveTorrentDetails(torrentDetails);
             }
+        }
+
+        private async Task<TorrentDetails> GetTorrentDetailsAsync(string url)
+        {
+            var torrentDetails = new TorrentDetails();
+
+            using (var httpClient = new HttpClient())
+            {
+                try
+                {
+                    var response = await httpClient.GetStringAsync(url);
+                    var htmlDoc = new HtmlDocument();
+                    htmlDoc.LoadHtml(response);
+
+                    // Extract torrent details
+                    torrentDetails.Title = htmlDoc.DocumentNode.SelectSingleNode("//h1")?.InnerText.Trim();
+                    torrentDetails.ViewLink = url;
+                    torrentDetails.DownloadLink = htmlDoc.DocumentNode.SelectSingleNode("//a[contains(@href, '.torrent')]")?.GetAttributeValue("href", string.Empty);
+                    torrentDetails.MagnetLink = htmlDoc.DocumentNode.SelectSingleNode("//a[contains(@href, 'magnet:')]")?.GetAttributeValue("href", string.Empty);
+
+                }
+                catch (HttpRequestException)
+                {
+                    // Handle request exceptions
+                    return null;
+                }
+                catch
+                {
+                    // Handle other exceptions
+                    return null;
+                }
+            }
+
+            return torrentDetails;
+        }
+
+        private class TorrentDetails
+        {
+            public string Title { get; set; }
+            public string ViewLink { get; set; }
+            public string DownloadLink { get; set; }
+            public string MagnetLink { get; set; }
         }
     }
 }
