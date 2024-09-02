@@ -15,6 +15,7 @@ namespace Nyaa_Streamer
         public MainPage()
         {
             InitializeComponent();
+
         }
 
         private async void OnSearchButtonClicked(object sender, EventArgs e)
@@ -90,39 +91,8 @@ namespace Nyaa_Streamer
             if (selectedResult != null && resultsDictionary.TryGetValue(selectedResult, out var url))
             {
                 var torrentDetails = await GetTorrentDetailsAsync(url);
-
-                //torrentDetails.MagnetLink;
-                //C:\Users\D7o_m\source\repos\Nyaa Streamer\Flyleaf
-
-                //string exePath = Path.Combine(Directory.GetCurrentDirectory(), @"Flyleaf\FlyleafPlayer.exe");
-                //string exePath = @"C:\Users\D7o_m\source\repos\Nyaa Streamer\Flyleaf\FlyleafPlayer.exe";
-                string exePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"Flyleaf\FlyleafPlayer.exe");
-                string arguments = torrentDetails.MagnetLink;  // Example argument
-
-                Process process = new Process();
-                process.StartInfo.FileName = exePath;
-                process.StartInfo.Arguments = arguments;
-                process.Start();
-                process.WaitForExit();
-                // Commenting out the alert box output
-                // if (torrentDetails != null)
-                // {
-                //     await DisplayAlert("Torrent Details",
-                //         $"Title: {torrentDetails.Title}\n" +
-                //         $"View Link: {torrentDetails.ViewLink}\n" +
-                //         $"Download Link: {torrentDetails.DownloadLink}\n" +
-                //         $"Magnet Link: {torrentDetails.MagnetLink}",
-                //         "OK");
-                // }
-                // else
-                // {
-                //     await DisplayAlert("Error", "Failed to fetch torrent details.", "OK");
-                // }
-
-                // Record the torrent details for future use
-                // You can process or store these details as needed
-                // For example:
-                // SaveTorrentDetails(torrentDetails);
+                //here i want to implement the app2
+                
             }
         }
 

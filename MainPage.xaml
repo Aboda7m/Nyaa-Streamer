@@ -3,62 +3,77 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Nyaa_Streamer.MainPage">
 
-    <ScrollView>
-        <VerticalStackLayout
-            Padding="30,10"
-            Spacing="20">
+    <Grid>
+        <!-- Background Image -->
+        <Grid>
+            <Image
+        x:Name="backgroundImage"
+        Source="backgroung.jpg"
+        Aspect="AspectFill"
+        HorizontalOptions="Start"/>
+        </Grid>
 
-            <!-- Anime Name Input Box -->
-            <Label
-                Text="Enter Anime Name:"
-                
-                VerticalOptions="Center" />
+        <ScrollView>
+            <VerticalStackLayout
+                Padding="30,10"
+                Spacing="20">
 
-            <Entry
-                x:Name="AnimeNameEntry"
-                Placeholder="e.g. One Piece"
-                
-                VerticalOptions="Center" />
+                <!-- Anime Name Input Box -->
+                <Label
+                    Text="Enter Anime Name:"
+                    TextColor="#FFF"
+                    VerticalOptions="Center" />
 
-            <!-- Button to Trigger Search -->
-            <Button
-                x:Name="SearchBtn"
-                Text="Search"
-                
-                Clicked="OnSearchButtonClicked"
-                VerticalOptions="Center" />
+                <Entry
+                    x:Name="AnimeNameEntry"
+                    Placeholder="e.g. One Piece"
+                    PlaceholderColor="#AAA"
+                    BackgroundColor="#444"
+                    TextColor="#FFF"
+                    VerticalOptions="Center" />
 
-            <!-- Results Display List -->
-            <Label
-                Text="Search Results:"
-                
-                VerticalOptions="Center"
-                Margin="0,20,0,0" />
+                <!-- Button to Trigger Search -->
+                <Button
+                    x:Name="SearchBtn"
+                    Text="Search"
+                    BackgroundColor="#FF6F61"
+                    TextColor="#FFF"
+                    Clicked="OnSearchButtonClicked"
+                    VerticalOptions="Center" />
 
-            <ListView
-                x:Name="ResultsListView"
-               
-                VerticalOptions="FillAndExpand"
-                SelectionMode="Single"
-                ItemSelected="OnResultSelected">
-                <!-- Define the template for displaying each item -->
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <TextCell Text="{Binding}" />
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
+                <!-- Results Display List -->
+                <Label
+                    Text="Search Results:"
+                    TextColor="#FFF"
+                    VerticalOptions="Center"
+                    Margin="0,20,0,0" />
 
-            <!-- Button to Proceed with Selected -->
-            <Button
-                x:Name="ProceedBtn"
-                Text="Proceed with Selected"
-                
-                IsEnabled="False"
-                Clicked="OnProceedButtonClicked"
-                VerticalOptions="End" />
+                <ListView
+                    x:Name="ResultsListView"
+                    BackgroundColor="#333"
+                    VerticalOptions="FillAndExpand"
+                    SelectionMode="Single"
+                    ItemSelected="OnResultSelected">
+                    <!-- Define the template for displaying each item -->
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <TextCell Text="{Binding}" TextColor="#FFF"/>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
 
-        </VerticalStackLayout>
-    </ScrollView>
+                <!-- Button to Proceed with Selected -->
+                <Button
+                    x:Name="ProceedBtn"
+                    Text="Proceed with Selected"
+                    BackgroundColor="#4CAF50"
+                    TextColor="#FFF"
+                    IsEnabled="False"
+                    Clicked="OnProceedButtonClicked"
+                    VerticalOptions="End" />
+
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
 
 </ContentPage>
