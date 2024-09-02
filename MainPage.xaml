@@ -1,6 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              x:Class="Nyaa_Streamer.MainPage">
 
     <Grid>
@@ -17,6 +18,8 @@
             <VerticalStackLayout
                 Padding="30,10"
                 Spacing="20">
+
+                
 
                 <!-- Anime Name Input Box -->
                 <Label
@@ -71,6 +74,9 @@
                     IsEnabled="False"
                     Clicked="OnProceedButtonClicked"
                     VerticalOptions="End" />
+
+                <toolkit:MediaElement Source="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+              ShouldShowPlaybackControls="True" />
 
             </VerticalStackLayout>
         </ScrollView>
