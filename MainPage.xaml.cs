@@ -213,6 +213,7 @@ namespace Nyaa_Streamer
             }
         }
 
+
         private void StartHttpServer(TorrentManager manager)
         {
             HttpListener listener = new HttpListener();
@@ -245,12 +246,13 @@ namespace Nyaa_Streamer
                             if (largestFile != null)
                             {
                                 Debug.WriteLine("Handling file streaming...");
-                                await HandleFileStreamingAsync(largestFile, response);
+                                await HandleFileStreamingAsync(largestFile, response, request);
                                 Debug.WriteLine("File streaming handled.");
                             }
                             else
                             {
                                 response.StatusCode = (int)HttpStatusCode.NotFound;
+                                response.ContentType = "text/plain";
                                 using (var writer = new StreamWriter(response.OutputStream))
                                 {
                                     await writer.WriteAsync("No files found in the torrent.");
@@ -261,6 +263,7 @@ namespace Nyaa_Streamer
                         {
                             Debug.WriteLine($"An error occurred while streaming: {ex.Message}");
                             response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                            response.ContentType = "text/plain";
                             using (var writer = new StreamWriter(response.OutputStream))
                             {
                                 await writer.WriteAsync("An error occurred while streaming the file.");
@@ -275,42 +278,96 @@ namespace Nyaa_Streamer
             });
         }
 
-        private async Task HandleFileStreamingAsync(ITorrentManagerFile torrentFile, HttpListenerResponse response)
+
+
+        private async Task HandleFileStreamingAsync(ITorrentManagerFile torrentFile, HttpListenerResponse response, HttpListenerRequest request)
         {
             const int maxRetries = 3;
             const int delayBetweenRetries = 1000; // 1 second
 
             Debug.WriteLine($"Handling file streaming for {torrentFile.FullPath}");
 
-            for (int attempt = 0; attempt < maxRetries; attempt++)
+            try
             {
-                try
+                // Parse the range header if present
+                long start = 0;
+                long end = torrentFile.Length - 1;
+                if (request.Headers["Range"] != null)
                 {
-                    Debug.WriteLine($"Attempt {attempt + 1} to create stream for {torrentFile.FullPath}");
-                    using (var stream = await manager!.StreamProvider.CreateStreamAsync(torrentFile, prebuffer: true))
-                    {
-                        Debug.WriteLine("Stream created successfully.");
-                        response.ContentType = "video/mp4"; // Adjust content type as needed
-                        await stream.CopyToAsync(response.OutputStream);
-                        Debug.WriteLine("File streamed successfully.");
-                    }
-                    return; // Successfully completed, exit the method
+                    var rangeHeader = request.Headers["Range"];
+                    var range = rangeHeader.Replace("bytes=", "").Split('-');
+                    start = long.Parse(range[0]);
+                    end = range.Length > 1 && !string.IsNullOrEmpty(range[1]) ? long.Parse(range[1]) : end;
                 }
-                catch (IOException ioEx)
+
+                // Ensure the start and end are within the file length
+                start = Math.Max(start, 0);
+                end = Math.Min(end, torrentFile.Length - 1);
+
+                // Set response status code and headers
+                response.StatusCode = (int)HttpStatusCode.PartialContent;
+                response.ContentType = "video/mp4"; // Adjust content type as needed
+                response.Headers.Add("Accept-Ranges", "bytes");
+                response.Headers.Add("Content-Range", $"bytes {start}-{end}/{torrentFile.Length}");
+                response.ContentLength64 = end - start + 1;
+
+                for (int attempt = 0; attempt < maxRetries; attempt++)
                 {
-                    Debug.WriteLine($"File I/O error (attempt {attempt + 1}): {ioEx.Message}");
-
-                    if (attempt == maxRetries - 1)
+                    try
                     {
-                        Debug.WriteLine($"Max retries reached for {torrentFile.FullPath}. Throwing exception.");
-                        throw; // Re-throw the exception if it's the last attempt
-                    }
+                        Debug.WriteLine($"Attempt {attempt + 1} to create stream for {torrentFile.FullPath}");
+                        using (var stream = await manager!.StreamProvider.CreateStreamAsync(torrentFile, prebuffer: true))
+                        {
+                            Debug.WriteLine("Stream created successfully.");
+                            // Seek to the start position
+                            stream.Seek(start, SeekOrigin.Begin);
 
-                    // Wait before retrying
-                    await Task.Delay(delayBetweenRetries);
+                            // Copy the required range of bytes to the response
+                            var buffer = new byte[8192];
+                            long bytesToRead = end - start + 1;
+                            int bytesRead;
+
+                            while (bytesToRead > 0 && (bytesRead = await stream.ReadAsync(buffer, 0, (int)Math.Min(buffer.Length, bytesToRead))) > 0)
+                            {
+                                await response.OutputStream.WriteAsync(buffer, 0, bytesRead);
+                                bytesToRead -= bytesRead;
+                            }
+
+                            Debug.WriteLine("File streamed successfully.");
+                        }
+                        return; // Successfully completed, exit the method
+                    }
+                    catch (IOException ioEx)
+                    {
+                        Debug.WriteLine($"File I/O error (attempt {attempt + 1}): {ioEx.Message}");
+
+                        if (attempt == maxRetries - 1)
+                        {
+                            Debug.WriteLine($"Max retries reached for {torrentFile.FullPath}. Throwing exception.");
+                            throw; // Re-throw the exception if it's the last attempt
+                        }
+
+                        // Wait before retrying
+                        await Task.Delay(delayBetweenRetries);
+                    }
                 }
             }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"An error occurred while streaming: {ex.Message}");
+                response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                response.ContentType = "text/plain";
+                using (var writer = new StreamWriter(response.OutputStream))
+                {
+                    await writer.WriteAsync("An error occurred while streaming the file.");
+                }
+            }
+            finally
+            {
+                response.OutputStream.Close();
+            }
         }
+
 
         private class TorrentDetails
         {
