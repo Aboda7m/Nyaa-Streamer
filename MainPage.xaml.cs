@@ -189,6 +189,17 @@ namespace Nyaa_Streamer
                 // DisplayAlert("Streaming", "Streaming started. You can now open the stream in VLC.", "OK");
 
                 // Navigate to the MediaPlayerPage
+                // Show the progress bar
+                //DownloadProgressBar.IsVisible = true;
+
+                // Subscribe to the PieceHashed event to update the progress bar
+                //manager.PieceHashed += (sender, args) =>
+                //{
+                    double progress = (double)manager.Bitfield.PercentComplete / 100;
+                    Debug.WriteLine("progress .", progress);
+                    MainThread.BeginInvokeOnMainThread(() => DownloadProgressBar.Progress = progress);
+                //};
+                await Task.Delay(3000);
                 await Navigation.PushAsync(new MediaPlayerPage("http://localhost:8888/"));
 
             }

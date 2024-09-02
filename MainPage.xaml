@@ -8,18 +8,16 @@
         <!-- Background Image -->
         <Grid>
             <Image
-        x:Name="backgroundImage"
-        Source="backgroung.jpg"
-        Aspect="AspectFill"
-        HorizontalOptions="Start"/>
+                x:Name="backgroundImage"
+                Source="backgroung.jpg"
+                Aspect="AspectFill"
+                HorizontalOptions="Start"/>
         </Grid>
 
         <ScrollView>
             <VerticalStackLayout
                 Padding="30,10"
                 Spacing="20">
-
-                
 
                 <!-- Anime Name Input Box -->
                 <Label
@@ -65,6 +63,27 @@
                     </ListView.ItemTemplate>
                 </ListView>
 
+                <!-- ProgressBar for Download Progress -->
+                <Label
+                    Text="Download Progress:"
+                    TextColor="#FFF"
+                    VerticalOptions="Center"
+                    Margin="0,20,0,0" />
+
+                <ProgressBar
+                    x:Name="DownloadProgressBar"
+                    Progress="0"
+                    IsVisible="True"
+                    BackgroundColor="#333"
+                    VerticalOptions="Center" />
+
+                <Label
+                    x:Name="DownloadPercentageLabel"
+                    Text="0%"
+                    TextColor="#FFF"
+                    VerticalOptions="Center"
+                    HorizontalOptions="Center" />
+
                 <!-- Button to Proceed with Selected -->
                 <Button
                     x:Name="ProceedBtn"
@@ -74,9 +93,6 @@
                     IsEnabled="False"
                     Clicked="OnProceedButtonClicked"
                     VerticalOptions="End" />
-
-                
-
             </VerticalStackLayout>
         </ScrollView>
     </Grid>
