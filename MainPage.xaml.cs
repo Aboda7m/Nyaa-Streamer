@@ -193,7 +193,7 @@ namespace Nyaa_Streamer
                 
                 // Loop to check download progress
                 double progress = 0;
-                while (progress < 0.01)
+                while (progress < 1)
                 {
                     progress = (double)manager.Progress;
                     Debug.WriteLine($"Current download progress: {progress}%");
