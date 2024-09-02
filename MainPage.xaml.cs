@@ -11,6 +11,7 @@ using System.Net;
 using System.Linq;
 using System.Diagnostics;
 
+
 namespace Nyaa_Streamer
 {
     public partial class MainPage : ContentPage
