@@ -75,8 +75,7 @@
                     Clicked="OnProceedButtonClicked"
                     VerticalOptions="End" />
 
-                <toolkit:MediaElement x:Name="mediaElement"
-              ShouldShowPlaybackControls="True" />
+                
 
             </VerticalStackLayout>
         </ScrollView>

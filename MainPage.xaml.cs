@@ -187,9 +187,9 @@ namespace Nyaa_Streamer
                 StartHttpServer(manager);
 
                 // DisplayAlert("Streaming", "Streaming started. You can now open the stream in VLC.", "OK");
-                
-                mediaElement.Source = new Uri("http://localhost:8888/");
-                mediaElement.Play();
+
+                // Navigate to the MediaPlayerPage
+                await Navigation.PushAsync(new MediaPlayerPage("http://localhost:8888/"));
 
             }
             catch (Exception ex)
