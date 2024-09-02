@@ -18,7 +18,7 @@ namespace Nyaa_Streamer
     {
         private const string NyaaBaseUrl = "https://nyaa.si/?f=0&c=0_0&q={0}&s=seeders&o=desc";
         private Dictionary<string, string> resultsDictionary = new Dictionary<string, string>();
-        private string downloadDirectory = @"F:\Dev\temp\downloads";
+        private string downloadDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"temp\downloads");
         private ClientEngine engine;
         private TorrentManager? manager;
 
