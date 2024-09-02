@@ -182,9 +182,15 @@ namespace Nyaa_Streamer
                 await manager.WaitForMetadataAsync();
                 Debug.WriteLine("Metadata received.");
 
+                
+
                 StartHttpServer(manager);
 
-                await DisplayAlert("Streaming", "Streaming started. You can now open the stream in VLC.", "OK");
+                // DisplayAlert("Streaming", "Streaming started. You can now open the stream in VLC.", "OK");
+                
+                mediaElement.Source = new Uri("http://localhost:8888/");
+                mediaElement.Play();
+
             }
             catch (Exception ex)
             {

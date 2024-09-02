@@ -75,7 +75,7 @@
                     Clicked="OnProceedButtonClicked"
                     VerticalOptions="End" />
 
-                <toolkit:MediaElement Source="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+                <toolkit:MediaElement x:Name="mediaElement"
               ShouldShowPlaybackControls="True" />
 
             </VerticalStackLayout>
