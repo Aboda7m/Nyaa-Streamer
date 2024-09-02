@@ -61,6 +61,7 @@ namespace Nyaa_Streamer
                     var htmlDoc = new HtmlDocument();
                     htmlDoc.LoadHtml(response);
 
+                    // Select the title nodes
                     var titleNodes = htmlDoc.DocumentNode.SelectNodes("//a[not(contains(@class, 'comments')) and contains(@href, '/view/')]");
                     if (titleNodes != null)
                     {
@@ -73,7 +74,7 @@ namespace Nyaa_Streamer
                             var href = node.GetAttributeValue("href", string.Empty);
                             if (!string.IsNullOrEmpty(title) && !string.IsNullOrEmpty(href))
                             {
-                                var fullUrl = "https://nyaa.si" + href;
+                                var fullUrl = "https://nyaa.si" + href; // Construct the full URL
                                 resultTitles[title] = fullUrl;
                             }
                         }
@@ -81,10 +82,12 @@ namespace Nyaa_Streamer
                 }
                 catch (HttpRequestException ex)
                 {
+                    // Handle request exceptions
                     await DisplayAlert("Error", "Error fetching results: " + ex.Message, "OK");
                 }
                 catch (Exception ex)
                 {
+                    // Handle other exceptions
                     await DisplayAlert("Error", "An unexpected error occurred: " + ex.Message, "OK");
                 }
             }
@@ -129,18 +132,27 @@ namespace Nyaa_Streamer
                     var htmlDoc = new HtmlDocument();
                     htmlDoc.LoadHtml(response);
 
+                    // Extract torrent details
                     torrentDetails.Title = htmlDoc.DocumentNode.SelectSingleNode("//h1")?.InnerText.Trim();
                     torrentDetails.ViewLink = url;
                     torrentDetails.DownloadLink = htmlDoc.DocumentNode.SelectSingleNode("//a[contains(@href, '.torrent')]")?.GetAttributeValue("href", string.Empty);
                     torrentDetails.MagnetLink = htmlDoc.DocumentNode.SelectSingleNode("//a[contains(@href, 'magnet:')]")?.GetAttributeValue("href", string.Empty);
+                    if (torrentDetails.MagnetLink != null)
+                    {
+                        // Replace &amp; with & to ensure proper format
+                        torrentDetails.MagnetLink = torrentDetails.MagnetLink.Replace("&amp;", "&");
+                    }
+                    //torrentDetails.MagnetLink = torrentDetails.MagnetLink;
 
                 }
                 catch (HttpRequestException)
                 {
+                    // Handle request exceptions
                     return null;
                 }
                 catch
                 {
+                    // Handle other exceptions
                     return null;
                 }
             }
@@ -154,6 +166,7 @@ namespace Nyaa_Streamer
             {
                 Debug.WriteLine($"Parsing magnet link: {magnetLink}");
                 var magnet = MagnetLink.Parse(magnetLink);
+                //var magnet = MagnetLink.Parse("magnetLink");
                 Debug.WriteLine($"Magnet link parsed: {magnet}");
 
                 Debug.WriteLine("Adding torrent for streaming...");
@@ -165,7 +178,7 @@ namespace Nyaa_Streamer
                 Debug.WriteLine("Torrent started.");
 
                 Debug.WriteLine("Waiting for metadata...");
-                await WaitForMetadataAsync(manager);
+                await manager.WaitForMetadataAsync();
                 Debug.WriteLine("Metadata received.");
 
                 StartHttpServer(manager);
@@ -176,32 +189,6 @@ namespace Nyaa_Streamer
             {
                 Debug.WriteLine($"An error occurred: {ex.Message}");
                 await DisplayAlert("Error", $"An error occurred: {ex.Message}", "OK");
-            }
-        }
-
-        private async Task WaitForMetadataAsync(TorrentManager manager)
-        {
-            try
-            {
-                int timeout = 30000; // 30 seconds
-                int interval = 1000; // 1 second
-                int elapsed = 0;
-
-                while (!manager.IsMetadataDownloaded)
-                {
-                    if (elapsed >= timeout)
-                    {
-                        throw new TimeoutException("Timed out waiting for torrent metadata.");
-                    }
-
-                    await Task.Delay(interval);
-                    elapsed += interval;
-                }
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"Error while waiting for metadata: {ex.Message}");
-                throw;
             }
         }
 
@@ -228,7 +215,7 @@ namespace Nyaa_Streamer
                         try
                         {
                             Debug.WriteLine("Waiting for metadata...");
-                            await WaitForMetadataAsync(manager);
+                            await manager.WaitForMetadataAsync();
                             Debug.WriteLine("Metadata received.");
 
                             var largestFile = manager.Files.OrderByDescending(f => f.Length).FirstOrDefault();
@@ -282,27 +269,23 @@ namespace Nyaa_Streamer
                     using (var stream = await manager!.StreamProvider.CreateStreamAsync(torrentFile, prebuffer: true))
                     {
                         Debug.WriteLine("Stream created successfully.");
-                        response.ContentType = "video/mp4";
-                        response.ContentLength64 = torrentFile.Length;
-
-                        using (var output = response.OutputStream)
-                        {
-                            await stream.CopyToAsync(output);
-                        }
-
-                        Debug.WriteLine("Streaming completed.");
-                        return;
+                        response.ContentType = "video/mp4"; // Adjust content type as needed
+                        await stream.CopyToAsync(response.OutputStream);
+                        Debug.WriteLine("File streamed successfully.");
                     }
+                    return; // Successfully completed, exit the method
                 }
-                catch (Exception ex)
+                catch (IOException ioEx)
                 {
-                    Debug.WriteLine($"Error on attempt {attempt + 1}: {ex.Message}");
+                    Debug.WriteLine($"File I/O error (attempt {attempt + 1}): {ioEx.Message}");
 
                     if (attempt == maxRetries - 1)
                     {
-                        throw;
+                        Debug.WriteLine($"Max retries reached for {torrentFile.FullPath}. Throwing exception.");
+                        throw; // Re-throw the exception if it's the last attempt
                     }
 
+                    // Wait before retrying
                     await Task.Delay(delayBetweenRetries);
                 }
             }
