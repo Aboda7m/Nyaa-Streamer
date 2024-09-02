@@ -18,7 +18,7 @@ namespace Nyaa_Streamer
     {
         private const string NyaaBaseUrl = "https://nyaa.si/?f=0&c=0_0&q={0}&s=seeders&o=desc";
         private Dictionary<string, string> resultsDictionary = new Dictionary<string, string>();
-        private string downloadDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"temp\downloads");
+        private string downloadDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"downloads");
         private ClientEngine engine;
         private TorrentManager? manager;
 
@@ -185,14 +185,15 @@ namespace Nyaa_Streamer
 
 
                 //MainThread.BeginInvokeOnMainThread(() => DownloadProgress.IsVisible = true);
+                
                 DownloadProgressBar.IsVisible = true;
                 DownloadPercentageLabel.IsVisible = true;   
 
-                StartHttpServer(manager);
-
+                //StartHttpServer(manager);
+                
                 // Loop to check download progress
                 double progress = 0;
-                while (progress < 2)
+                while (progress < 0.01)
                 {
                     progress = (double)manager.Progress;
                     Debug.WriteLine($"Current download progress: {progress}%");
@@ -201,7 +202,10 @@ namespace Nyaa_Streamer
                     await Task.Delay(1000); // Wait for 1 second before checking again
                 }
 
+
                 Debug.WriteLine("Minimum 10% downloaded. Starting media player...");
+
+                StartHttpServer(manager);
                 await Task.Delay(3000);
                 await Navigation.PushAsync(new MediaPlayerPage("http://localhost:8888/"));
 
