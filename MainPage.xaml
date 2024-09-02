@@ -73,13 +73,14 @@
                 <ProgressBar
                     x:Name="DownloadProgressBar"
                     Progress="0"
-                    IsVisible="True"
+                    IsVisible="False"
                     BackgroundColor="#333"
                     VerticalOptions="Center" />
 
                 <Label
                     x:Name="DownloadPercentageLabel"
                     Text="0%"
+                    IsVisible="False"
                     TextColor="#FFF"
                     VerticalOptions="Center"
                     HorizontalOptions="Center" />

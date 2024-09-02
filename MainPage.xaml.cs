@@ -182,23 +182,26 @@ namespace Nyaa_Streamer
                 await manager.WaitForMetadataAsync();
                 Debug.WriteLine("Metadata received.");
 
-                
+
+
+                //MainThread.BeginInvokeOnMainThread(() => DownloadProgress.IsVisible = true);
+                DownloadProgressBar.IsVisible = true;
+                DownloadPercentageLabel.IsVisible = true;   
 
                 StartHttpServer(manager);
 
-                // DisplayAlert("Streaming", "Streaming started. You can now open the stream in VLC.", "OK");
+                // Loop to check download progress
+                double progress = 0;
+                while (progress < 2)
+                {
+                    progress = (double)manager.Progress;
+                    Debug.WriteLine($"Current download progress: {progress}%");
+                    MainThread.BeginInvokeOnMainThread(() => DownloadProgressBar.Progress = progress/100);
+                    MainThread.BeginInvokeOnMainThread(() => DownloadPercentageLabel.Text = progress+"%");
+                    await Task.Delay(1000); // Wait for 1 second before checking again
+                }
 
-                // Navigate to the MediaPlayerPage
-                // Show the progress bar
-                //DownloadProgressBar.IsVisible = true;
-
-                // Subscribe to the PieceHashed event to update the progress bar
-                //manager.PieceHashed += (sender, args) =>
-                //{
-                    double progress = (double)manager.Bitfield.PercentComplete / 100;
-                    Debug.WriteLine("progress .", progress);
-                    MainThread.BeginInvokeOnMainThread(() => DownloadProgressBar.Progress = progress);
-                //};
+                Debug.WriteLine("Minimum 10% downloaded. Starting media player...");
                 await Task.Delay(3000);
                 await Navigation.PushAsync(new MediaPlayerPage("http://localhost:8888/"));
 
