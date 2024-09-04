@@ -11,7 +11,6 @@ using System.Net;
 using System.Linq;
 using System.Diagnostics;
 
-
 namespace Nyaa_Streamer
 {
     public partial class MainPage : ContentPage
@@ -30,7 +29,7 @@ namespace Nyaa_Streamer
             var engineSettings = new EngineSettingsBuilder()
             {
                 CacheDirectory = Path.Combine(downloadDirectory, "cache"),
-                DiskCacheBytes = 256 * 1024 * 1024
+                DiskCacheBytes = 512 * 1024 * 1024 // Increased cache size for better performance
             }.ToSettings();
 
             engine = new ClientEngine(engineSettings);
@@ -62,20 +61,16 @@ namespace Nyaa_Streamer
                     var htmlDoc = new HtmlDocument();
                     htmlDoc.LoadHtml(response);
 
-                    // Select the title nodes
                     var titleNodes = htmlDoc.DocumentNode.SelectNodes("//a[not(contains(@class, 'comments')) and contains(@href, '/view/')]");
                     if (titleNodes != null)
                     {
-                        foreach (var node in titleNodes)
+                        foreach (var node in titleNodes.Take(10)) // Limit to 10 results
                         {
-                            if (resultTitles.Count >= 10)
-                                break;
-
                             var title = node.GetAttributeValue("title", string.Empty);
                             var href = node.GetAttributeValue("href", string.Empty);
                             if (!string.IsNullOrEmpty(title) && !string.IsNullOrEmpty(href))
                             {
-                                var fullUrl = "https://nyaa.si" + href; // Construct the full URL
+                                var fullUrl = "https://nyaa.si" + href;
                                 resultTitles[title] = fullUrl;
                             }
                         }
@@ -83,12 +78,10 @@ namespace Nyaa_Streamer
                 }
                 catch (HttpRequestException ex)
                 {
-                    // Handle request exceptions
                     await DisplayAlert("Error", "Error fetching results: " + ex.Message, "OK");
                 }
                 catch (Exception ex)
                 {
-                    // Handle other exceptions
                     await DisplayAlert("Error", "An unexpected error occurred: " + ex.Message, "OK");
                 }
             }
@@ -100,7 +93,7 @@ namespace Nyaa_Streamer
         {
             if (e.SelectedItem != null)
             {
-                ProceedBtn.IsEnabled = true; // Enable the Proceed button
+                ProceedBtn.IsEnabled = true;
             }
         }
 
@@ -133,27 +126,21 @@ namespace Nyaa_Streamer
                     var htmlDoc = new HtmlDocument();
                     htmlDoc.LoadHtml(response);
 
-                    // Extract torrent details
                     torrentDetails.Title = htmlDoc.DocumentNode.SelectSingleNode("//h1")?.InnerText.Trim();
                     torrentDetails.ViewLink = url;
                     torrentDetails.DownloadLink = htmlDoc.DocumentNode.SelectSingleNode("//a[contains(@href, '.torrent')]")?.GetAttributeValue("href", string.Empty);
                     torrentDetails.MagnetLink = htmlDoc.DocumentNode.SelectSingleNode("//a[contains(@href, 'magnet:')]")?.GetAttributeValue("href", string.Empty);
                     if (torrentDetails.MagnetLink != null)
                     {
-                        // Replace &amp; with & to ensure proper format
                         torrentDetails.MagnetLink = torrentDetails.MagnetLink.Replace("&amp;", "&");
                     }
-                    //torrentDetails.MagnetLink = torrentDetails.MagnetLink;
-
                 }
                 catch (HttpRequestException)
                 {
-                    // Handle request exceptions
                     return null;
                 }
                 catch
                 {
-                    // Handle other exceptions
                     return null;
                 }
             }
@@ -167,7 +154,6 @@ namespace Nyaa_Streamer
             {
                 Debug.WriteLine($"Parsing magnet link: {magnetLink}");
                 var magnet = MagnetLink.Parse(magnetLink);
-                //var magnet = MagnetLink.Parse("magnetLink");
                 Debug.WriteLine($"Magnet link parsed: {magnet}");
 
                 Debug.WriteLine("Adding torrent for streaming...");
@@ -182,33 +168,25 @@ namespace Nyaa_Streamer
                 await manager.WaitForMetadataAsync();
                 Debug.WriteLine("Metadata received.");
 
-
-
-                //MainThread.BeginInvokeOnMainThread(() => DownloadProgress.IsVisible = true);
-                
                 DownloadProgressBar.IsVisible = true;
-                DownloadPercentageLabel.IsVisible = true;   
+                DownloadPercentageLabel.IsVisible = true;
 
-                //StartHttpServer(manager);
-                
-                // Loop to check download progress
-                double progress = 0;
-                while (progress < 1)
+                // Monitor progress and wait until a sufficient amount is downloaded
+                while (manager.Progress < 99)
                 {
-                    progress = (double)manager.Progress;
-                    Debug.WriteLine($"Current download progress: {progress}%");
-                    MainThread.BeginInvokeOnMainThread(() => DownloadProgressBar.Progress = progress/100);
-                    MainThread.BeginInvokeOnMainThread(() => DownloadPercentageLabel.Text = progress+"%");
-                    await Task.Delay(1000); // Wait for 1 second before checking again
+                    Debug.WriteLine($"Current download progress: {manager.Progress}%");
+                    MainThread.BeginInvokeOnMainThread(() =>
+                    {
+                        DownloadProgressBar.Progress = manager.Progress / 100;
+                        DownloadPercentageLabel.Text = $"{manager.Progress}%";
+                    });
+                    await Task.Delay(1000);
                 }
 
-
-                Debug.WriteLine("Minimum 10% downloaded. Starting media player...");
-
+                Debug.WriteLine("Download progress sufficient. Starting media player...");
                 StartHttpServer(manager);
                 await Task.Delay(3000);
                 await Navigation.PushAsync(new MediaPlayerPage("http://localhost:8888/"));
-
             }
             catch (Exception ex)
             {
@@ -216,7 +194,6 @@ namespace Nyaa_Streamer
                 await DisplayAlert("Error", $"An error occurred: {ex.Message}", "OK");
             }
         }
-
 
         private void StartHttpServer(TorrentManager manager)
         {
@@ -240,32 +217,11 @@ namespace Nyaa_Streamer
                     {
                         try
                         {
-                            Debug.WriteLine("Waiting for metadata...");
-                            await manager.WaitForMetadataAsync();
-                            Debug.WriteLine("Metadata received.");
-
-                            var largestFile = manager.Files.OrderByDescending(f => f.Length).FirstOrDefault();
-                            Debug.WriteLine(largestFile != null ? $"Largest file selected: {largestFile.FullPath}" : "No files found in torrent.");
-
-                            if (largestFile != null)
-                            {
-                                Debug.WriteLine("Handling file streaming...");
-                                await HandleFileStreamingAsync(largestFile, response, request);
-                                Debug.WriteLine("File streaming handled.");
-                            }
-                            else
-                            {
-                                response.StatusCode = (int)HttpStatusCode.NotFound;
-                                response.ContentType = "text/plain";
-                                using (var writer = new StreamWriter(response.OutputStream))
-                                {
-                                    await writer.WriteAsync("No files found in the torrent.");
-                                }
-                            }
+                            await HandleFileStreamingAsync(manager, response, request);
                         }
                         catch (Exception ex)
                         {
-                            Debug.WriteLine($"An error occurred while streaming: {ex.Message}");
+                            Debug.WriteLine($"Streaming error: {ex.Message}");
                             response.StatusCode = (int)HttpStatusCode.InternalServerError;
                             response.ContentType = "text/plain";
                             using (var writer = new StreamWriter(response.OutputStream))
@@ -282,20 +238,14 @@ namespace Nyaa_Streamer
             });
         }
 
-
-
-        private async Task HandleFileStreamingAsync(ITorrentManagerFile torrentFile, HttpListenerResponse response, HttpListenerRequest request)
+        private async Task HandleFileStreamingAsync(TorrentManager manager, HttpListenerResponse response, HttpListenerRequest request)
         {
-            const int maxRetries = 3;
-            const int delayBetweenRetries = 1000; // 1 second
-
-            Debug.WriteLine($"Handling file streaming for {torrentFile.FullPath}");
+            Debug.WriteLine($"Handling file streaming for {manager.Files.First().FullPath}");
 
             try
             {
-                // Parse the range header if present
                 long start = 0;
-                long end = torrentFile.Length - 1;
+                long end = manager.Files.First().Length - 1;
                 if (request.Headers["Range"] != null)
                 {
                     var rangeHeader = request.Headers["Range"];
@@ -304,61 +254,29 @@ namespace Nyaa_Streamer
                     end = range.Length > 1 && !string.IsNullOrEmpty(range[1]) ? long.Parse(range[1]) : end;
                 }
 
-                // Ensure the start and end are within the file length
                 start = Math.Max(start, 0);
-                end = Math.Min(end, torrentFile.Length - 1);
+                end = Math.Min(end, manager.Files.First().Length - 1);
 
-                // Set response status code and headers
                 response.StatusCode = (int)HttpStatusCode.PartialContent;
-                response.ContentType = "video/mp4"; // Adjust content type as needed
+                response.ContentType = "video/mp4";
                 response.Headers.Add("Accept-Ranges", "bytes");
-                response.Headers.Add("Content-Range", $"bytes {start}-{end}/{torrentFile.Length}");
+                response.Headers.Add("Content-Range", $"bytes {start}-{end}/{manager.Files.First().Length}");
                 response.ContentLength64 = end - start + 1;
 
-                for (int attempt = 0; attempt < maxRetries; attempt++)
+                using (var stream = await manager.StreamProvider.CreateStreamAsync(manager.Files.First(), prebuffer: true))
                 {
-                    try
+                    stream.Seek(start, SeekOrigin.Begin);
+                    var buffer = new byte[8192];
+                    int bytesRead;
+                    while ((bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length)) > 0)
                     {
-                        Debug.WriteLine($"Attempt {attempt + 1} to create stream for {torrentFile.FullPath}");
-                        using (var stream = await manager!.StreamProvider.CreateStreamAsync(torrentFile, prebuffer: true))
-                        {
-                            Debug.WriteLine("Stream created successfully.");
-                            // Seek to the start position
-                            stream.Seek(start, SeekOrigin.Begin);
-
-                            // Copy the required range of bytes to the response
-                            var buffer = new byte[8192];
-                            long bytesToRead = end - start + 1;
-                            int bytesRead;
-
-                            while (bytesToRead > 0 && (bytesRead = await stream.ReadAsync(buffer, 0, (int)Math.Min(buffer.Length, bytesToRead))) > 0)
-                            {
-                                await response.OutputStream.WriteAsync(buffer, 0, bytesRead);
-                                bytesToRead -= bytesRead;
-                            }
-
-                            Debug.WriteLine("File streamed successfully.");
-                        }
-                        return; // Successfully completed, exit the method
-                    }
-                    catch (IOException ioEx)
-                    {
-                        Debug.WriteLine($"File I/O error (attempt {attempt + 1}): {ioEx.Message}");
-
-                        if (attempt == maxRetries - 1)
-                        {
-                            Debug.WriteLine($"Max retries reached for {torrentFile.FullPath}. Throwing exception.");
-                            throw; // Re-throw the exception if it's the last attempt
-                        }
-
-                        // Wait before retrying
-                        await Task.Delay(delayBetweenRetries);
+                        await response.OutputStream.WriteAsync(buffer, 0, bytesRead);
                     }
                 }
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"An error occurred while streaming: {ex.Message}");
+                Debug.WriteLine($"File streaming error: {ex.Message}");
                 response.StatusCode = (int)HttpStatusCode.InternalServerError;
                 response.ContentType = "text/plain";
                 using (var writer = new StreamWriter(response.OutputStream))
@@ -366,19 +284,14 @@ namespace Nyaa_Streamer
                     await writer.WriteAsync("An error occurred while streaming the file.");
                 }
             }
-            finally
-            {
-                response.OutputStream.Close();
-            }
         }
+    }
 
-
-        private class TorrentDetails
-        {
-            public string Title { get; set; }
-            public string ViewLink { get; set; }
-            public string DownloadLink { get; set; }
-            public string MagnetLink { get; set; }
-        }
+    public class TorrentDetails
+    {
+        public string Title { get; set; }
+        public string ViewLink { get; set; }
+        public string DownloadLink { get; set; }
+        public string MagnetLink { get; set; }
     }
 }
