@@ -25,6 +25,7 @@ namespace Nyaa_Streamer
         {
             InitializeComponent();
             Directory.CreateDirectory(downloadDirectory);
+            //Navigation.PushAsync(new webViewPage());
 
             var engineSettings = new EngineSettingsBuilder()
             {
@@ -175,7 +176,10 @@ namespace Nyaa_Streamer
 
                 // Redirect to the media player page
                 await Task.Delay(1000); // Short delay to ensure HTTP server is up
-                await Navigation.PushAsync(new MediaPlayerPage("http://localhost:8888/"));
+                //await Navigation.PushAsync(new MediaPlayerPage("http://localhost:8888/"));
+                //webView.IsVisible = true;
+                Navigation.PushAsync(new webViewPage());
+
             }
             catch (Exception ex)
             {

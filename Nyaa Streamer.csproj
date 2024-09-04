@@ -135,6 +135,18 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Compile Update="webViewPage.xaml.cs">
+	    <DependentUpon>webViewPage.xaml</DependentUpon>
+	  </Compile>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <MauiXaml Update="webViewPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	</ItemGroup>
+
+	<ItemGroup>
 	  <None Update="backgroung.jpg">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>
