@@ -1,5 +1,7 @@
 
 // MediaPlayerPage.xaml.cs
+using System.Diagnostics;
+
 namespace Nyaa_Streamer
 {
     public partial class MediaPlayerPage : ContentPage
@@ -9,7 +11,8 @@ namespace Nyaa_Streamer
             InitializeComponent();
 
             // Set the media source URL to the MediaElement
-            mediaElement.Source = new Uri(mediaSourceUrl);
+            Debug.WriteLine("new Uri(mediaSourceUrl); " + mediaSourceUrl);
+            mediaElement.Source = mediaSourceUrl;
             mediaElement.Play();
         }
     }

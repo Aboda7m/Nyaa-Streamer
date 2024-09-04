@@ -25,7 +25,6 @@ namespace Nyaa_Streamer
         {
             InitializeComponent();
             Directory.CreateDirectory(downloadDirectory);
-            //Navigation.PushAsync(new webViewPage());
 
             var engineSettings = new EngineSettingsBuilder()
             {
@@ -176,10 +175,7 @@ namespace Nyaa_Streamer
 
                 // Redirect to the media player page
                 await Task.Delay(1000); // Short delay to ensure HTTP server is up
-                //await Navigation.PushAsync(new MediaPlayerPage("http://localhost:8888/"));
-                //webView.IsVisible = true;
-                Navigation.PushAsync(new webViewPage());
-
+                await Navigation.PushAsync(new MediaPlayerPage("http://localhost:8888/"));
             }
             catch (Exception ex)
             {
@@ -233,18 +229,23 @@ namespace Nyaa_Streamer
 
         private async Task HandleFileStreamingAsync(TorrentManager manager, HttpListenerResponse response, HttpListenerRequest request)
         {
-            Debug.WriteLine($"Handling file streaming for {manager.Files.First().FullPath}");
-
             try
             {
                 long start = 0;
                 long end = manager.Files.First().Length - 1;
-                if (request.Headers["Range"] != null)
+
+                var range = request.Headers["Range"];
+                if (range != null && range.StartsWith("bytes="))
                 {
-                    var rangeHeader = request.Headers["Range"];
-                    var range = rangeHeader.Replace("bytes=", "").Split('-');
-                    start = long.Parse(range[0]);
-                    end = range.Length > 1 && !string.IsNullOrEmpty(range[1]) ? long.Parse(range[1]) : end;
+                    var parts = range.Substring("bytes=".Length).Split('-');
+                    if (parts.Length > 0 && !string.IsNullOrEmpty(parts[0]))
+                    {
+                        start = long.Parse(parts[0]);
+                    }
+                    if (parts.Length > 1 && !string.IsNullOrEmpty(parts[1]))
+                    {
+                        end = long.Parse(parts[1]);
+                    }
                 }
 
                 start = Math.Max(start, 0);
@@ -278,6 +279,9 @@ namespace Nyaa_Streamer
                 }
             }
         }
+
+
+
 
 
 
