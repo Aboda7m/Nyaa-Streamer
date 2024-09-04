@@ -148,8 +148,6 @@ namespace Nyaa_Streamer
             return torrentDetails;
         }
 
-
-
         private async Task StartTorrentDownloadAndStreamAsync(string magnetLink)
         {
             try
@@ -171,7 +169,7 @@ namespace Nyaa_Streamer
                 Debug.WriteLine("Metadata received.");
 
                 // Start the HTTP server immediately
-                StartHttpServer(manager);
+                StartHttpServer();
 
                 // Redirect to the media player page
                 await Task.Delay(1000); // Short delay to ensure HTTP server is up
@@ -184,9 +182,7 @@ namespace Nyaa_Streamer
             }
         }
 
-
-
-        private void StartHttpServer(TorrentManager manager)
+        private void StartHttpServer()
         {
             HttpListener listener = new HttpListener();
             listener.Prefixes.Add("http://localhost:8888/");
@@ -208,7 +204,7 @@ namespace Nyaa_Streamer
                     {
                         try
                         {
-                            await HandleFileStreamingAsync(manager, response, request);
+                            await HandleFileStreamingAsync(response, request);
                         }
                         catch (Exception ex)
                         {
@@ -229,36 +225,41 @@ namespace Nyaa_Streamer
             });
         }
 
-        private async Task HandleFileStreamingAsync(TorrentManager manager, HttpListenerResponse response, HttpListenerRequest request)
+        private async Task HandleFileStreamingAsync(HttpListenerResponse response, HttpListenerRequest request)
         {
             try
             {
+                // Default range to stream the entire file
                 long start = 0;
                 long end = manager.Files.First().Length - 1;
 
-                var range = request.Headers["Range"];
-                if (range != null && range.StartsWith("bytes="))
+                // Parse the range header if present
+                var rangeHeader = request.Headers["Range"];
+                if (rangeHeader != null && rangeHeader.StartsWith("bytes="))
                 {
-                    var parts = range.Substring("bytes=".Length).Split('-');
-                    if (parts.Length > 0 && !string.IsNullOrEmpty(parts[0]))
+                    var rangeParts = rangeHeader.Substring("bytes=".Length).Split('-');
+                    if (rangeParts.Length > 0 && !string.IsNullOrEmpty(rangeParts[0]))
                     {
-                        start = long.Parse(parts[0]);
+                        start = long.Parse(rangeParts[0]);
                     }
-                    if (parts.Length > 1 && !string.IsNullOrEmpty(parts[1]))
+                    if (rangeParts.Length > 1 && !string.IsNullOrEmpty(rangeParts[1]))
                     {
-                        end = long.Parse(parts[1]);
+                        end = long.Parse(rangeParts[1]);
                     }
                 }
 
+                // Validate and adjust the range to be within the file bounds
                 start = Math.Max(start, 0);
                 end = Math.Min(end, manager.Files.First().Length - 1);
 
+                // Set the response headers for partial content
                 response.StatusCode = (int)HttpStatusCode.PartialContent;
                 response.ContentType = "video/mp4";
                 response.Headers.Add("Accept-Ranges", "bytes");
                 response.Headers.Add("Content-Range", $"bytes {start}-{end}/{manager.Files.First().Length}");
                 response.ContentLength64 = end - start + 1;
 
+                // Create a stream for the requested range
                 using (var stream = await manager.StreamProvider.CreateStreamAsync(manager.Files.First(), prebuffer: true))
                 {
                     stream.Seek(start, SeekOrigin.Begin);
@@ -281,21 +282,13 @@ namespace Nyaa_Streamer
                 }
             }
         }
-
-
-
-
-
-
-
-
     }
 
     public class TorrentDetails
     {
-        public string Title { get; set; }
-        public string ViewLink { get; set; }
-        public string DownloadLink { get; set; }
-        public string MagnetLink { get; set; }
+        public string? Title { get; set; }
+        public string? ViewLink { get; set; }
+        public string? DownloadLink { get; set; }
+        public string? MagnetLink { get; set; }
     }
 }
