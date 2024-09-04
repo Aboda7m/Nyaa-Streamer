@@ -1,82 +1,101 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              x:Class="Nyaa_Streamer.MainPage">
 
-    <ScrollView>
-        <VerticalStackLayout
-            Padding="30,10"
-            Spacing="20">
+    <Grid>
+        <!-- Background Image -->
+        <Grid>
+            <Image
+                x:Name="backgroundImage"
+                Source="backgroung.jpg"
+                Aspect="AspectFill"
+                HorizontalOptions="Start"/>
+        </Grid>
 
-            <!-- Anime Name Input Box -->
-            <Label
-                Text="Enter Anime Name:"
-                VerticalOptions="Center" />
+        <ScrollView>
+            <VerticalStackLayout
+                Padding="30,10"
+                Spacing="20">
 
-            <Entry
-                x:Name="AnimeNameEntry"
-                Placeholder="e.g. One Piece"
-                VerticalOptions="Center" />
-
-            <!-- Button to Trigger Search -->
-            <Button
-                x:Name="SearchBtn"
-                Text="Search"
-                Clicked="OnSearchButtonClicked"
-                VerticalOptions="Center" />
-
-            <!-- Results Display List -->
-            <Label
-                Text="Search Results:"
-                VerticalOptions="Center"
-                Margin="0,20,0,0" />
-
-            <ListView
-                x:Name="ResultsListView"
-                VerticalOptions="FillAndExpand"
-                SelectionMode="Single"
-                ItemSelected="OnResultSelected">
-                <!-- Define the template for displaying each item -->
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <TextCell Text="{Binding}" />
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
-
-            <!-- Button to Save Torrent Details -->
-            <Button
-                x:Name="SaveDetailsButton"
-                Text="Select Torrent"
-                IsEnabled="False"
-                Clicked="OnSaveDetailsButtonClicked"
-                VerticalOptions="End" />
-
-            <!-- Box to Display Torrent Details -->
-            <Frame
-                x:Name="DetailsFrame"
-                BackgroundColor="LightGray"
-                HasShadow="True"
-                Padding="10"
-                HeightRequest="100"
-                VerticalOptions="End"
-                Margin="0,10,0,0">
+                <!-- Anime Name Input Box -->
                 <Label
-                    x:Name="DetailsLabel"
-                    Text="Torrent details will be shown here"
+                    Text="Enter Anime Name:"
+                    TextColor="#FFF"
+                    VerticalOptions="Center" />
+
+                <Entry
+                    x:Name="AnimeNameEntry"
+                    Placeholder="e.g. One Piece"
+                    PlaceholderColor="#AAA"
+                    BackgroundColor="#444"
+                    TextColor="#FFF"
+                    VerticalOptions="Center" />
+
+                <!-- Button to Trigger Search -->
+                <Button
+                    x:Name="SearchBtn"
+                    Text="Search"
+                    BackgroundColor="#FF6F61"
+                    TextColor="#FFF"
+                    Clicked="OnSearchButtonClicked"
+                    VerticalOptions="Center" />
+
+                <!-- Results Display List -->
+                <Label
+                    Text="Search Results:"
+                    TextColor="#FFF"
+                    VerticalOptions="Center"
+                    Margin="0,20,0,0" />
+
+                <ListView
+                    x:Name="ResultsListView"
+                    BackgroundColor="#333"
+                    VerticalOptions="FillAndExpand"
+                    SelectionMode="Single"
+                    ItemSelected="OnResultSelected">
+                    <!-- Define the template for displaying each item -->
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <TextCell Text="{Binding}" TextColor="#FFF"/>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+
+                <!-- ProgressBar for Download Progress -->
+                <Label
+                    Text="Download Progress:"
+                    TextColor="#FFF"
+                    VerticalOptions="Center"
+                    Margin="0,20,0,0" />
+
+                <ProgressBar
+                    x:Name="DownloadProgressBar"
+                    Progress="0"
+                    IsVisible="False"
+                    BackgroundColor="#333"
+                    VerticalOptions="Center" />
+
+                <Label
+                    x:Name="DownloadPercentageLabel"
+                    Text="0%"
+                    IsVisible="False"
+                    TextColor="#FFF"
                     VerticalOptions="Center"
                     HorizontalOptions="Center" />
-            </Frame>
 
-            <!-- Button to Start Download -->
-            <Button
-                x:Name="DownloadButton"
-                Text="Start Playing"
-                IsEnabled="False"
-                Clicked="OnStartDownloadButtonClicked"
-                VerticalOptions="End" />
-
-        </VerticalStackLayout>
-    </ScrollView>
+                <!-- Button to Proceed with Selected -->
+                <Button
+                    x:Name="ProceedBtn"
+                    Text="Proceed with Selected"
+                    BackgroundColor="#4CAF50"
+                    TextColor="#FFF"
+                    IsEnabled="False"
+                    Clicked="OnProceedButtonClicked"
+                    VerticalOptions="End" />
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
 
 </ContentPage>
