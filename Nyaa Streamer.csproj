@@ -128,6 +128,7 @@
 	<ItemGroup>
 		<PackageReference Include="CommunityToolkit.Maui.MediaElement" Version="4.0.0" />
 		<PackageReference Include="HtmlAgilityPack" Version="1.11.65" />
+		<PackageReference Include="LibVLCSharp" Version="3.9.0" />
 		<PackageReference Include="Microsoft.Maui.Controls" Version="8.0.82" />
 		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="8.0.82" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0" />
