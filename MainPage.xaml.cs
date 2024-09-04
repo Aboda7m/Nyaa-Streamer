@@ -11,6 +11,7 @@ using System.Net;
 using System.Linq;
 using System.Diagnostics;
 
+
 namespace Nyaa_Streamer
 {
     public partial class MainPage : ContentPage
@@ -29,7 +30,8 @@ namespace Nyaa_Streamer
             var engineSettings = new EngineSettingsBuilder()
             {
                 CacheDirectory = Path.Combine(downloadDirectory, "cache"),
-                DiskCacheBytes = 512 * 1024 * 1024 // Increased cache size for better performance
+                DiskCacheBytes = 512 * 1024 * 1024 ,// Increased cache size for better performance
+                HttpStreamingPrefix = "http://localhost:8889/"
             }.ToSettings();
 
             engine = new ClientEngine(engineSettings);
@@ -169,8 +171,8 @@ namespace Nyaa_Streamer
                 Debug.WriteLine("Metadata received.");
 
                 // Start the HTTP server immediately
-                StartHttpServer();
-
+                var streamlink = await StartHttpServer(manager);
+                Task.Run(() => StartRedirectServer(streamlink));
                 // Redirect to the media player page
                 await Task.Delay(1000); // Short delay to ensure HTTP server is up
                 await Navigation.PushAsync(new MediaPlayerPage("http://localhost:8888/"));
@@ -182,106 +184,67 @@ namespace Nyaa_Streamer
             }
         }
 
-        private void StartHttpServer()
-        {
-            HttpListener listener = new HttpListener();
-            listener.Prefixes.Add("http://localhost:8888/");
-            listener.Start();
-
-            Debug.WriteLine("HTTP server started at http://localhost:8888/");
-
-            Task.Run(async () =>
-            {
-                while (true)
-                {
-                    var context = await listener.GetContextAsync();
-                    var request = context.Request;
-                    var response = context.Response;
-
-                    Debug.WriteLine($"Received request for {request.Url.AbsolutePath}");
-
-                    if (request.Url.AbsolutePath == "/")
-                    {
-                        try
-                        {
-                            await HandleFileStreamingAsync(response, request);
-                        }
-                        catch (Exception ex)
-                        {
-                            Debug.WriteLine($"Streaming error: {ex.Message}");
-                            response.StatusCode = (int)HttpStatusCode.InternalServerError;
-                            response.ContentType = "text/plain";
-                            using (var writer = new StreamWriter(response.OutputStream))
-                            {
-                                await writer.WriteAsync("An error occurred while streaming the file.");
-                            }
-                        }
-                        finally
-                        {
-                            response.OutputStream.Close();
-                        }
-                    }
-                }
-            });
-        }
-
-        private async Task HandleFileStreamingAsync(HttpListenerResponse response, HttpListenerRequest request)
+        private async Task<string> StartHttpServer(TorrentManager manager)
         {
             try
             {
-                // Default range to stream the entire file
-                long start = 0;
-                long end = manager.Files.First().Length - 1;
+                // Create the HTTP stream
+                var httpStream = await manager.StreamProvider.CreateHttpStreamAsync(manager.Files.First(), prebuffer: true);
 
-                // Parse the range header if present
-                var rangeHeader = request.Headers["Range"];
-                if (rangeHeader != null && rangeHeader.StartsWith("bytes="))
-                {
-                    var rangeParts = rangeHeader.Substring("bytes=".Length).Split('-');
-                    if (rangeParts.Length > 0 && !string.IsNullOrEmpty(rangeParts[0]))
-                    {
-                        start = long.Parse(rangeParts[0]);
-                    }
-                    if (rangeParts.Length > 1 && !string.IsNullOrEmpty(rangeParts[1]))
-                    {
-                        end = long.Parse(rangeParts[1]);
-                    }
-                }
+                // Log the URI to debug
+                Debug.WriteLine("Streaming media from: " + httpStream.FullUri);
 
-                // Validate and adjust the range to be within the file bounds
-                start = Math.Max(start, 0);
-                end = Math.Min(end, manager.Files.First().Length - 1);
+                // Wait for the HTTP stream to be ready
+                //await Task.Delay(10000); // Short delay to ensure HTTP server is up
 
-                // Set the response headers for partial content
-                response.StatusCode = (int)HttpStatusCode.PartialContent;
-                response.ContentType = "video/mp4";
-                response.Headers.Add("Accept-Ranges", "bytes");
-                response.Headers.Add("Content-Range", $"bytes {start}-{end}/{manager.Files.First().Length}");
-                response.ContentLength64 = end - start + 1;
+                // Redirect to the media player page
+                // This will need to be your actual implementation, e.g., setting the source of a WebView
+                //await Navigation.PushAsync(new webViewPage(httpStream.FullUri));
+                //await Navigation.PushAsync(new MediaPlayerPage(httpStream.FullUri));
+                //await Navigation.PushAsync(new webViewPage(httpStream.FullUri));
 
-                // Create a stream for the requested range
-                using (var stream = await manager.StreamProvider.CreateStreamAsync(manager.Files.First(), prebuffer: true))
-                {
-                    stream.Seek(start, SeekOrigin.Begin);
-                    var buffer = new byte[8192];
-                    int bytesRead;
-                    while ((bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length)) > 0)
-                    {
-                        await response.OutputStream.WriteAsync(buffer, 0, bytesRead);
-                    }
-                }
+                return httpStream.FullUri;
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"File streaming error: {ex.Message}");
-                response.StatusCode = (int)HttpStatusCode.InternalServerError;
-                response.ContentType = "text/plain";
-                using (var writer = new StreamWriter(response.OutputStream))
+                Debug.WriteLine($"FAILED TO CREATE HTTP STREAM: {ex.Message}");
+                Debug.WriteLine($"An error occurred: {ex.Message}");
+                await DisplayAlert("Error", $"An error occurred: {ex.Message}", "OK");
+                return null;
+            }
+        }
+
+        private void StartRedirectServer(string targetUrl)
+        {
+            var listener = new HttpListener();
+            listener.Prefixes.Add("http://localhost:8888/");
+            listener.Start();
+            Debug.WriteLine("Redirect server started at http://localhost:8888/");
+
+            while (true)
+            {
+                try
                 {
-                    await writer.WriteAsync("An error occurred while streaming the file.");
+                    var context = listener.GetContext();
+                    var response = context.Response;
+
+                    // Redirect to the target URL
+                    response.StatusCode = (int)HttpStatusCode.Redirect;
+                    response.RedirectLocation = targetUrl;
+                    response.Close();
+                }
+                catch (HttpListenerException ex)
+                {
+                    Debug.WriteLine($"HTTP Listener Exception: {ex.Message}");
+                    break;
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"General Exception: {ex.Message}");
                 }
             }
         }
+
     }
 
     public class TorrentDetails
