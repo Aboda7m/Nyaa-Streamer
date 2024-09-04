@@ -184,6 +184,8 @@ namespace Nyaa_Streamer
             }
         }
 
+
+
         private void StartHttpServer(TorrentManager manager)
         {
             HttpListener listener = new HttpListener();
@@ -279,6 +281,7 @@ namespace Nyaa_Streamer
                 }
             }
         }
+
 
 
 
