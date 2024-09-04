@@ -148,6 +148,8 @@ namespace Nyaa_Streamer
             return torrentDetails;
         }
 
+
+
         private async Task StartTorrentDownloadAndStreamAsync(string magnetLink)
         {
             try
@@ -168,24 +170,11 @@ namespace Nyaa_Streamer
                 await manager.WaitForMetadataAsync();
                 Debug.WriteLine("Metadata received.");
 
-                DownloadProgressBar.IsVisible = true;
-                DownloadPercentageLabel.IsVisible = true;
-
-                // Monitor progress and wait until a sufficient amount is downloaded
-                while (manager.Progress < 99)
-                {
-                    Debug.WriteLine($"Current download progress: {manager.Progress}%");
-                    MainThread.BeginInvokeOnMainThread(() =>
-                    {
-                        DownloadProgressBar.Progress = manager.Progress / 100;
-                        DownloadPercentageLabel.Text = $"{manager.Progress}%";
-                    });
-                    await Task.Delay(1000);
-                }
-
-                Debug.WriteLine("Download progress sufficient. Starting media player...");
+                // Start the HTTP server immediately
                 StartHttpServer(manager);
-                await Task.Delay(3000);
+
+                // Redirect to the media player page
+                await Task.Delay(1000); // Short delay to ensure HTTP server is up
                 await Navigation.PushAsync(new MediaPlayerPage("http://localhost:8888/"));
             }
             catch (Exception ex)
@@ -285,6 +274,10 @@ namespace Nyaa_Streamer
                 }
             }
         }
+
+
+
+
     }
 
     public class TorrentDetails
