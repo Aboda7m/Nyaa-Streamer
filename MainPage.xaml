@@ -85,15 +85,29 @@
                     VerticalOptions="Center"
                     HorizontalOptions="Center" />
 
-                <!-- Button to Proceed with Selected -->
+                <!-- Button to save with Selected -->
                 <Button
-                    x:Name="ProceedBtn"
-                    Text="Proceed with Selected"
+                    x:Name="SaveBtn"
+                    Text="Save Selected"
                     BackgroundColor="#4CAF50"
                     TextColor="#FFF"
                     IsEnabled="False"
-                    Clicked="OnProceedButtonClicked"
+                    Clicked="OnSaveButtonClicked"
                     VerticalOptions="End" />
+
+           
+
+                
+                <!-- Button to Start manager with Selected -->
+                <Button
+                    x:Name="ManagerBtn"
+                    Text="Start manager"
+                    BackgroundColor="#4CAF50"
+                    TextColor="#FFF"
+                    IsEnabled="True"
+                    Clicked="ShowManager"
+                    VerticalOptions="End" />    
+                
             </VerticalStackLayout>
         </ScrollView>
     </Grid>

@@ -11,6 +11,7 @@ using System.Net;
 using System.Linq;
 using System.Diagnostics;
 using Microsoft.Win32;
+//using Android.Net.Rtp;
 
 
 namespace Nyaa_Streamer
@@ -98,11 +99,11 @@ namespace Nyaa_Streamer
         {
             if (e.SelectedItem != null)
             {
-                ProceedBtn.IsEnabled = true;
+                SaveBtn.IsEnabled = true;
             }
         }
 
-        private async void OnProceedButtonClicked(object sender, EventArgs e)
+        private async void OnSaveButtonClicked(object sender, EventArgs e)
         {
             var selectedResult = ResultsListView.SelectedItem as string;
             if (selectedResult != null && resultsDictionary.TryGetValue(selectedResult, out var url))
@@ -110,7 +111,8 @@ namespace Nyaa_Streamer
                 var torrentDetails = await GetTorrentDetailsAsync(url);
                 if (torrentDetails != null && !string.IsNullOrEmpty(torrentDetails.MagnetLink))
                 {
-                    await StartTorrentDownloadAndStreamAsync(torrentDetails.MagnetLink);
+                    await StartTorrentDownloadAsync(torrentDetails.MagnetLink);
+                    ManagerBtn.IsEnabled = true;
                 }
                 else
                 {
@@ -118,6 +120,8 @@ namespace Nyaa_Streamer
                 }
             }
         }
+
+        
 
         private async Task<TorrentDetails> GetTorrentDetailsAsync(string url)
         {
@@ -153,7 +157,7 @@ namespace Nyaa_Streamer
             return torrentDetails;
         }
 
-        private async Task StartTorrentDownloadAndStreamAsync(string magnetLink)
+        private async Task StartTorrentDownloadAsync(string magnetLink)
         {
             try
             {
@@ -173,20 +177,9 @@ namespace Nyaa_Streamer
                 await manager.WaitForMetadataAsync();
                 Debug.WriteLine("Metadata received.");
 
-                // Start the HTTP server immediately
-                var streamlink = await StartHttpServer(manager);
-                Task.Run(() => StartRedirectServer(streamlink));
-                // Redirect to the media player page
-                await Task.Delay(1000); // Short delay to ensure HTTP server is up
-                                        //await Navigation.PushAsync(new MediaPlayerPage("http://localhost:8888/"));
-                                        //await Navigation.PushAsync(new webViewPage("http://localhost:8888/"));
-                                        //StartVlcProcess(); // Call the method to start VLC
 
-                #if WINDOWS
-                StartVlcProcess(); // Call the method to start VLC
-                #else
-                Debug.WriteLine("not windows");
-                #endif
+
+  
             }
             catch (Exception ex)
             {
@@ -195,122 +188,31 @@ namespace Nyaa_Streamer
             }
         }
 
-        private async Task<string> StartHttpServer(TorrentManager manager)
+
+        private async void ShowManager(object sender, EventArgs e)
         {
-            try
-            {
-                // Create the HTTP stream
-                var httpStream = await manager.StreamProvider.CreateHttpStreamAsync(manager.Files.First(), prebuffer: true);
+            // Example: Create a dictionary of torrents
+            var torrentsDictionary = new Dictionary<string, Torrent>();
 
-                // Log the URI to debug
-                Debug.WriteLine("Streaming media from: " + httpStream.FullUri);
+            // Populate the dictionary with some example torrents
+            // Replace this with actual torrent manager logic
+            torrentsDictionary.Add("Example Torrent 1", new Torrent { Title = "Example Torrent 1", Url = "http://example.com/torrent1" });
+            torrentsDictionary.Add("Example Torrent 2", new Torrent { Title = "Example Torrent 2", Url = "http://example.com/torrent2" });
 
-                // Wait for the HTTP stream to be ready
-                //await Task.Delay(10000); // Short delay to ensure HTTP server is up
-
-                // Redirect to the media player page
-                // This will need to be your actual implementation, e.g., setting the source of a WebView
-                //await Navigation.PushAsync(new webViewPage(httpStream.FullUri));
-                //await Navigation.PushAsync(new MediaPlayerPage(httpStream.FullUri));
-                //await Navigation.PushAsync(new webViewPage(httpStream.FullUri));
-
-                return httpStream.FullUri;
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"FAILED TO CREATE HTTP STREAM: {ex.Message}");
-                Debug.WriteLine($"An error occurred: {ex.Message}");
-                await DisplayAlert("Error", $"An error occurred: {ex.Message}", "OK");
-                return null;
-            }
-        }
-
-        private void StartRedirectServer(string targetUrl)
-        {
-            var listener = new HttpListener();
-            listener.Prefixes.Add("http://localhost:8888/");
-            listener.Start();
-            Debug.WriteLine("Redirect server started at http://localhost:8888/");
-
-            while (true)
-            {
-                try
-                {
-                    var context = listener.GetContext();
-                    var response = context.Response;
-
-                    // Redirect to the target URL
-                    response.StatusCode = (int)HttpStatusCode.Redirect;
-                    response.RedirectLocation = targetUrl;
-                    response.Close();
-                }
-                catch (HttpListenerException ex)
-                {
-                    Debug.WriteLine($"HTTP Listener Exception: {ex.Message}");
-                    break;
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine($"General Exception: {ex.Message}");
-                }
-            }
+            // Pass the dictionary to TorrentManagerPage
+            await Navigation.PushAsync(new TorrentManagerPage(torrentsDictionary));
         }
 
 
-        private string GetVlcPathFromRegistry()
-        {
-            try
-            {
-                // Open the registry key where VLC is installed
-                using (RegistryKey key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\VideoLAN\VLC"))
-                {
-                    if (key != null)
-                    {
-                        // Get the installation path
-                        object value = key.GetValue("InstallDir");
-                        if (value != null)
-                        {
-                            return System.IO.Path.Combine(value.ToString(), "vlc.exe");
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"Error reading registry: {ex.Message}");
-            }
 
-            return null;
-        }
-        private void StartVlcProcess()
-        {
-            try
-            {
-                // Lookup VLC path in registry
-                string vlcPath = GetVlcPathFromRegistry();
 
-                if (!string.IsNullOrEmpty(vlcPath))
-                {
-                    // Create a new process
-                    Process process = new Process();
-                    process.StartInfo.FileName = vlcPath;
-                    process.StartInfo.Arguments = "http://localhost:8888/";  // Add any command-line arguments if needed
-                    process.StartInfo.UseShellExecute = true; // Use shell execute to start the process
+       
 
-                    // Start the process
-                    process.Start();
-                }
-                else
-                {
-                    Debug.WriteLine("VLC not found in the registry.");
-                }
-            }
-            catch (Exception ex)
-            {
-                // Handle exceptions if VLC cannot be started
-                Debug.WriteLine($"Error starting VLC: {ex.Message}");
-            }
-        }
+        
+
+
+        
+        
 
 
     }
