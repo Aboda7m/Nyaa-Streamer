@@ -10,6 +10,7 @@ using System.IO;
 using System.Net;
 using System.Linq;
 using System.Diagnostics;
+using Microsoft.Win32;
 
 
 namespace Nyaa_Streamer
@@ -36,6 +37,8 @@ namespace Nyaa_Streamer
 
             engine = new ClientEngine(engineSettings);
             Debug.WriteLine("ClientEngine initialized.");
+
+            //StartVlcProcess(); // Call the method to start VLC
         }
 
         private async void OnSearchButtonClicked(object sender, EventArgs e)
@@ -175,7 +178,15 @@ namespace Nyaa_Streamer
                 Task.Run(() => StartRedirectServer(streamlink));
                 // Redirect to the media player page
                 await Task.Delay(1000); // Short delay to ensure HTTP server is up
-                await Navigation.PushAsync(new MediaPlayerPage("http://localhost:8888/"));
+                                        //await Navigation.PushAsync(new MediaPlayerPage("http://localhost:8888/"));
+                                        //await Navigation.PushAsync(new webViewPage("http://localhost:8888/"));
+                                        //StartVlcProcess(); // Call the method to start VLC
+
+                #if WINDOWS
+                StartVlcProcess(); // Call the method to start VLC
+                #else
+                Debug.WriteLine("not windows");
+                #endif
             }
             catch (Exception ex)
             {
@@ -244,6 +255,63 @@ namespace Nyaa_Streamer
                 }
             }
         }
+
+
+        private string GetVlcPathFromRegistry()
+        {
+            try
+            {
+                // Open the registry key where VLC is installed
+                using (RegistryKey key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\VideoLAN\VLC"))
+                {
+                    if (key != null)
+                    {
+                        // Get the installation path
+                        object value = key.GetValue("InstallDir");
+                        if (value != null)
+                        {
+                            return System.IO.Path.Combine(value.ToString(), "vlc.exe");
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error reading registry: {ex.Message}");
+            }
+
+            return null;
+        }
+        private void StartVlcProcess()
+        {
+            try
+            {
+                // Lookup VLC path in registry
+                string vlcPath = GetVlcPathFromRegistry();
+
+                if (!string.IsNullOrEmpty(vlcPath))
+                {
+                    // Create a new process
+                    Process process = new Process();
+                    process.StartInfo.FileName = vlcPath;
+                    process.StartInfo.Arguments = "http://localhost:8888/";  // Add any command-line arguments if needed
+                    process.StartInfo.UseShellExecute = true; // Use shell execute to start the process
+
+                    // Start the process
+                    process.Start();
+                }
+                else
+                {
+                    Debug.WriteLine("VLC not found in the registry.");
+                }
+            }
+            catch (Exception ex)
+            {
+                // Handle exceptions if VLC cannot be started
+                Debug.WriteLine($"Error starting VLC: {ex.Message}");
+            }
+        }
+
 
     }
 
