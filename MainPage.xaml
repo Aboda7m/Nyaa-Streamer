@@ -104,7 +104,7 @@
                     Text="Start manager"
                     BackgroundColor="#4CAF50"
                     TextColor="#FFF"
-                    IsEnabled="True"
+                    IsEnabled="False"
                     Clicked="ShowManager"
                     VerticalOptions="End" />    
                 

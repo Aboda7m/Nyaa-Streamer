@@ -192,15 +192,15 @@ namespace Nyaa_Streamer
         private async void ShowManager(object sender, EventArgs e)
         {
             // Example: Create a dictionary of torrents
-            var torrentsDictionary = new Dictionary<string, Torrent>();
+            //var torrentsDictionary = new Dictionary<string, Torrent>();
 
             // Populate the dictionary with some example torrents
             // Replace this with actual torrent manager logic
-            torrentsDictionary.Add("Example Torrent 1", new Torrent { Title = "Example Torrent 1", Url = "http://example.com/torrent1" });
-            torrentsDictionary.Add("Example Torrent 2", new Torrent { Title = "Example Torrent 2", Url = "http://example.com/torrent2" });
+            //torrentsDictionary.Add("Example Torrent 1", new Torrent { Title = "Example Torrent 1", Url = "http://example.com/torrent1" });
+            //torrentsDictionary.Add("Example Torrent 2", new Torrent { Title = "Example Torrent 2", Url = "http://example.com/torrent2" });
 
             // Pass the dictionary to TorrentManagerPage
-            await Navigation.PushAsync(new TorrentManagerPage(torrentsDictionary));
+            await Navigation.PushAsync(new TorrentManagerPage(manager));
         }
 
 

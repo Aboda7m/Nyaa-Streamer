@@ -5,32 +5,32 @@
 
     <Grid>
         <!-- Background Image -->
-        <Grid>
-            <Image
+        <Image
             x:Name="backgroundImage"
             Source="backgroung.jpg"
             Aspect="AspectFill"
-            HorizontalOptions="Start"/>
-        </Grid>
+            HorizontalOptions="FillAndExpand"
+            VerticalOptions="FillAndExpand"/>
+
         <ScrollView>
             <StackLayout Padding="20">
-        <!-- ListView for selecting torrents -->
-        <ListView x:Name="TorrentsListView"
-                  SelectionMode="Single"
-                  ItemSelected="OnTorrentSelected">
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <TextCell Text="{Binding Title}" />
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
+                <!-- ListView for displaying torrent files -->
+                <ListView x:Name="TorrentFilesListView"
+                          SelectionMode="Single"
+                          ItemSelected="OnFileSelected">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <TextCell Text="{Binding FileName}" Detail="{Binding Size}" />
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
 
-        <!-- Button to start streaming -->
-        <Button x:Name="StreamButton"
-                Text="Start Stream"
-                IsEnabled="False"
-                Clicked="OnStreamButtonClicked" />
-    </StackLayout>
+                <!-- Button to start streaming -->
+                <Button x:Name="StreamButton"
+                        Text="Start Stream"
+                        IsEnabled="False"
+                        Clicked="OnStreamButtonClicked" />
+            </StackLayout>
         </ScrollView>
     </Grid>
 </ContentPage>
