@@ -18,13 +18,13 @@ namespace Nyaa_Streamer
         public ObservableCollection<TorrentFile> TorrentFiles { get; set; }
         private TorrentManager manager;
 
-        public TorrentManagerPage(TorrentManager manager)
+        public TorrentManagerPage(TorrentManager manager, ObservableCollection<TorrentFile> TorrentFiles2)
         {
             InitializeComponent();
             this.manager = manager;
 
             // Initialize the ObservableCollection for torrent files
-            TorrentFiles = new ObservableCollection<TorrentFile>();
+            TorrentFiles = TorrentFiles2;
 
             // Load torrent files
             LoadTorrentFiles();
@@ -37,7 +37,7 @@ namespace Nyaa_Streamer
             //await manager.WaitForMetadataAsync();
 
             // Clear existing items
-            TorrentFiles.Clear();
+            //TorrentFiles.Clear();
             Debug.WriteLine("      TorrentFiles.Clear();: ");
 
             // Populate the list of files

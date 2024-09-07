@@ -128,6 +128,8 @@
 		<MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
 	</ItemGroup>
 
+	
+	
 
 
 	<ItemGroup>
@@ -171,6 +173,12 @@
 	  </PackageReference>
 	</ItemGroup>
 
+	<ItemGroup Condition="'$(TargetFramework)' == 'net8.0-android34.0'">
+		<Page Include="LibVLCSharpPage.xaml" />
+	</ItemGroup>
+
 	
+
+
 
 </Project>
