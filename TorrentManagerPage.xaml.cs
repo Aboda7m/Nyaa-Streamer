@@ -83,7 +83,11 @@ namespace Nyaa_Streamer
             StartRedirectServer(streamLink);
 
             // Start VLC or other media player
+#if WINDOWS
             StartVlcProcess();
+#else
+            await Navigation.PushAsync(new LibVLCSharpPage());
+#endif
         }
 
 

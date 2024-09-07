@@ -1,6 +1,9 @@
 ﻿using Microsoft.Extensions.Logging;
 using CommunityToolkit.Maui;
-
+using LibVLCSharp;
+#if ANDROID
+using LibVLCSharp.MAUI;
+#endif
 namespace Nyaa_Streamer
 {
     public static class MauiProgram
@@ -11,6 +14,9 @@ namespace Nyaa_Streamer
             builder
                 .UseMauiApp<App>()
                 .UseMauiCommunityToolkitMediaElement()
+#if ANDROID
+                .UseLibVLCSharp()
+#endif
                 .ConfigureFonts(fonts =>
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
