@@ -1,8 +1,5 @@
 ﻿using LibVLCSharp;
-using System;
 using System.ComponentModel;
-using System.Windows.Input;
-using Microsoft.Maui.Controls;
 
 namespace Nyaa_Streamer
 {
@@ -13,9 +10,6 @@ namespace Nyaa_Streamer
         public MainViewModel()
         {
             Initialize();
-            PlayCommand = new Command(OnPlay);
-            PauseCommand = new Command(OnPause);
-            StopCommand = new Command(OnStop);
         }
 
         private LibVLCSharp.Shared.LibVLC LibVLC { get; set; }
@@ -29,10 +23,6 @@ namespace Nyaa_Streamer
 
         private bool IsLoaded { get; set; }
         private bool IsVideoViewInitialized { get; set; }
-
-        public ICommand PlayCommand { get; }
-        public ICommand PauseCommand { get; }
-        public ICommand StopCommand { get; }
 
         private void Set<T>(string propertyName, ref T field, T value)
         {
@@ -78,21 +68,6 @@ namespace Nyaa_Streamer
             {
                 MediaPlayer.Play();
             }
-        }
-
-        private void OnPlay()
-        {
-            MediaPlayer?.Play();
-        }
-
-        private void OnPause()
-        {
-            MediaPlayer?.Pause();
-        }
-
-        private void OnStop()
-        {
-            MediaPlayer?.Stop();
         }
     }
 }

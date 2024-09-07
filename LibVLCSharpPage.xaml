@@ -8,30 +8,9 @@
         <local:MainViewModel />
     </ContentPage.BindingContext>
 
-    <Grid>
-        <!-- SurfaceView for video playback -->
-        <shared:VideoView x:Name="VideoView"
-                          MediaPlayer="{Binding MediaPlayer}"
-                          MediaPlayerChanged="VideoView_MediaPlayerChanged"
-                          HorizontalOptions="FillAndExpand"
-                          VerticalOptions="FillAndExpand" />
-
-        <!-- Playback controls -->
-        <StackLayout Orientation="Horizontal"
-                     HorizontalOptions="Center"
-                     VerticalOptions="End"
-                     Padding="10">
-            <Button Text="Play"
-                    Command="{Binding PlayCommand}" />
-
-            <Button Text="Pause"
-                    Command="{Binding PauseCommand}"
-                    Margin="10,0,0,0" />
-
-            <Button Text="Stop"
-                    Command="{Binding StopCommand}"
-                    Margin="10,0,0,0" />
-        </StackLayout>
-    </Grid>
-
+    <shared:VideoView x:Name="VideoView" 
+                      MediaPlayer="{Binding MediaPlayer}" 
+                      MediaPlayerChanged="VideoView_MediaPlayerChanged"  
+                      HorizontalOptions="FillAndExpand" 
+                      VerticalOptions="FillAndExpand"/>
 </ContentPage>

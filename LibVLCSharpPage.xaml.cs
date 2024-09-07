@@ -32,5 +32,4 @@ namespace Nyaa_Streamer
         }
     }
 }
-
 #endif
