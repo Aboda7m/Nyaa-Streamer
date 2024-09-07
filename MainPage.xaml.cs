@@ -11,7 +11,6 @@ using System.Net;
 using System.Linq;
 using System.Diagnostics;
 using Microsoft.Win32;
-using System.Collections.ObjectModel;
 //using Android.Net.Rtp;
 
 
@@ -24,7 +23,6 @@ namespace Nyaa_Streamer
         private string downloadDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"downloads");
         private ClientEngine engine;
         private TorrentManager? manager;
-        private ObservableCollection<TorrentFile> TorrentFiles2 = new ObservableCollection<TorrentFile>();
 
         public MainPage()
         {
@@ -202,7 +200,7 @@ namespace Nyaa_Streamer
             //torrentsDictionary.Add("Example Torrent 2", new Torrent { Title = "Example Torrent 2", Url = "http://example.com/torrent2" });
 
             // Pass the dictionary to TorrentManagerPage
-            await Navigation.PushAsync(new TorrentManagerPage(manager, TorrentFiles2));
+            await Navigation.PushAsync(new TorrentManagerPage(manager));
         }
 
 

@@ -1,17 +1,37 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<On Platform="Android">
-
-    <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:shared="clr-namespace:LibVLCSharp.MAUI;assembly=LibVLCSharp.MAUI"
              xmlns:local="clr-namespace:Nyaa_Streamer"
              x:Class="Nyaa_Streamer.LibVLCSharpPage">
-        <ContentPage.BindingContext>
-            <local:MainViewModel />
-        </ContentPage.BindingContext>
+    <ContentPage.BindingContext>
+        <local:MainViewModel />
+    </ContentPage.BindingContext>
 
-        <shared:VideoView x:Name="VideoView" MediaPlayer="{Binding MediaPlayer}" MediaPlayerChanged="VideoView_MediaPlayerChanged"  HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"/>
-		
+    <Grid>
+        <!-- SurfaceView for video playback -->
+        <shared:VideoView x:Name="VideoView"
+                          MediaPlayer="{Binding MediaPlayer}"
+                          MediaPlayerChanged="VideoView_MediaPlayerChanged"
+                          HorizontalOptions="FillAndExpand"
+                          VerticalOptions="FillAndExpand" />
 
-    </ContentPage>
-</On>
+        <!-- Playback controls -->
+        <StackLayout Orientation="Horizontal"
+                     HorizontalOptions="Center"
+                     VerticalOptions="End"
+                     Padding="10">
+            <Button Text="Play"
+                    Command="{Binding PlayCommand}" />
+
+            <Button Text="Pause"
+                    Command="{Binding PauseCommand}"
+                    Margin="10,0,0,0" />
+
+            <Button Text="Stop"
+                    Command="{Binding StopCommand}"
+                    Margin="10,0,0,0" />
+        </StackLayout>
+    </Grid>
+
+</ContentPage>
