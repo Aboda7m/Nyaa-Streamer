@@ -21,9 +21,10 @@
                      Orientation="Horizontal"
                      BackgroundColor="Black"
                      Padding="10"
-                     Spacing="10"
-                     HorizontalOptions="FillAndExpand"
+                     Spacing="20"
+                     HorizontalOptions="CenterAndExpand"
                      VerticalOptions="End"
+                     Scale="{Binding Source={x:Reference VideoView}, Path=Width, Converter={StaticResource ScaleConverter}}"
                      IsVisible="False">
 
             <Button x:Name="SeekBackwardButton"
@@ -43,6 +44,12 @@
                     TextColor="White"
                     BackgroundColor="Transparent"
                     Clicked="OnSeekForwardClicked" />
+
+            <Button x:Name="FullscreenButton"
+                    Text="⛶"
+                    TextColor="White"
+                    BackgroundColor="Transparent"
+                    Clicked="OnFullscreenButtonClicked" />
         </StackLayout>
     </Grid>
 </ContentPage>
