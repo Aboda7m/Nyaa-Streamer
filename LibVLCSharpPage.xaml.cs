@@ -3,21 +3,20 @@
 using LibVLCSharp.Shared;
 using LibVLCSharp.MAUI;
 using System.Diagnostics;
-using Microsoft.Maui.Controls;
-using System.Threading.Tasks;
 
 namespace Nyaa_Streamer
 {
     public partial class LibVLCSharpPage : ContentPage
     {
-        private bool _isPlaying = true; // Assume video starts playing
-        private const int AnimationDuration = 500; // Duration for fade-in/out animation
-        private const int ControlBarTimeout = 3000; // Time in milliseconds to hide the control bar
+        private bool _isPlaying = false;
 
         public LibVLCSharpPage()
         {
             InitializeComponent();
-            Debug.WriteLine("public LibVLCSharpPage()\r\n        {\r\n            InitializeComponent();");
+
+            var tapGestureRecognizer = new TapGestureRecognizer();
+            tapGestureRecognizer.Tapped += OnScreenTapped;
+            VideoView.GestureRecognizers.Add(tapGestureRecognizer);
         }
 
         protected override void OnAppearing()
@@ -37,41 +36,46 @@ namespace Nyaa_Streamer
             ((MainViewModel)BindingContext).OnVideoViewInitialized();
         }
 
-        private void OnPlayPauseClicked(object sender, EventArgs e)
+        private void OnScreenTapped(object sender, EventArgs e)
         {
-            _isPlaying = !_isPlaying;
+            ControlBar.IsVisible = !ControlBar.IsVisible;
 
+            if (ControlBar.IsVisible)
+            {
+                Device.StartTimer(TimeSpan.FromSeconds(3), () =>
+                {
+                    ControlBar.IsVisible = false;
+                    return false; // Stops the timer
+                });
+            }
+        }
+
+        private void OnPlayPauseButtonClicked(object sender, EventArgs e)
+        {
             if (_isPlaying)
             {
-                VideoView.MediaPlayer.Play();
-                ((Button)sender).Text = "Pause";
+                ((MainViewModel)BindingContext).MediaPlayer.Pause();
+                PlayPauseButton.Text = "▶";
             }
             else
             {
-                VideoView.MediaPlayer.Pause();
-                ((Button)sender).Text = "Play";
+                ((MainViewModel)BindingContext).MediaPlayer.Play();
+                PlayPauseButton.Text = "⏸";
             }
 
-            // Hide the control bar after a delay
-            HideControlBarWithDelay();
+            _isPlaying = !_isPlaying;
         }
 
-        private async void OnScreenTapped(object sender, EventArgs e)
+        private void OnSeekBackwardClicked(object sender, EventArgs e)
         {
-            // Show the control bar
-            await ControlBar.FadeTo(1, AnimationDuration);
-
-            // Hide the control bar after a delay
-            HideControlBarWithDelay();
+            var mediaPlayer = ((MainViewModel)BindingContext).MediaPlayer;
+            mediaPlayer.Time -= 10000; // Seek backward 10 seconds
         }
 
-        private async void HideControlBarWithDelay()
+        private void OnSeekForwardClicked(object sender, EventArgs e)
         {
-            // Wait for the specified timeout
-            await Task.Delay(ControlBarTimeout);
-
-            // Fade out the control bar
-            await ControlBar.FadeTo(0, AnimationDuration);
+            var mediaPlayer = ((MainViewModel)BindingContext).MediaPlayer;
+            mediaPlayer.Time += 10000; // Seek forward 10 seconds
         }
     }
 }
