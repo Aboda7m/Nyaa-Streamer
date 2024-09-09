@@ -8,9 +8,32 @@
         <local:MainViewModel />
     </ContentPage.BindingContext>
 
-    <shared:VideoView x:Name="VideoView" 
-                      MediaPlayer="{Binding MediaPlayer}" 
-                      MediaPlayerChanged="VideoView_MediaPlayerChanged"  
-                      HorizontalOptions="FillAndExpand" 
-                      VerticalOptions="FillAndExpand"/>
+    <Grid>
+        <!-- VideoView to display the video -->
+        <shared:VideoView x:Name="VideoView" 
+                          MediaPlayer="{Binding MediaPlayer}" 
+                          MediaPlayerChanged="VideoView_MediaPlayerChanged"  
+                          HorizontalOptions="FillAndExpand" 
+                          VerticalOptions="FillAndExpand">
+            <!-- TapGestureRecognizer for detecting taps on the VideoView -->
+            <shared:VideoView.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnScreenTapped" />
+            </shared:VideoView.GestureRecognizers>
+        </shared:VideoView>
+
+        <!-- Control Bar -->
+        <Grid x:Name="ControlBar"
+              BackgroundColor="Black"
+              Opacity="0"
+              HorizontalOptions="FillAndExpand"
+              VerticalOptions="End"
+              HeightRequest="60"
+              Margin="0,0,0,20">
+            <!-- Add controls like play/pause buttons here -->
+            <Button Text="Play"
+                    HorizontalOptions="Center"
+                    VerticalOptions="Center"
+                    Clicked="OnPlayPauseClicked"/>
+        </Grid>
+    </Grid>
 </ContentPage>
