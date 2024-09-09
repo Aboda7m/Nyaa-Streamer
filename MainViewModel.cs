@@ -1,4 +1,5 @@
-﻿using LibVLCSharp;
+﻿using LibVLCSharp.Shared;
+using System;
 using System.ComponentModel;
 
 namespace Nyaa_Streamer
@@ -12,7 +13,7 @@ namespace Nyaa_Streamer
             Initialize();
         }
 
-        private LibVLCSharp.Shared.LibVLC LibVLC { get; set; }
+        private LibVLC LibVLC { get; set; }
 
         private LibVLCSharp.Shared.MediaPlayer _mediaPlayer;
         public LibVLCSharp.Shared.MediaPlayer MediaPlayer
@@ -20,6 +21,8 @@ namespace Nyaa_Streamer
             get => _mediaPlayer;
             private set => Set(nameof(MediaPlayer), ref _mediaPlayer, value);
         }
+
+        private MediaPlayerElementManager _manager;
 
         private bool IsLoaded { get; set; }
         private bool IsVideoViewInitialized { get; set; }
@@ -35,13 +38,12 @@ namespace Nyaa_Streamer
 
         private void Initialize()
         {
-            LibVLC = new LibVLCSharp.Shared.LibVLC(enableDebugLogs: true);
-            using var media = new LibVLCSharp.Shared.Media(LibVLC, new Uri("http://localhost:8888/"));
+            LibVLC = new LibVLC(enableDebugLogs: true);
+            MediaPlayer = new LibVLCSharp.Shared.MediaPlayer(LibVLC);
+            _manager = new MediaPlayerElementManager(MediaPlayer);
 
-            MediaPlayer = new LibVLCSharp.Shared.MediaPlayer(LibVLC)
-            {
-                Media = media
-            };
+            using var media = new Media(LibVLC, new Uri("http://localhost:8888/"));
+            MediaPlayer.Media = media;
         }
 
         public void OnAppearing()
@@ -52,7 +54,8 @@ namespace Nyaa_Streamer
 
         internal void OnDisappearing()
         {
-            MediaPlayer.Dispose();
+            MediaPlayer.Stop();
+            _manager?.Dispose();
             LibVLC.Dispose();
         }
 
