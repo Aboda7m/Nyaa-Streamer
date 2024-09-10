@@ -27,7 +27,13 @@
                   VerticalOptions="End"
                   HorizontalOptions="FillAndExpand"
                   IsVisible="False"
+                  RowSpacing="10"
                   ColumnSpacing="10">
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
 
                 <!-- Empty Columns for spacing -->
                 <Grid.ColumnDefinitions>
@@ -40,8 +46,23 @@
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
 
+                <!-- Progress Bar -->
+                <Slider x:Name="ProgressBar"
+                        Grid.Row="0"
+                        Grid.Column="0"
+                        Grid.ColumnSpan="7"
+                        Minimum="0"
+                        Maximum="{Binding MediaPlayer.Length, Mode=OneWay}"
+                        Value="{Binding MediaPlayer.Time, Mode=TwoWay}"
+                        BackgroundColor="Transparent"
+                        ThumbColor="White"
+                        MaximumTrackColor="Gray"
+                        MinimumTrackColor="White"
+                        DragCompleted="OnProgressBarDragCompleted" />
+
                 <!-- Buttons centered in the middle columns -->
                 <Button x:Name="SeekBackwardButton"
+                        Grid.Row="1"
                         Grid.Column="2"
                         Text="⏪"
                         TextColor="White"
@@ -49,6 +70,7 @@
                         Clicked="OnSeekBackwardClicked" />
 
                 <Button x:Name="PlayPauseButton"
+                        Grid.Row="1"
                         Grid.Column="3"
                         Text="▶"
                         TextColor="White"
@@ -56,6 +78,7 @@
                         Clicked="OnPlayPauseButtonClicked" />
 
                 <Button x:Name="SeekForwardButton"
+                        Grid.Row="1"
                         Grid.Column="4"
                         Text="⏩"
                         TextColor="White"
@@ -63,19 +86,20 @@
                         Clicked="OnSeekForwardClicked" />
 
                 <Button x:Name="SkipOpeningButton"
+                        Grid.Row="1"
                         Grid.Column="5"
                         Text="⏭️"    
                         TextColor="White"
                         BackgroundColor="Transparent"
                         Clicked="OnSkipOpeningClicked" />
-                
+
                 <Button x:Name="UnSkipOpeningButton"
+                        Grid.Row="1"
                         Grid.Column="1"
                         Text="⏭️"    
                         TextColor="White"
                         BackgroundColor="Transparent"
                         Clicked="OnUnSkipOpeningClicked" />
-                
 
             </Grid>
         </Grid>

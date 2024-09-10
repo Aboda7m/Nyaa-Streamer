@@ -9,6 +9,7 @@ namespace Nyaa_Streamer
     public partial class LibVLCSharpPage : ContentPage
     {
         private bool _isPlaying = false;
+        private bool _isDragging = false;
 
         public LibVLCSharpPage()
         {
@@ -17,6 +18,9 @@ namespace Nyaa_Streamer
             var tapGestureRecognizer = new TapGestureRecognizer();
             tapGestureRecognizer.Tapped += OnScreenTapped;
             VideoView.GestureRecognizers.Add(tapGestureRecognizer);
+
+            // Start updating the progress bar
+            Device.StartTimer(TimeSpan.FromMilliseconds(500), UpdateProgressBar);
         }
 
         protected override void OnAppearing()
@@ -52,14 +56,16 @@ namespace Nyaa_Streamer
 
         private void OnPlayPauseButtonClicked(object sender, EventArgs e)
         {
+            var mediaPlayer = ((MainViewModel)BindingContext).MediaPlayer;
+
             if (_isPlaying)
             {
-                ((MainViewModel)BindingContext).MediaPlayer.Pause();
+                mediaPlayer?.Pause();
                 PlayPauseButton.Text = "▶";
             }
             else
             {
-                ((MainViewModel)BindingContext).MediaPlayer.Play();
+                mediaPlayer?.Play();
                 PlayPauseButton.Text = "⏸";
             }
 
@@ -87,7 +93,44 @@ namespace Nyaa_Streamer
         private void OnUnSkipOpeningClicked(object sender, EventArgs e)
         {
             var mediaPlayer = ((MainViewModel)BindingContext).MediaPlayer;
-            mediaPlayer.Time -= 90000; // Skip forward 90 seconds
+            mediaPlayer.Time -= 90000; // Skip backward 90 seconds
+        }
+
+        private void OnProgressBarDragStarted(object sender, EventArgs e)
+        {
+            _isDragging = true; // Pause progress updates during drag
+        }
+
+        private void OnProgressBarDragCompleted(object sender, EventArgs e)
+        {
+            var mediaPlayer = ((MainViewModel)BindingContext).MediaPlayer;
+
+            if (mediaPlayer?.Media != null)
+            {
+                long newTime = (long)(ProgressBar.Value * mediaPlayer.Length);
+                mediaPlayer.Time = newTime;
+            }
+
+            _isDragging = false; // Resume progress updates after drag
+        }
+
+        private bool UpdateProgressBar()
+        {
+            var mediaPlayer = ((MainViewModel)BindingContext).MediaPlayer;
+
+            if (!_isDragging && mediaPlayer?.Media != null)
+            {
+                ProgressBar.Maximum = 1;
+
+                // Prevent setting ProgressBar.Value if it would not change
+                double currentValue = (double)mediaPlayer.Time / mediaPlayer.Length;
+                if (ProgressBar.Value != currentValue)
+                {
+                    ProgressBar.Value = currentValue;
+                }
+            }
+
+            return mediaPlayer?.IsPlaying ?? false; // Only continue updating if media is playing
         }
     }
 }
