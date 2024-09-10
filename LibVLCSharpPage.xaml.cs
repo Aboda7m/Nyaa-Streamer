@@ -77,6 +77,18 @@ namespace Nyaa_Streamer
             var mediaPlayer = ((MainViewModel)BindingContext).MediaPlayer;
             mediaPlayer.Time += 10000; // Seek forward 10 seconds
         }
+
+        private void OnSkipOpeningClicked(object sender, EventArgs e)
+        {
+            var mediaPlayer = ((MainViewModel)BindingContext).MediaPlayer;
+            mediaPlayer.Time += 90000; // Skip forward 90 seconds
+        }
+
+        private void OnUnSkipOpeningClicked(object sender, EventArgs e)
+        {
+            var mediaPlayer = ((MainViewModel)BindingContext).MediaPlayer;
+            mediaPlayer.Time -= 90000; // Skip forward 90 seconds
+        }
     }
 }
 #endif
