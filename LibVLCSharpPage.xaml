@@ -3,14 +3,57 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:shared="clr-namespace:LibVLCSharp.MAUI;assembly=LibVLCSharp.MAUI"
              xmlns:local="clr-namespace:Nyaa_Streamer"
-             x:Class="Nyaa_Streamer.LibVLCSharpPage">
+             x:Class="Nyaa_Streamer.LibVLCSharpPage"             
+			 BackgroundColor="Black">
+
     <ContentPage.BindingContext>
         <local:MainViewModel />
     </ContentPage.BindingContext>
 
-    <shared:VideoView x:Name="VideoView" 
-                      MediaPlayer="{Binding MediaPlayer}" 
-                      MediaPlayerChanged="VideoView_MediaPlayerChanged"  
-                      HorizontalOptions="FillAndExpand" 
-                      VerticalOptions="FillAndExpand"/>
+    <Grid>
+        <shared:VideoView x:Name="VideoView"
+                          MediaPlayer="{Binding MediaPlayer}"
+                          MediaPlayerChanged="VideoView_MediaPlayerChanged"
+                          HorizontalOptions="FillAndExpand"
+                          VerticalOptions="FillAndExpand" />
+
+        <StackLayout x:Name="ControlBar"
+                     Orientation="Horizontal"
+                     BackgroundColor="Black"
+                     Padding="10"
+                     Spacing="20"
+                     HorizontalOptions="CenterAndExpand"
+                     VerticalOptions="End"
+                     Scale="{Binding Source={x:Reference VideoView}, Path=Width, Converter={StaticResource ScaleConverter}}"
+                     IsVisible="False">
+
+            <Button x:Name="SeekBackwardButton"
+                    Text="⏪"
+                    TextColor="White"
+                    BackgroundColor="Transparent"
+                    Clicked="OnSeekBackwardClicked" />
+
+            <Button x:Name="PlayPauseButton"
+                    Text="▶"
+                    TextColor="White"
+                    BackgroundColor="Transparent"
+                    Clicked="OnPlayPauseButtonClicked" />
+
+            <Button x:Name="SeekForwardButton"
+                    Text="⏩"
+                    TextColor="White"
+                    BackgroundColor="Transparent"
+                    Clicked="OnSeekForwardClicked" />
+
+            <Button x:Name="FullscreenButton"
+                    Text="⛶"
+                    TextColor="White"
+                    BackgroundColor="Transparent"
+                    Clicked="OnFullscreenButtonClicked" />
+        </StackLayout>
+    </Grid>
+			 
+			 
+			 
+			 
 </ContentPage>

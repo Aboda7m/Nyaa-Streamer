@@ -39,7 +39,10 @@ namespace Nyaa_Streamer
             engine = new ClientEngine(engineSettings);
             Debug.WriteLine("ClientEngine initialized.");
 
+
             //StartVlcProcess(); // Call the method to start VLC
+            //test ;obvlc
+            Navigation.PushAsync(new LibVLCSharpPage());
         }
 
         private async void OnSearchButtonClicked(object sender, EventArgs e)
