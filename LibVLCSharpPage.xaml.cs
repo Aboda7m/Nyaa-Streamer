@@ -121,8 +121,6 @@ namespace Nyaa_Streamer
             if (!_isDragging && mediaPlayer?.Media != null)
             {
                 ProgressBar.Maximum = 1;
-
-                // Prevent setting ProgressBar.Value if it would not change
                 double currentValue = (double)mediaPlayer.Time / mediaPlayer.Length;
                 if (ProgressBar.Value != currentValue)
                 {
@@ -130,8 +128,10 @@ namespace Nyaa_Streamer
                 }
             }
 
-            return mediaPlayer?.IsPlaying ?? false; // Only continue updating if media is playing
+            // Return true to ensure the timer continues updating the progress bar for testing
+            return true;
         }
+
     }
 }
 #endif

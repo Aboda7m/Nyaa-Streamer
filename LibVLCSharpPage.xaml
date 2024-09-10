@@ -53,7 +53,7 @@
                         Grid.ColumnSpan="7"
                         Minimum="0"
                         Maximum="{Binding MediaPlayer.Length, Mode=OneWay}"
-                        Value="{Binding MediaPlayer.Time, Mode=TwoWay}"
+                        Value="0"
                         BackgroundColor="Transparent"
                         ThumbColor="White"
                         MaximumTrackColor="Gray"
@@ -72,7 +72,7 @@
                 <Button x:Name="PlayPauseButton"
                         Grid.Row="1"
                         Grid.Column="3"
-                        Text="▶"
+                        Text="⏸▶"
                         TextColor="White"
                         BackgroundColor="Transparent"
                         Clicked="OnPlayPauseButtonClicked" />
