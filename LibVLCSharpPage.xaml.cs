@@ -61,12 +61,13 @@ namespace Nyaa_Streamer
             if (_isPlaying)
             {
                 mediaPlayer?.Pause();
-                PlayPauseButton.Text = "▶";
+                //PlayPauseButton.Text = "▶";
+                PlayPauseButton.Source = "Play.png";
             }
             else
             {
                 mediaPlayer?.Play();
-                PlayPauseButton.Text = "⏸";
+                PlayPauseButton.Source = "Pause.png";
             }
 
             _isPlaying = !_isPlaying;

@@ -69,11 +69,12 @@
                         BackgroundColor="Transparent"
                         Clicked="OnSeekBackwardClicked" />
 
-                <Button x:Name="PlayPauseButton"
+                <ImageButton x:Name="PlayPauseButton"
                         Grid.Row="1"
                         Grid.Column="3"
-                        Text="⏸▶"
-                        TextColor="White"
+                        Source="play.png"
+                        WidthRequest="30"
+                        HeightRequest="30"
                         BackgroundColor="Transparent"
                         Clicked="OnPlayPauseButtonClicked" />
 
