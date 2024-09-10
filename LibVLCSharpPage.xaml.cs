@@ -9,7 +9,6 @@ namespace Nyaa_Streamer
     public partial class LibVLCSharpPage : ContentPage
     {
         private bool _isPlaying = false;
-        private bool _isFullscreen = false;
 
         public LibVLCSharpPage()
         {
@@ -18,10 +17,6 @@ namespace Nyaa_Streamer
             var tapGestureRecognizer = new TapGestureRecognizer();
             tapGestureRecognizer.Tapped += OnScreenTapped;
             VideoView.GestureRecognizers.Add(tapGestureRecognizer);
-
-            var panGestureRecognizer = new PanGestureRecognizer();
-            panGestureRecognizer.PanUpdated += OnPanUpdated;
-            VideoView.GestureRecognizers.Add(panGestureRecognizer);
         }
 
         protected override void OnAppearing()
@@ -81,57 +76,6 @@ namespace Nyaa_Streamer
         {
             var mediaPlayer = ((MainViewModel)BindingContext).MediaPlayer;
             mediaPlayer.Time += 10000; // Seek forward 10 seconds
-        }
-
-        private void OnFullscreenButtonClicked(object sender, EventArgs e)
-        {
-            // Empty implementation for fullscreen button
-        }
-
-        private void OnPanUpdated(object sender, PanUpdatedEventArgs e)
-        {
-            var mediaPlayer = ((MainViewModel)BindingContext).MediaPlayer;
-
-            switch (e.StatusType)
-            {
-                case GestureStatus.Running:
-                    // Handle the panning/dragging events
-                    if (e.TotalX > 0 && Math.Abs(e.TotalX) > Math.Abs(e.TotalY))
-                    {
-                        // Right swipe: Seek forward
-                        mediaPlayer.Time += 5000;
-                    }
-                    else if (e.TotalX < 0 && Math.Abs(e.TotalX) > Math.Abs(e.TotalY))
-                    {
-                        // Left swipe: Seek backward
-                        mediaPlayer.Time -= 5000;
-                    }
-                    else if (e.TotalY < 0)
-                    {
-                        // Up swipe: Increase volume or brightness
-                        if (e.TotalX < VideoView.Width / 2)
-                        {
-                            mediaPlayer.Volume += 10; // Adjust this as needed
-                        }
-                        else
-                        {
-                            // Implement brightness increase here (if possible)
-                        }
-                    }
-                    else if (e.TotalY > 0)
-                    {
-                        // Down swipe: Decrease volume or brightness
-                        if (e.TotalX < VideoView.Width / 2)
-                        {
-                            mediaPlayer.Volume -= 10; // Adjust this as needed
-                        }
-                        else
-                        {
-                            // Implement brightness decrease here (if possible)
-                        }
-                    }
-                    break;
-            }
         }
     }
 }

@@ -3,8 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:shared="clr-namespace:LibVLCSharp.MAUI;assembly=LibVLCSharp.MAUI"
              xmlns:local="clr-namespace:Nyaa_Streamer"
-             x:Class="Nyaa_Streamer.LibVLCSharpPage"             
-			 BackgroundColor="Black">
+             x:Class="Nyaa_Streamer.LibVLCSharpPage"
+             BackgroundColor="Black">
 
     <ContentPage.BindingContext>
         <local:MainViewModel />
@@ -21,10 +21,9 @@
                      Orientation="Horizontal"
                      BackgroundColor="Black"
                      Padding="10"
-                     Spacing="20"
-                     HorizontalOptions="CenterAndExpand"
+                     Spacing="10"
+                     HorizontalOptions="FillAndExpand"
                      VerticalOptions="End"
-                     Scale="{Binding Source={x:Reference VideoView}, Path=Width, Converter={StaticResource ScaleConverter}}"
                      IsVisible="False">
 
             <Button x:Name="SeekBackwardButton"
@@ -44,16 +43,6 @@
                     TextColor="White"
                     BackgroundColor="Transparent"
                     Clicked="OnSeekForwardClicked" />
-
-            <Button x:Name="FullscreenButton"
-                    Text="⛶"
-                    TextColor="White"
-                    BackgroundColor="Transparent"
-                    Clicked="OnFullscreenButtonClicked" />
         </StackLayout>
     </Grid>
-			 
-			 
-			 
-			 
 </ContentPage>
