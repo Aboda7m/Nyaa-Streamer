@@ -61,11 +61,12 @@
                         DragCompleted="OnProgressBarDragCompleted" />
 
                 <!-- Buttons centered in the middle columns -->
-                <Button x:Name="SeekBackwardButton"
+                <ImageButton x:Name="SeekBackwardButton"
                         Grid.Row="1"
                         Grid.Column="2"
-                        Text="⏪"
-                        TextColor="White"
+                        Source="back.png"
+WidthRequest="30"
+HeightRequest="30"
                         BackgroundColor="Transparent"
                         Clicked="OnSeekBackwardClicked" />
 
@@ -78,27 +79,30 @@
                         BackgroundColor="Transparent"
                         Clicked="OnPlayPauseButtonClicked" />
 
-                <Button x:Name="SeekForwardButton"
+                <ImageButton x:Name="SeekForwardButton"
                         Grid.Row="1"
                         Grid.Column="4"
-                        Text="⏩"
-                        TextColor="White"
+                        Source="forward.png"
+WidthRequest="30"
+HeightRequest="30"
                         BackgroundColor="Transparent"
                         Clicked="OnSeekForwardClicked" />
 
-                <Button x:Name="SkipOpeningButton"
+                <ImageButton x:Name="SkipOpeningButton"
                         Grid.Row="1"
                         Grid.Column="5"
-                        Text="⏭️"    
-                        TextColor="White"
+                        Source="skip.png"
+WidthRequest="30"
+HeightRequest="30"
                         BackgroundColor="Transparent"
                         Clicked="OnSkipOpeningClicked" />
 
-                <Button x:Name="UnSkipOpeningButton"
+                <ImageButton x:Name="UnSkipOpeningButton"
                         Grid.Row="1"
                         Grid.Column="1"
-                        Text="⏭️"    
-                        TextColor="White"
+                        Source="Unskip.png"
+WidthRequest="30"
+HeightRequest="30"
                         BackgroundColor="Transparent"
                         Clicked="OnUnSkipOpeningClicked" />
 
