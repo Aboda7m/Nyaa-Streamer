@@ -126,12 +126,33 @@ namespace Nyaa_Streamer
                 if (ProgressBar.Value != currentValue)
                 {
                     ProgressBar.Value = currentValue;
+
+                    TimeLabel.Text = UpdateTimeBar();
                 }
             }
 
             // Return true to ensure the timer continues updating the progress bar for testing
             return true;
         }
+
+        private string UpdateTimeBar()
+        {
+            var mediaPlayer = ((MainViewModel)BindingContext).MediaPlayer;
+            int currentTime = (int)mediaPlayer.Time;
+            int maxTime = (int)mediaPlayer.Length;
+
+            string FormatTime(int timeInMilliseconds)
+            {
+                TimeSpan timeSpan = TimeSpan.FromMilliseconds(timeInMilliseconds);
+                return $"{timeSpan.Hours:D2}:{timeSpan.Minutes:D2}:{timeSpan.Seconds:D2}";
+            }
+
+            string currentFormattedTime = FormatTime(currentTime);
+            string maxFormattedTime = FormatTime(maxTime);
+
+            return $"{currentFormattedTime} / {maxFormattedTime}";
+        }
+
 
     }
 }

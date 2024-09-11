@@ -33,6 +33,7 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
 
                 <!-- Empty Columns for spacing -->
@@ -62,7 +63,7 @@
 
                 <!-- Buttons centered in the middle columns -->
                 <ImageButton x:Name="SeekBackwardButton"
-                        Grid.Row="1"
+                        Grid.Row="2"
                         Grid.Column="2"
                         Source="back.png"
 WidthRequest="30"
@@ -71,7 +72,7 @@ HeightRequest="30"
                         Clicked="OnSeekBackwardClicked" />
 
                 <ImageButton x:Name="PlayPauseButton"
-                        Grid.Row="1"
+                        Grid.Row="2"
                         Grid.Column="3"
                         Source="play.png"
                         WidthRequest="30"
@@ -80,7 +81,7 @@ HeightRequest="30"
                         Clicked="OnPlayPauseButtonClicked" />
 
                 <ImageButton x:Name="SeekForwardButton"
-                        Grid.Row="1"
+                        Grid.Row="2"
                         Grid.Column="4"
                         Source="forward.png"
 WidthRequest="30"
@@ -89,7 +90,7 @@ HeightRequest="30"
                         Clicked="OnSeekForwardClicked" />
 
                 <ImageButton x:Name="SkipOpeningButton"
-                        Grid.Row="1"
+                        Grid.Row="2"
                         Grid.Column="5"
                         Source="skip.png"
 WidthRequest="30"
@@ -98,13 +99,23 @@ HeightRequest="30"
                         Clicked="OnSkipOpeningClicked" />
 
                 <ImageButton x:Name="UnSkipOpeningButton"
-                        Grid.Row="1"
+                        Grid.Row="2"
                         Grid.Column="1"
                         Source="Unskip.png"
 WidthRequest="30"
 HeightRequest="30"
                         BackgroundColor="Transparent"
                         Clicked="OnUnSkipOpeningClicked" />
+
+                <!-- Time Display -->
+                <Label x:Name="TimeLabel"
+       Grid.Row="1"
+       Grid.Column="0"
+       Grid.ColumnSpan="7"
+       Text=""
+       TextColor="White"
+       HorizontalOptions="Center"
+       VerticalOptions="Center" />
 
             </Grid>
         </Grid>
