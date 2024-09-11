@@ -1,5 +1,6 @@
 ﻿using LibVLCSharp;
 using System.ComponentModel;
+using System.Diagnostics;
 
 namespace Nyaa_Streamer
 {
@@ -10,6 +11,7 @@ namespace Nyaa_Streamer
         public MainViewModel()
         {
             Initialize();
+            Debug.WriteLine("public MainViewModel()\n        {\n            Initialize(); initialized.");
         }
 
         private LibVLCSharp.Shared.LibVLC LibVLC { get; set; }
