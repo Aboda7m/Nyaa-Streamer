@@ -46,5 +46,7 @@
 			</dict>
 		</dict>
 	</dict>
+	<key>UILaunchImageFile</key>
+    <string>Resources\Splash\splash.png</string>
 </dict>
 </plist>
