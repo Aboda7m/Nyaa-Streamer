@@ -18,10 +18,10 @@
 
         <Grid VerticalOptions="End"
               HorizontalOptions="FillAndExpand"
-              Padding="10">
+              Padding="0">
 
             <Grid x:Name="ControlBar"
-                  Padding="10"
+                  Padding="0"
                   VerticalOptions="End"
                   HorizontalOptions="FillAndExpand"
                   IsVisible="False"
