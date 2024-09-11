@@ -123,7 +123,7 @@
                        Text=""
                        TextColor="White"
                        HorizontalOptions="Center"
-                       VerticalOptions="Center" />
+                       VerticalOptions="Center" FontSize="Micro" />
             </Grid>
         </Grid>
     </Grid>
