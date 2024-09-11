@@ -22,13 +22,13 @@
               Padding="10">
 
             <Grid x:Name="ControlBar"
-                  BackgroundColor="Black"
                   Padding="10"
                   VerticalOptions="End"
                   HorizontalOptions="FillAndExpand"
                   IsVisible="False"
                   RowSpacing="10"
                   ColumnSpacing="10">
+                
 
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
@@ -66,8 +66,8 @@
                         Grid.Row="2"
                         Grid.Column="2"
                         Source="back.png"
-WidthRequest="30"
-HeightRequest="30"
+                        WidthRequest="30"
+                        HeightRequest="30"
                         BackgroundColor="Transparent"
                         Clicked="OnSeekBackwardClicked" />
 
@@ -84,8 +84,8 @@ HeightRequest="30"
                         Grid.Row="2"
                         Grid.Column="4"
                         Source="forward.png"
-WidthRequest="30"
-HeightRequest="30"
+                        WidthRequest="30"
+                        HeightRequest="30"
                         BackgroundColor="Transparent"
                         Clicked="OnSeekForwardClicked" />
 
@@ -93,8 +93,8 @@ HeightRequest="30"
                         Grid.Row="2"
                         Grid.Column="5"
                         Source="skip.png"
-WidthRequest="30"
-HeightRequest="30"
+                        WidthRequest="30"
+                        HeightRequest="30"
                         BackgroundColor="Transparent"
                         Clicked="OnSkipOpeningClicked" />
 
@@ -102,21 +102,28 @@ HeightRequest="30"
                         Grid.Row="2"
                         Grid.Column="1"
                         Source="Unskip.png"
-WidthRequest="30"
-HeightRequest="30"
+                        WidthRequest="30"
+                        HeightRequest="30"
                         BackgroundColor="Transparent"
                         Clicked="OnUnSkipOpeningClicked" />
 
-                <!-- Time Display -->
+                    <!-- Time Display -->
                 <Label x:Name="TimeLabel"
-       Grid.Row="1"
-       Grid.Column="0"
-       Grid.ColumnSpan="7"
-       Text=""
-       TextColor="White"
-       HorizontalOptions="Center"
-       VerticalOptions="Center" />
+                        Grid.Row="1"
+                        Grid.Column="0"
+                        Grid.ColumnSpan="7"
+                        Text=""
+                        TextColor="White"
+                        HorizontalOptions="Center"
+                        VerticalOptions="Center" />
 
+
+                <Image
+                    x:Name="barImage"
+                    Source="tier.jpg"
+                    Aspect="AspectFit"
+                    HorizontalOptions="FillAndExpand"
+                    VerticalOptions="FillAndExpand"/>
             </Grid>
         </Grid>
     </Grid>
