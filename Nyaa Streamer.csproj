@@ -112,7 +112,7 @@
 		<MauiIcon Include="Resources\AppIcon\appicon.png" />
 
 		<!-- Splash Screen -->
-		<MauiSplashScreen Include="Resources\Splash\splash.png" />
+		<MauiSplashScreen Include="Resources\Splash\splash.png" Aspect="AspectFill" />
 
 		<!-- Images -->
 		<MauiImage Include="Resources\Images\*" />
