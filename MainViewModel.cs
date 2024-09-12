@@ -38,7 +38,7 @@ namespace Nyaa_Streamer
         private void Initialize()
         {
             LibVLC = new LibVLCSharp.Shared.LibVLC(enableDebugLogs: true);
-            using var media = new LibVLCSharp.Shared.Media(LibVLC, new Uri("http://localhost:8888/"));
+            using var media = new LibVLCSharp.Shared.Media(LibVLC, new Uri("https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"));
 
             MediaPlayer = new LibVLCSharp.Shared.MediaPlayer(LibVLC)
             {

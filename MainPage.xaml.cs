@@ -42,7 +42,7 @@ namespace Nyaa_Streamer
 
             //StartVlcProcess(); // Call the method to start VLC
             //test ;obvlc
-            //Navigation.PushAsync(new LibVLCSharpPage());
+            Navigation.PushAsync(new LibVLCSharpPage());
         }
 
         private async void OnSearchButtonClicked(object sender, EventArgs e)
