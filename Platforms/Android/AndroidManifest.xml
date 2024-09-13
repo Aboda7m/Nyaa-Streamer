@@ -8,10 +8,7 @@
         android:usesCleartextTraffic="true"
 		android:networkSecurityConfig="@xml/network_security_config"> <!-- Enable cleartext traffic -->
 		
-		<meta-data
-    android:name="android.windowSplashScreenBackground"
-    android:resource="@drawable/splash" />
-
+		
         
         <service 
             android:name="communityToolkit.maui.media.services"
