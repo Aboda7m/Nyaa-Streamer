@@ -1,0 +1,44 @@
+name: Build iOS App
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: macos-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+    
+    - name: Set up .NET Core SDK
+      uses: actions/setup-dotnet@v2
+      with:
+        dotnet-version: '7.x' # Or whichever .NET version you are using
+    
+    - name: Install Mono (required for Xamarin)
+      run: brew install mono
+    
+    - name: Install .NET MAUI workload
+      run: dotnet workload install maui
+    
+    - name: Restore dependencies
+      run: dotnet restore
+
+    - name: Build the iOS app
+      run: dotnet build NyaaStreamer.csproj -f:net7.0-ios -c Release
+    - name: Archive IPA
+      run: |
+        mkdir -p build_output
+        cp -R bin/iPhone/Release/*.ipa build_output/
+      
+    - name: Upload IPA as artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: iOS App (.ipa)
+        path: build_output/*.ipa
