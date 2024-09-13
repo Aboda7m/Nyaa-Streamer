@@ -57,25 +57,25 @@ The `LibVLCSharpPage.xaml` is the custom video player page that uses the LibVLCS
 To build and run the application:
 
 1. **Clone the Repository:**
-   &&& 
+   ``` 
    git clone https://github.com/Aboda7m/Nyaa-Streamer
-   &&&
+   ```
 2. **Navigate to the Project Directory:**
-   &&& 
+   ``` 
    cd Nyaa-Streamer
-   &&&
+   ```
 3. **Restore Dependencies:**
-   &&& 
+   ``` 
    dotnet restore
-   &&&
+   ```
 4. **Build the Project:**
-   &&& 
+   ``` 
    dotnet build
-   &&&
+   ```
 5. **Run the Application:**
-   &&& 
+   ``` 
    dotnet run
-   &&&
+   ```
 
 ## Contributions
 
