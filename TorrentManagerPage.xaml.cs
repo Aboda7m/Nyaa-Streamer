@@ -48,7 +48,8 @@ namespace Nyaa_Streamer
                 {
                     FileName = file.Path,
                     Size = file.Length,
-                    File = file
+                    File = file,
+                    SizeString = FormatBytes(file.Length)
                 });
                 Debug.WriteLine("TorrentFiles.Add(new TorrentFile: " + file.Length);
             }
@@ -210,12 +211,26 @@ namespace Nyaa_Streamer
                 Debug.WriteLine($"Error starting VLC: {ex.Message}");
             }
         }
+
+        private static string FormatBytes(long bytes)
+        {
+            string[] Suffix = { "B", "KB", "MB", "GB", "TB" };
+            int i;
+            double dblSByte = bytes;
+            for (i = 0; i < Suffix.Length && bytes >= 1024; i++, bytes /= 1024)
+            {
+                dblSByte = bytes / 1024.0;
+            }
+
+            return String.Format("{0:0.##} {1}", dblSByte, Suffix[i]);
+        }
     }
 
     public class TorrentFile
     {
         public string FileName { get; set; }
         public long Size { get; set; }
+        public string SizeString { get; set; }
         public MonoTorrent.ITorrentManagerFile File { get; set; } // Hold the actual MonoTorrent.TorrentFile object
     }
 

@@ -20,7 +20,7 @@
                           ItemSelected="OnFileSelected">
                     <ListView.ItemTemplate>
                         <DataTemplate>
-                            <TextCell Text="{Binding FileName}" Detail="{Binding Size}" />
+                            <TextCell Text="{Binding FileName}" Detail="{Binding SizeString}" />
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>
