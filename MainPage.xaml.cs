@@ -11,7 +11,8 @@ using System.Net;
 using System.Linq;
 using System.Diagnostics;
 using Microsoft.Win32;
-using System;
+//using Android.Net.Rtp;
+
 
 namespace Nyaa_Streamer
 {
@@ -31,42 +32,18 @@ namespace Nyaa_Streamer
             var engineSettings = new EngineSettingsBuilder()
             {
                 CacheDirectory = Path.Combine(downloadDirectory, "cache"),
-                DiskCacheBytes = 512 * 1024 * 1024, // Increased cache size for better performance
+                DiskCacheBytes = 512 * 1024 * 1024 ,// Increased cache size for better performance
                 HttpStreamingPrefix = "http://localhost:8889/"
             }.ToSettings();
 
             engine = new ClientEngine(engineSettings);
             Debug.WriteLine("ClientEngine initialized.");
+
+
+            //StartVlcProcess(); // Call the method to start VLC
+            //test ;obvlc
+            //Navigation.PushAsync(new LibVLCSharpPage());
         }
-
-        // Add the ClearCacheAndExit method
-        private void ClearCacheAndExit()
-        {
-            try
-            {
-                if (Directory.Exists(downloadDirectory))
-                {
-                    // Delete the downloads folder and its contents
-                    Directory.Delete(downloadDirectory, true);
-                    Debug.WriteLine("Downloads folder deleted.");
-                }
-
-                // Close the app (works for desktop applications)
-                Process.GetCurrentProcess().Kill();
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"Failed to clear cache and exit: {ex.Message}");
-            }
-        }
-
-        // Example button for debugging
-        private void OnDebugClearCacheClicked(object sender, EventArgs e)
-        {
-            ClearCacheAndExit();
-        }
-
-        // Existing code...
 
         private async void OnSearchButtonClicked(object sender, EventArgs e)
         {
@@ -121,7 +98,13 @@ namespace Nyaa_Streamer
             return resultTitles;
         }
 
-        // Other methods...
+        private void OnResultSelected(object sender, SelectedItemChangedEventArgs e)
+        {
+            if (e.SelectedItem != null)
+            {
+                SaveBtn.IsEnabled = true;
+            }
+        }
 
         private async void OnSaveButtonClicked(object sender, EventArgs e)
         {
@@ -140,6 +123,8 @@ namespace Nyaa_Streamer
                 }
             }
         }
+
+        
 
         private async Task<TorrentDetails> GetTorrentDetailsAsync(string url)
         {
@@ -194,6 +179,10 @@ namespace Nyaa_Streamer
                 Debug.WriteLine("Waiting for metadata...");
                 await manager.WaitForMetadataAsync();
                 Debug.WriteLine("Metadata received.");
+
+
+
+  
             }
             catch (Exception ex)
             {
@@ -202,11 +191,52 @@ namespace Nyaa_Streamer
             }
         }
 
+
         private async void ShowManager(object sender, EventArgs e)
         {
+            
             // Pass the dictionary to TorrentManagerPage
             await Navigation.PushAsync(new TorrentManagerPage(manager));
         }
+
+
+        private void ClearCacheAndExit()
+        {
+            try
+            {
+                if (Directory.Exists(downloadDirectory))
+                {
+                    // Delete the downloads folder and its contents
+                    Directory.Delete(downloadDirectory, true);
+                    Debug.WriteLine("Downloads folder deleted.");
+                }
+
+                // Close the app (works for desktop applications)
+                Process.GetCurrentProcess().Kill();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Failed to clear cache and exit: {ex.Message}");
+            }
+        }
+
+        // Example button for debugging
+        private void OnDebugClearCacheClicked(object sender, EventArgs e)
+        {
+            ClearCacheAndExit();
+        }
+
+        // Existing code...
+
+
+
+
+
+
+
+
+
+
     }
 
     public class TorrentDetails
