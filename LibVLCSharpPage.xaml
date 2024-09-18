@@ -61,7 +61,7 @@
                         Grid.Column="0"
                         Grid.ColumnSpan="7"
                         Minimum="0"
-                        Maximum="{Binding MediaPlayer.Length, Mode=OneWay}"
+                        Maximum="1"
                         Value="0"
                         BackgroundColor="Transparent"
                         ThumbColor="White"

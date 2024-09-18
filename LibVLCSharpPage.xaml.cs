@@ -167,18 +167,16 @@ namespace Nyaa_Streamer
 
             var mediaPlayer = ((MainViewModel)BindingContext)?.MediaPlayer;
 
-            if (!_isDragging && mediaPlayer?.Media != null)
+            if (!_isDragging && mediaPlayer != null && mediaPlayer.Media != null && mediaPlayer.Length > 0)
             {
-                ProgressBar.Maximum = mediaPlayer.Length;
-                double currentValue = (double)mediaPlayer.Time / mediaPlayer.Length;
-                if (ProgressBar.Value != currentValue)
-                {
-                    ProgressBar.Value = currentValue;
-                    TimeLabel.Text = UpdateTimeBar();
-                }
+                // Update progress based on the percentage (0-1)
+                ProgressBar.Value = (double)mediaPlayer.Time / mediaPlayer.Length;
+
+                // Update the time label
+                TimeLabel.Text = $"{TimeSpan.FromMilliseconds(mediaPlayer.Time):mm\\:ss} / {TimeSpan.FromMilliseconds(mediaPlayer.Length):mm\\:ss}";
             }
 
-            return true; // Continue updating the progress bar
+            return true; // Continue updating
         }
 
         private string UpdateTimeBar()
