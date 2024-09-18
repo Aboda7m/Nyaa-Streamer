@@ -10,6 +10,7 @@ namespace Nyaa_Streamer
     {
         private bool _isPlaying = false;
         private bool _isDragging = false;
+        private bool _isPageDisappearing = false;
 
         public LibVLCSharpPage()
         {
@@ -32,12 +33,29 @@ namespace Nyaa_Streamer
         protected override void OnDisappearing()
         {
             base.OnDisappearing();
-            ((MainViewModel)BindingContext).OnDisappearing();
+            _isPageDisappearing = true;
+            DisposeMediaPlayer();
+        }
+
+        private void DisposeMediaPlayer()
+        {
+            var mediaPlayer = ((MainViewModel)BindingContext)?.MediaPlayer;
+            if (mediaPlayer != null)
+            {
+                try
+                {
+                    mediaPlayer.Dispose();
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Error disposing MediaPlayer: {ex.Message}");
+                }
+            }
         }
 
         private void VideoView_MediaPlayerChanged(object sender, MediaPlayerChangedEventArgs e)
         {
-            ((MainViewModel)BindingContext).OnVideoViewInitialized();
+            ((MainViewModel)BindingContext)?.OnVideoViewInitialized();
         }
 
         private void OnScreenTapped(object sender, EventArgs e)
@@ -56,45 +74,66 @@ namespace Nyaa_Streamer
 
         private void OnPlayPauseButtonClicked(object sender, EventArgs e)
         {
-            var mediaPlayer = ((MainViewModel)BindingContext).MediaPlayer;
-
-            if (_isPlaying)
+            try
             {
-                mediaPlayer?.Pause();
-                //PlayPauseButton.Text = "▶";
-                PlayPauseButton.Source = "Play.png";
-            }
-            else
-            {
-                mediaPlayer?.Play();
-                PlayPauseButton.Source = "Pause.png";
-            }
+                var mediaPlayer = ((MainViewModel)BindingContext)?.MediaPlayer;
 
-            _isPlaying = !_isPlaying;
+                if (mediaPlayer != null)
+                {
+                    if (_isPlaying)
+                    {
+                        mediaPlayer.Pause();
+                        PlayPauseButton.Source = "Play.png";
+                    }
+                    else
+                    {
+                        mediaPlayer.Play();
+                        PlayPauseButton.Source = "Pause.png";
+                    }
+
+                    _isPlaying = !_isPlaying;
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error in OnPlayPauseButtonClicked: {ex.Message}");
+            }
         }
 
         private void OnSeekBackwardClicked(object sender, EventArgs e)
         {
-            var mediaPlayer = ((MainViewModel)BindingContext).MediaPlayer;
-            mediaPlayer.Time -= 10000; // Seek backward 10 seconds
+            var mediaPlayer = ((MainViewModel)BindingContext)?.MediaPlayer;
+            if (mediaPlayer != null)
+            {
+                mediaPlayer.Time -= 10000; // Seek backward 10 seconds
+            }
         }
 
         private void OnSeekForwardClicked(object sender, EventArgs e)
         {
-            var mediaPlayer = ((MainViewModel)BindingContext).MediaPlayer;
-            mediaPlayer.Time += 10000; // Seek forward 10 seconds
+            var mediaPlayer = ((MainViewModel)BindingContext)?.MediaPlayer;
+            if (mediaPlayer != null)
+            {
+                mediaPlayer.Time += 10000; // Seek forward 10 seconds
+            }
         }
 
         private void OnSkipOpeningClicked(object sender, EventArgs e)
         {
-            var mediaPlayer = ((MainViewModel)BindingContext).MediaPlayer;
-            mediaPlayer.Time += 90000; // Skip forward 90 seconds
+            var mediaPlayer = ((MainViewModel)BindingContext)?.MediaPlayer;
+            if (mediaPlayer != null)
+            {
+                mediaPlayer.Time += 90000; // Skip forward 90 seconds
+            }
         }
 
         private void OnUnSkipOpeningClicked(object sender, EventArgs e)
         {
-            var mediaPlayer = ((MainViewModel)BindingContext).MediaPlayer;
-            mediaPlayer.Time -= 90000; // Skip backward 90 seconds
+            var mediaPlayer = ((MainViewModel)BindingContext)?.MediaPlayer;
+            if (mediaPlayer != null)
+            {
+                mediaPlayer.Time -= 90000; // Skip backward 90 seconds
+            }
         }
 
         private void OnProgressBarDragStarted(object sender, EventArgs e)
@@ -104,7 +143,7 @@ namespace Nyaa_Streamer
 
         private void OnProgressBarDragCompleted(object sender, EventArgs e)
         {
-            var mediaPlayer = ((MainViewModel)BindingContext).MediaPlayer;
+            var mediaPlayer = ((MainViewModel)BindingContext)?.MediaPlayer;
 
             if (mediaPlayer?.Media != null)
             {
@@ -117,27 +156,31 @@ namespace Nyaa_Streamer
 
         private bool UpdateProgressBar()
         {
-            var mediaPlayer = ((MainViewModel)BindingContext).MediaPlayer;
+            if (_isPageDisappearing)
+                return false; // Stop updating if page is disappearing
+
+            var mediaPlayer = ((MainViewModel)BindingContext)?.MediaPlayer;
 
             if (!_isDragging && mediaPlayer?.Media != null)
             {
-                ProgressBar.Maximum = 1;
+                ProgressBar.Maximum = mediaPlayer.Length;
                 double currentValue = (double)mediaPlayer.Time / mediaPlayer.Length;
                 if (ProgressBar.Value != currentValue)
                 {
                     ProgressBar.Value = currentValue;
-
                     TimeLabel.Text = UpdateTimeBar();
                 }
             }
 
-            // Return true to ensure the timer continues updating the progress bar for testing
-            return true;
+            return true; // Continue updating the progress bar
         }
 
         private string UpdateTimeBar()
         {
-            var mediaPlayer = ((MainViewModel)BindingContext).MediaPlayer;
+            var mediaPlayer = ((MainViewModel)BindingContext)?.MediaPlayer;
+            if (mediaPlayer == null)
+                return "";
+
             int currentTime = (int)mediaPlayer.Time;
             int maxTime = (int)mediaPlayer.Length;
 
@@ -152,8 +195,6 @@ namespace Nyaa_Streamer
 
             return $"{currentFormattedTime} / {maxFormattedTime}";
         }
-
-
     }
 }
 #endif
