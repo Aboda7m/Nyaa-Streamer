@@ -178,6 +178,7 @@ namespace Nyaa_Streamer
                 Debug.WriteLine("Waiting for metadata...");
                 await newManager.WaitForMetadataAsync();
                 Debug.WriteLine("Metadata received.");
+                await DisplayAlert("Metadata received.", "Metadata received.", "OK");
             }
             catch (Exception ex) when (ex.Message.Contains("A manager for this torrent has already been registered"))
             {

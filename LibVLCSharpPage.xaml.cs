@@ -3,6 +3,8 @@
 using LibVLCSharp.Shared;
 using LibVLCSharp.MAUI;
 using System.Diagnostics;
+using MonoTorrent.Streaming;
+
 
 namespace Nyaa_Streamer
 {
@@ -11,14 +13,16 @@ namespace Nyaa_Streamer
         private bool _isPlaying = false;
         private bool _isDragging = false;
         private bool _isPageDisappearing = false;
+        private IHttpStream _httpStream;
 
-        public LibVLCSharpPage()
+        public LibVLCSharpPage(IHttpStream httpStream)
         {
             InitializeComponent();
 
             var tapGestureRecognizer = new TapGestureRecognizer();
             tapGestureRecognizer.Tapped += OnScreenTapped;
             VideoView.GestureRecognizers.Add(tapGestureRecognizer);
+            _httpStream = httpStream;
 
             // Start updating the progress bar
             Device.StartTimer(TimeSpan.FromMilliseconds(500), UpdateProgressBar);
@@ -35,6 +39,8 @@ namespace Nyaa_Streamer
             base.OnDisappearing();
             _isPageDisappearing = true;
             DisposeMediaPlayer();
+            _httpStream.Dispose();
+
         }
 
         private void DisposeMediaPlayer()

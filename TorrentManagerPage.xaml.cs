@@ -87,7 +87,8 @@ namespace Nyaa_Streamer
         {
             await DisplayAlert("Streaming", $"Starting stream for file: {selectedFile.Path}", "OK");
 
-            var streamLink = await StartHttpServer(manager, selectedFile);
+            var httpStream = await StartHttpServer(manager, selectedFile);
+            var streamLink = httpStream.FullUri;
             if (streamLink != null)
             {
                 currentStreamUrl = streamLink;
@@ -95,18 +96,19 @@ namespace Nyaa_Streamer
 #if WINDOWS
                 StartVlcProcess();
 #else
-                await Navigation.PushAsync(new LibVLCSharpPage());
+                await Navigation.PushAsync(new LibVLCSharpPage(httpStream));
+                //httpStream.Dispose();
 #endif
             }
         }
 
-        private async Task<string> StartHttpServer(TorrentManager manager, ITorrentManagerFile selectedFile)
+        private async Task<MonoTorrent.Streaming.IHttpStream> StartHttpServer(TorrentManager manager, ITorrentManagerFile selectedFile)
         {
             try
             {
                 var httpStream = await manager.StreamProvider.CreateHttpStreamAsync(selectedFile, prebuffer: true);
                 Debug.WriteLine("Streaming media from: " + httpStream.FullUri);
-                return httpStream.FullUri;
+                return httpStream;
             }
             catch (Exception ex)
             {
