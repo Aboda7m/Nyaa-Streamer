@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Nyaa_Streamer.MenuPopUpPage"
+             Title="Menu">
+
+    <VerticalStackLayout Padding="20" Spacing="15" VerticalOptions="Center">
+        <!-- Menu Options -->
+        <Button Text="Option 1" Clicked="OnOption1Clicked" />
+        <Button Text="Option 2" Clicked="OnOption2Clicked" />
+        <Button Text="Close" Clicked="OnCloseClicked" />
+    </VerticalStackLayout>
+</ContentPage>

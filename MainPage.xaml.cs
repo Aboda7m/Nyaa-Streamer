@@ -11,6 +11,7 @@ using System.Net;
 using System.Linq;
 using System.Diagnostics;
 using Microsoft.Win32;
+using CommunityToolkit.Maui.Views;
 //using Android.Net.Rtp;
 
 
@@ -228,7 +229,11 @@ namespace Nyaa_Streamer
 
         // Existing code...
 
-
+        private void OnSettingsClicked(object sender, EventArgs e)
+        {
+            this.ShowPopup(new MenuPopUpPage());
+        }
+        
 
 
 

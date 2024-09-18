@@ -14,6 +14,7 @@ namespace Nyaa_Streamer
             builder
                 .UseMauiApp<App>()
                 .UseMauiCommunityToolkitMediaElement()
+                .UseMauiCommunityToolkit()
 #if ANDROID
                 .UseLibVLCSharp()
 #endif
