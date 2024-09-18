@@ -229,9 +229,9 @@ namespace Nyaa_Streamer
 
         // Existing code...
 
-        private void OnSettingsClicked(object sender, EventArgs e)
+        private async void OnSettingsClicked(object sender, EventArgs e)
         {
-            this.ShowPopup(new MenuPopUpPage());
+            await Navigation.PushModalAsync(new MenuPopUpPage());
         }
         
 

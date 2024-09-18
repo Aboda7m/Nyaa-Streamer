@@ -6,8 +6,8 @@
 
     <VerticalStackLayout Padding="20" Spacing="15" VerticalOptions="Center">
         <!-- Menu Options -->
-        <Button Text="Option 1" Clicked="OnOption1Clicked" />
-        <Button Text="Option 2" Clicked="OnOption2Clicked" />
+        <Button Text="Clear Downloads" Clicked="OnOption1Clicked" />
+        <Button Text="Clear Registered Torrents" Clicked="OnOption2Clicked" />
         <Button Text="Close" Clicked="OnCloseClicked" />
     </VerticalStackLayout>
 </ContentPage>
