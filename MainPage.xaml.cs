@@ -201,7 +201,7 @@ namespace Nyaa_Streamer
         }
 
 
-        private void ClearCacheAndExit()
+        private async void ClearCacheAndExit()
         {
             try
             {
@@ -210,6 +210,8 @@ namespace Nyaa_Streamer
                     // Delete the downloads folder and its contents
                     Directory.Delete(downloadDirectory, true);
                     Debug.WriteLine("Downloads folder deleted.");
+                    await DisplayAlert("Done", "Downloads folder deleted, the app will close now after confirmation.", "OK");
+
                 }
 
                 // Close the app (works for desktop applications)
@@ -222,7 +224,7 @@ namespace Nyaa_Streamer
         }
 
         // Example button for debugging
-        private void OnDebugClearCacheClicked(object sender, EventArgs e)
+        public void OnDebugClearCacheClicked()
         {
             ClearCacheAndExit();
         }
@@ -231,7 +233,7 @@ namespace Nyaa_Streamer
 
         private async void OnSettingsClicked(object sender, EventArgs e)
         {
-            await Navigation.PushModalAsync(new MenuPopUpPage());
+            await Navigation.PushModalAsync(new MenuPopUpPage(this));
         }
         
 

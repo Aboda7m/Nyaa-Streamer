@@ -4,10 +4,20 @@
              x:Class="Nyaa_Streamer.MenuPopUpPage"
              Title="Menu">
 
+
+    <!-- Background Image -->
+    <Grid>
+        <Image
+                x:Name="backgroundImage"
+                Source="tier.jpg"
+                Aspect="AspectFill"
+                HorizontalOptions="Start"/>
+   
     <VerticalStackLayout Padding="20" Spacing="15" VerticalOptions="Center">
         <!-- Menu Options -->
         <Button Text="Clear Downloads" Clicked="OnOption1Clicked" />
         <Button Text="Clear Registered Torrents" Clicked="OnOption2Clicked" />
         <Button Text="Close" Clicked="OnCloseClicked" />
     </VerticalStackLayout>
+    </Grid>
 </ContentPage>
