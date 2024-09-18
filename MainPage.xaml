@@ -54,11 +54,14 @@
                     VerticalOptions="Center"
                     Margin="0,20,0,0" />
 
+                <ScrollView>
+                    
                 <ListView
                     x:Name="ResultsListView"
                     BackgroundColor="#333"
                     VerticalOptions="FillAndExpand"
                     SelectionMode="Single"
+                    HeightRequest="200" 
                     ItemSelected="OnResultSelected">
                     <!-- Define the template for displaying each item -->
                     <ListView.ItemTemplate>
@@ -67,6 +70,7 @@
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>
+                </ScrollView>
 
                 <!-- ProgressBar for Download Progress -->
                 <Label

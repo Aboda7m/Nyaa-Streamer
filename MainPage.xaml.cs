@@ -185,6 +185,14 @@ namespace Nyaa_Streamer
 
   
             }
+            catch (Exception ex) when (ex.Message.Contains("A manager for this torrent has already been registered"))
+            {
+                Debug.WriteLine($"An error occurred: {ex.Message}");
+                /*var magnet = MagnetLink.Parse(magnetLink);
+                await engine.RemoveAsync(magnet,RemoveMode.KeepAllData);
+                manager = await engine.AddStreamingAsync(magnet, downloadDirectory);*/
+                await DisplayAlert("Error", "already registered", "OK");
+            }
             catch (Exception ex)
             {
                 Debug.WriteLine($"An error occurred: {ex.Message}");
@@ -195,9 +203,15 @@ namespace Nyaa_Streamer
 
         private async void ShowManager(object sender, EventArgs e)
         {
-            
-            // Pass the dictionary to TorrentManagerPage
-            await Navigation.PushAsync(new TorrentManagerPage(manager));
+            foreach (var file in manager.Files)
+            {
+                Debug.WriteLine("ShowManager FileName: " + file.Path);
+                
+                Debug.WriteLine("ShowManager .Add(new TorrentFile: " + file.Length);
+            }
+        
+        // Pass the dictionary to TorrentManagerPage
+        await Navigation.PushAsync(new TorrentManagerPage(manager));
         }
 
 

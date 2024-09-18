@@ -15,8 +15,10 @@
         <ScrollView>
             <StackLayout Padding="20">
                 <!-- ListView for displaying torrent files -->
+                <ScrollView>
                 <ListView x:Name="TorrentFilesListView"
                           SelectionMode="Single"
+                          HeightRequest="500" 
                           ItemSelected="OnFileSelected">
                     <ListView.ItemTemplate>
                         <DataTemplate>
@@ -24,6 +26,7 @@
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>
+                </ScrollView>
 
                 <!-- Button to start streaming -->
                 <Button x:Name="StreamButton"
