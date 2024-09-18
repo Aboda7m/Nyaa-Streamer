@@ -7,128 +7,126 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Net;
 using System.Diagnostics;
-using System.Diagnostics;
-using Microsoft.Win32;
 using System.Linq;
+using System.Collections.Generic;
+using Microsoft.Win32;
 
 namespace Nyaa_Streamer
 {
     public partial class TorrentManagerPage : ContentPage
     {
         public ObservableCollection<TorrentFile> TorrentFiles { get; set; }
-        private TorrentManager manager;
+        private List<TorrentManager> managers; // List to hold multiple TorrentManager instances
+        private HttpListener redirectListener; // HTTP redirect listener
+        private string currentStreamUrl; // URL of the currently streaming file
 
-        public TorrentManagerPage(TorrentManager manager)
+        public TorrentManagerPage(List<TorrentManager> managers)
         {
             InitializeComponent();
-            this.manager = manager;
+            this.managers = managers;
 
-            // Initialize the ObservableCollection for torrent files
             TorrentFiles = new ObservableCollection<TorrentFile>();
-
-            // Load torrent files
             LoadTorrentFiles();
             TorrentFilesListView.ItemsSource = TorrentFiles;
         }
 
         private async void LoadTorrentFiles()
         {
-            // Ensure the manager is started and metadata is available
-            //await manager.WaitForMetadataAsync();
-
-            // Clear existing items
             TorrentFiles.Clear();
-            Debug.WriteLine("      TorrentFiles.Clear();: ");
+            Debug.WriteLine("TorrentFiles.Clear();");
 
-            // Populate the list of files
-            foreach (var file in manager.Files)
+            foreach (var manager in managers)
             {
-                Debug.WriteLine("FileName: " + file.Path);
-                TorrentFiles.Add(new TorrentFile
+                try
                 {
-                    FileName = file.Path,
-                    Size = file.Length,
-                    File = file,
-                    SizeString = FormatBytes(file.Length)
-                });
-                Debug.WriteLine("TorrentFiles.Add(new TorrentFile: " + file.Length);
+                    await manager.WaitForMetadataAsync();
+
+                    foreach (var file in manager.Files)
+                    {
+                        Debug.WriteLine("FileName: " + file.Path);
+                        TorrentFiles.Add(new TorrentFile
+                        {
+                            FileName = file.Path,
+                            Size = file.Length,
+                            File = file,
+                            SizeString = FormatBytes(file.Length)
+                        });
+                        Debug.WriteLine("TorrentFiles.Add(new TorrentFile: " + file.Length);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Failed to load files from manager: {ex.Message}");
+                }
             }
         }
 
         private void OnFileSelected(object sender, SelectedItemChangedEventArgs e)
         {
-            // Enable the stream button when a file is selected
             StreamButton.IsEnabled = e.SelectedItem != null;
         }
 
         private async void OnStreamButtonClicked(object sender, EventArgs e)
         {
-            // Get the selected torrent file
             var selectedFile = TorrentFilesListView.SelectedItem as TorrentFile;
             if (selectedFile != null)
             {
-                // Start streaming
-                await StartTorrentStreamAsync(selectedFile.File);
+                var manager = managers.FirstOrDefault(m => m.Files.Contains(selectedFile.File));
+                if (manager != null)
+                {
+                    // Dispose of old stream if exists
+                    DisposeOldStream();
+
+                    // Start streaming
+                    await StartTorrentStreamAsync(manager, selectedFile.File);
+                }
             }
         }
 
-
-        private async Task StartTorrentStreamAsync(ITorrentManagerFile selectedFile)
+        private async Task StartTorrentStreamAsync(TorrentManager manager, ITorrentManagerFile selectedFile)
         {
-            // Implement the streaming logic here
-            // For demonstration, the following code is a placeholder
             await DisplayAlert("Streaming", $"Starting stream for file: {selectedFile.Path}", "OK");
 
-            // Example logic for starting streaming (update as necessary)
-            var streamLink = await StartHttpServer(selectedFile);
-            StartRedirectServer(streamLink);
-
-            // Start VLC or other media player
+            var streamLink = await StartHttpServer(manager, selectedFile);
+            if (streamLink != null)
+            {
+                currentStreamUrl = streamLink;
+                StartRedirectServer(streamLink);
 #if WINDOWS
-            StartVlcProcess();
+                StartVlcProcess();
 #else
-            await Navigation.PushAsync(new LibVLCSharpPage());
+                await Navigation.PushAsync(new LibVLCSharpPage());
 #endif
+            }
         }
 
-
-        private async Task<string> StartHttpServer(ITorrentManagerFile selectedFile)
+        private async Task<string> StartHttpServer(TorrentManager manager, ITorrentManagerFile selectedFile)
         {
             try
             {
-                // Create the HTTP stream
                 var httpStream = await manager.StreamProvider.CreateHttpStreamAsync(selectedFile, prebuffer: true);
-
-                // Log the URI to debug
                 Debug.WriteLine("Streaming media from: " + httpStream.FullUri);
-
-                // Wait for the HTTP stream to be ready
-                //await Task.Delay(10000); // Short delay to ensure HTTP server is up
-
-                // Redirect to the media player page
-                // This will need to be your actual implementation, e.g., setting the source of a WebView
-                //await Navigation.PushAsync(new webViewPage(httpStream.FullUri));
-                //await Navigation.PushAsync(new MediaPlayerPage(httpStream.FullUri));
-                //await Navigation.PushAsync(new webViewPage(httpStream.FullUri));
-
                 return httpStream.FullUri;
             }
             catch (Exception ex)
             {
                 Debug.WriteLine($"FAILED TO CREATE HTTP STREAM: {ex.Message}");
-                Debug.WriteLine($"An error occurred: {ex.Message}");
                 await DisplayAlert("Error", $"An error occurred: {ex.Message}", "OK");
                 return null;
             }
         }
 
-
         private void StartRedirectServer(string targetUrl)
         {
-            // Start the redirect server
-            var listener = new HttpListener();
-            listener.Prefixes.Add("http://localhost:8888/");
-            listener.Start();
+            if (redirectListener != null)
+            {
+                redirectListener.Stop();
+                redirectListener = null;
+            }
+
+            redirectListener = new HttpListener();
+            redirectListener.Prefixes.Add("http://localhost:8888/");
+            redirectListener.Start();
             Debug.WriteLine("Redirect server started at http://localhost:8888/");
 
             Task.Run(() =>
@@ -137,10 +135,8 @@ namespace Nyaa_Streamer
                 {
                     try
                     {
-                        var context = listener.GetContext();
+                        var context = redirectListener.GetContext();
                         var response = context.Response;
-
-                        // Redirect to the target URL
                         response.StatusCode = (int)HttpStatusCode.Redirect;
                         response.RedirectLocation = targetUrl;
                         response.Close();
@@ -156,6 +152,16 @@ namespace Nyaa_Streamer
                     }
                 }
             });
+        }
+
+        private void DisposeOldStream()
+        {
+            if (redirectListener != null)
+            {
+                redirectListener.Stop();
+                redirectListener = null;
+                Debug.WriteLine("Old stream disposed.");
+            }
         }
 
         private string GetVlcPathFromRegistry()
@@ -187,7 +193,6 @@ namespace Nyaa_Streamer
             try
             {
                 var vlcPath = GetVlcPathFromRegistry();
-
                 if (!string.IsNullOrEmpty(vlcPath))
                 {
                     var process = new Process
@@ -221,7 +226,6 @@ namespace Nyaa_Streamer
             {
                 dblSByte = bytes / 1024.0;
             }
-
             return String.Format("{0:0.##} {1}", dblSByte, Suffix[i]);
         }
     }
@@ -231,7 +235,6 @@ namespace Nyaa_Streamer
         public string FileName { get; set; }
         public long Size { get; set; }
         public string SizeString { get; set; }
-        public MonoTorrent.ITorrentManagerFile File { get; set; } // Hold the actual MonoTorrent.TorrentFile object
+        public MonoTorrent.ITorrentManagerFile File { get; set; }
     }
-
 }

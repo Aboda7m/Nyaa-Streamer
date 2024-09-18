@@ -14,7 +14,6 @@ using Microsoft.Win32;
 using CommunityToolkit.Maui.Views;
 //using Android.Net.Rtp;
 
-
 namespace Nyaa_Streamer
 {
     public partial class MainPage : ContentPage
@@ -23,7 +22,7 @@ namespace Nyaa_Streamer
         private Dictionary<string, string> resultsDictionary = new Dictionary<string, string>();
         private string downloadDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"downloads");
         private ClientEngine engine;
-        private TorrentManager? manager;
+        private List<TorrentManager> torrentManagers = new List<TorrentManager>(); // List to store all torrent managers
 
         public MainPage()
         {
@@ -33,15 +32,14 @@ namespace Nyaa_Streamer
             var engineSettings = new EngineSettingsBuilder()
             {
                 CacheDirectory = Path.Combine(downloadDirectory, "cache"),
-                DiskCacheBytes = 512 * 1024 * 1024 ,// Increased cache size for better performance
+                DiskCacheBytes = 512 * 1024 * 1024, // Increased cache size for better performance
                 HttpStreamingPrefix = "http://localhost:8889/"
             }.ToSettings();
 
             engine = new ClientEngine(engineSettings);
             Debug.WriteLine("ClientEngine initialized.");
 
-
-            //StartVlcProcess(); // Call the method to start VLC
+            // StartVlcProcess(); // Call the method to start VLC
             //test ;obvlc
             //Navigation.PushAsync(new LibVLCSharpPage());
         }
@@ -72,6 +70,7 @@ namespace Nyaa_Streamer
                     htmlDoc.LoadHtml(response);
 
                     var titleNodes = htmlDoc.DocumentNode.SelectNodes("//a[not(contains(@class, 'comments')) and contains(@href, '/view/')]");
+
                     if (titleNodes != null)
                     {
                         foreach (var node in titleNodes.Take(10)) // Limit to 10 results
@@ -125,8 +124,6 @@ namespace Nyaa_Streamer
             }
         }
 
-        
-
         private async Task<TorrentDetails> GetTorrentDetailsAsync(string url)
         {
             var torrentDetails = new TorrentDetails();
@@ -170,27 +167,21 @@ namespace Nyaa_Streamer
                 Debug.WriteLine($"Magnet link parsed: {magnet}");
 
                 Debug.WriteLine("Adding torrent for streaming...");
-                manager = await engine.AddStreamingAsync(magnet, downloadDirectory);
+                var newManager = await engine.AddStreamingAsync(magnet, downloadDirectory);
+                torrentManagers.Add(newManager); // Add the new manager to the list
                 Debug.WriteLine("Torrent added for streaming.");
 
                 Debug.WriteLine("Starting torrent...");
-                await manager.StartAsync();
+                await newManager.StartAsync();
                 Debug.WriteLine("Torrent started.");
 
                 Debug.WriteLine("Waiting for metadata...");
-                await manager.WaitForMetadataAsync();
+                await newManager.WaitForMetadataAsync();
                 Debug.WriteLine("Metadata received.");
-
-
-
-  
             }
             catch (Exception ex) when (ex.Message.Contains("A manager for this torrent has already been registered"))
             {
                 Debug.WriteLine($"An error occurred: {ex.Message}");
-                /*var magnet = MagnetLink.Parse(magnetLink);
-                await engine.RemoveAsync(magnet,RemoveMode.KeepAllData);
-                manager = await engine.AddStreamingAsync(magnet, downloadDirectory);*/
                 await DisplayAlert("Error", "already registered", "OK");
             }
             catch (Exception ex)
@@ -200,20 +191,20 @@ namespace Nyaa_Streamer
             }
         }
 
-
         private async void ShowManager(object sender, EventArgs e)
         {
-            foreach (var file in manager.Files)
+            foreach (var manager in torrentManagers) // Iterate through all managers
             {
-                Debug.WriteLine("ShowManager FileName: " + file.Path);
-                
-                Debug.WriteLine("ShowManager .Add(new TorrentFile: " + file.Length);
+                foreach (var file in manager.Files)
+                {
+                    Debug.WriteLine("ShowManager FileName: " + file.Path);
+                    Debug.WriteLine("ShowManager .Add(new TorrentFile: " + file.Length);
+                }
             }
-        
-        // Pass the dictionary to TorrentManagerPage
-        await Navigation.PushAsync(new TorrentManagerPage(manager));
-        }
 
+            // Pass the list to TorrentManagerPage
+            await Navigation.PushAsync(new TorrentManagerPage(torrentManagers));
+        }
 
         private async void ClearCacheAndExit()
         {
@@ -225,7 +216,6 @@ namespace Nyaa_Streamer
                     Directory.Delete(downloadDirectory, true);
                     Debug.WriteLine("Downloads folder deleted.");
                     await DisplayAlert("Done", "Downloads folder deleted, the app will close now after confirmation.", "OK");
-
                 }
 
                 // Close the app (works for desktop applications)
@@ -249,15 +239,6 @@ namespace Nyaa_Streamer
         {
             await Navigation.PushModalAsync(new MenuPopUpPage(this));
         }
-        
-
-
-
-
-
-
-
-
     }
 
     public class TorrentDetails
