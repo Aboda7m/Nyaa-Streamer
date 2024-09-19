@@ -31,8 +31,18 @@ namespace Nyaa_Streamer
         protected override void OnAppearing()
         {
             base.OnAppearing();
-            ((MainViewModel)BindingContext).OnAppearing();
+            var mediaPlayer = ((MainViewModel)BindingContext)?.MediaPlayer;
+
+            // Check if the media player is playing and update the button state accordingly
+            if (mediaPlayer != null)
+            {
+                _isPlaying = mediaPlayer.IsPlaying;
+                PlayPauseButton.Source = _isPlaying ? "Pause.png" : "Play.png";
+            }
+
+    ((MainViewModel)BindingContext).OnAppearing();
         }
+
 
         protected override void OnDisappearing()
         {
@@ -215,12 +225,13 @@ namespace Nyaa_Streamer
                     mediaPlayer.Stop();
                     _isPlaying = false;
                     PlayPauseButton.Source = "Play.png"; // Reset to play button
-                    return false; // Stop updating progress
+                    return false; // Stop updating
                 }
             }
 
             return true; // Continue updating
         }
+
 
 
         private string UpdateTimeBar()
