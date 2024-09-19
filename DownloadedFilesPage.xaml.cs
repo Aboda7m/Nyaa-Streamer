@@ -1,11 +1,12 @@
-using System.IO;
 using Microsoft.Maui.Controls;
+using System.Collections.Generic;
+using System.IO;
 
 namespace Nyaa_Streamer
 {
     public partial class DownloadedFilesPage : ContentPage
     {
-        private string downloadDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"downloads");
+        private string selectedFilePath;
 
         public DownloadedFilesPage()
         {
@@ -15,20 +16,45 @@ namespace Nyaa_Streamer
 
         private void LoadDownloadedFiles()
         {
-            if (Directory.Exists(downloadDirectory))
+            // Assuming your download directory is the same as in MainPage
+            var downloadDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "downloads");
+            var files = Directory.GetFiles(downloadDirectory);
+            FilesListView.ItemsSource = files; // Bind to the ListView
+        }
+
+        private void OnFileSelected(object sender, SelectedItemChangedEventArgs e)
+        {
+            if (e.SelectedItem != null)
             {
-                var files = Directory.GetFiles(downloadDirectory).Select(Path.GetFileName).ToList();
-                DownloadedFilesListView.ItemsSource = files;
-            }
-            else
-            {
-                DownloadedFilesListView.ItemsSource = new List<string> { "No files downloaded yet." };
+                selectedFilePath = e.SelectedItem.ToString(); // Store the selected file path
+                // Optionally handle UI updates for selection
             }
         }
 
-        private async void OnBackClicked(object sender, EventArgs e)
+        private async void OnSelectFileClicked(object sender, EventArgs e)
         {
-            await Navigation.PopAsync();
+            if (!string.IsNullOrEmpty(selectedFilePath))
+            {
+                await DisplayAlert("Selected File", selectedFilePath, "OK");
+            }
+            else
+            {
+                await DisplayAlert("Error", "No file selected.", "OK");
+            }
+        }
+
+        private async void OnPlayButtonClicked(object sender, EventArgs e)
+        {
+            if (!string.IsNullOrEmpty(selectedFilePath))
+            {
+                // Navigate to the local video page and play the selected file
+                var mediaUri = new Uri(selectedFilePath);
+                await Navigation.PushAsync(new LibVLCLocalPage(mediaUri));
+            }
+            else
+            {
+                await DisplayAlert("Error", "No file selected to play.", "OK");
+            }
         }
     }
 }

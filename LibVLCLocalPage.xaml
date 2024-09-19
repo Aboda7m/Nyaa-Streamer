@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:shared="clr-namespace:LibVLCSharp.MAUI;assembly=LibVLCSharp.MAUI"
+             xmlns:local="clr-namespace:Nyaa_Streamer"
+             x:Class="Nyaa_Streamer.LibVLCLocalPage"
+             BackgroundColor="Black">
+    <ContentPage.BindingContext>
+        <local:LocalViewModel MediaUri="{Binding SelectedMediaUri}" />
+    </ContentPage.BindingContext>
+
+    <Grid>
+        <shared:VideoView x:Name="VideoView"
+                          MediaPlayer="{Binding MediaPlayer}"
+                          MediaPlayerChanged="VideoView_MediaPlayerChanged"
+                          HorizontalOptions="FillAndExpand"
+                          VerticalOptions="FillAndExpand" />
+
+        <Grid VerticalOptions="End"
+              HorizontalOptions="FillAndExpand"
+              Padding="0">
+
+            <Grid x:Name="ControlBar"
+                  Padding="0"
+                  VerticalOptions="End"
+                  HorizontalOptions="FillAndExpand"
+                  IsVisible="False"
+                  RowSpacing="10"
+                  ColumnSpacing="10">
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <Slider x:Name="ProgressBar"
+                        Grid.Row="0"
+                        Grid.Column="0"
+                        Grid.ColumnSpan="7"
+                        Minimum="0"
+                        Maximum="1"
+                        Value="0"
+                        BackgroundColor="Transparent"
+                        ThumbColor="White"
+                        MaximumTrackColor="Gray"
+                        MinimumTrackColor="White" />
+
+                <ImageButton x:Name="PlayPauseButton"
+                             Grid.Row="2"
+                             Grid.Column="3"
+                             Source="play.png"
+                             WidthRequest="30"
+                             HeightRequest="30"
+                             BackgroundColor="Transparent" />
+
+                <Label x:Name="TimeLabel"
+                       Grid.Row="1"
+                       Grid.Column="0"
+                       Grid.ColumnSpan="7"
+                       Text=""
+                       TextColor="White"
+                       HorizontalOptions="Center"
+                       VerticalOptions="Center" FontSize="Micro" />
+            </Grid>
+        </Grid>
+    </Grid>
+</ContentPage>
