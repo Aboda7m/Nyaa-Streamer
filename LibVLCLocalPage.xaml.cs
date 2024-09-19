@@ -10,6 +10,7 @@ namespace Nyaa_Streamer
     {
         private bool _isPlaying = false;
         private bool _isDragging = false;
+        private bool _isPageDisappearing = false;
 
         public LibVLCLocalPage(Uri mediaUri)
         {
@@ -25,34 +26,43 @@ namespace Nyaa_Streamer
             Device.StartTimer(TimeSpan.FromMilliseconds(500), UpdateProgressBar);
         }
 
-        private void OnScreenTapped(object sender, EventArgs e)
-        {
-            // Toggle play/pause on tap
-            if (_isPlaying)
-            {
-                ((LocalViewModel)BindingContext)?.MediaPlayer.Pause();
-                _isPlaying = false;
-            }
-            else
-            {
-                ((LocalViewModel)BindingContext)?.MediaPlayer.Play();
-                _isPlaying = true;
-            }
-
-            // Update play/pause button image based on the state
-            PlayPauseButton.Source = _isPlaying ? "pause.png" : "play.png";
-        }
-
         protected override void OnAppearing()
         {
             base.OnAppearing();
+            var mediaPlayer = ((LocalViewModel)BindingContext)?.MediaPlayer;
+
+            // Check if the media player is playing and update the button state accordingly
+            if (mediaPlayer != null)
+            {
+                _isPlaying = mediaPlayer.IsPlaying;
+                PlayPauseButton.Source = _isPlaying ? "Pause.png" : "Play.png";
+            }
+
             ((LocalViewModel)BindingContext)?.OnAppearing();
         }
 
         protected override void OnDisappearing()
         {
             base.OnDisappearing();
-            ((LocalViewModel)BindingContext)?.OnDisappearing();
+            _isPageDisappearing = true;
+            DisposeMediaPlayer();
+        }
+
+        private void DisposeMediaPlayer()
+        {
+            var mediaPlayer = ((LocalViewModel)BindingContext)?.MediaPlayer;
+            if (mediaPlayer != null && mediaPlayer.IsPlaying)
+            {
+                try
+                {
+                    mediaPlayer.Stop(); // Ensure it stops before disposing
+                    mediaPlayer.Dispose();
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Error disposing MediaPlayer: {ex.Message}");
+                }
+            }
         }
 
         private void VideoView_MediaPlayerChanged(object sender, MediaPlayerChangedEventArgs e)
@@ -60,20 +70,130 @@ namespace Nyaa_Streamer
             ((LocalViewModel)BindingContext)?.OnVideoViewInitialized();
         }
 
-        private bool UpdateProgressBar()
+        private void OnScreenTapped(object sender, EventArgs e)
+        {
+            ControlBar.IsVisible = !ControlBar.IsVisible;
+
+            if (ControlBar.IsVisible)
+            {
+                Device.StartTimer(TimeSpan.FromSeconds(3), () =>
+                {
+                    ControlBar.IsVisible = false;
+                    return false; // Stops the timer
+                });
+            }
+        }
+
+        private void OnPlayPauseButtonClicked(object sender, EventArgs e)
         {
             var mediaPlayer = ((LocalViewModel)BindingContext)?.MediaPlayer;
-
-            if (!_isDragging && mediaPlayer != null && mediaPlayer.Media != null && mediaPlayer.Length > 0)
+            if (mediaPlayer != null)
             {
-                // Update progress based on the percentage (0-1)
-                ProgressBar.Value = (double)mediaPlayer.Time / mediaPlayer.Length;
+                if (_isPlaying)
+                {
+                    mediaPlayer.Pause();
+                    PlayPauseButton.Source = "Play.png";
+                }
+                else
+                {
+                    mediaPlayer.Play();
+                    PlayPauseButton.Source = "Pause.png";
+                }
 
-                // Update the time label
-                TimeLabel.Text = $"{TimeSpan.FromMilliseconds(mediaPlayer.Time):mm\\:ss} / {TimeSpan.FromMilliseconds(mediaPlayer.Length):mm\\:ss}";
+                _isPlaying = !_isPlaying;
+            }
+        }
+
+        private void OnSeekBackwardClicked(object sender, EventArgs e)
+        {
+            var mediaPlayer = ((LocalViewModel)BindingContext)?.MediaPlayer;
+            if (mediaPlayer != null)
+            {
+                // Prevent time from going below 0
+                if (mediaPlayer.Time <= 10000)
+                {
+                    mediaPlayer.Time = 0; // Set time to 0 if less than 10 seconds
+                }
+                else
+                {
+                    mediaPlayer.Time -= 10000; // Seek backward 10 seconds
+                }
+            }
+        }
+
+        private void OnSeekForwardClicked(object sender, EventArgs e)
+        {
+            var mediaPlayer = ((LocalViewModel)BindingContext)?.MediaPlayer;
+            if (mediaPlayer != null)
+            {
+                // Prevent seeking beyond video length
+                if (mediaPlayer.Time + 10000 > mediaPlayer.Length)
+                {
+                    mediaPlayer.Time = mediaPlayer.Length; // Set time to video length
+                }
+                else
+                {
+                    mediaPlayer.Time += 10000; // Seek forward 10 seconds
+                }
+            }
+        }
+
+        private void OnSkipOpeningClicked(object sender, EventArgs e)
+        {
+            var mediaPlayer = ((LocalViewModel)BindingContext)?.MediaPlayer;
+            if (mediaPlayer != null)
+            {
+                // Prevent skipping beyond video length
+                if (mediaPlayer.Time + 90000 > mediaPlayer.Length)
+                {
+                    mediaPlayer.Time = mediaPlayer.Length; // Set time to video length
+                }
+                else
+                {
+                    mediaPlayer.Time += 90000; // Skip forward 90 seconds
+                }
+            }
+        }
+
+        private void OnUnSkipOpeningClicked(object sender, EventArgs e)
+        {
+            var mediaPlayer = ((LocalViewModel)BindingContext)?.MediaPlayer;
+            if (mediaPlayer != null)
+            {
+                // Prevent time from going below 0
+                if (mediaPlayer.Time <= 90000)
+                {
+                    mediaPlayer.Time = 0; // Set time to 0 if less than 90 seconds
+                }
+                else
+                {
+                    mediaPlayer.Time -= 90000; // Unskip back 90 seconds
+                }
+            }
+        }
+
+        private void OnProgressBarDragCompleted(object sender, EventArgs e)
+        {
+            var mediaPlayer = ((LocalViewModel)BindingContext)?.MediaPlayer;
+            if (mediaPlayer != null && !_isDragging)
+            {
+                mediaPlayer.Time = (long)(ProgressBar.Value * mediaPlayer.Length);
+            }
+        }
+
+        private bool UpdateProgressBar()
+        {
+            if (_isPageDisappearing) return false; // Stop updating if page is disappearing
+
+            var mediaPlayer = ((LocalViewModel)BindingContext)?.MediaPlayer;
+            if (mediaPlayer != null && !mediaPlayer.IsPlaying)
+            {
+                ProgressBar.Value = mediaPlayer.Time / (double)mediaPlayer.Length;
+                TimeLabel.Text = $"{mediaPlayer.Time / 60000}:{(mediaPlayer.Time % 60000) / 1000:D2} / " +
+                                 $"{mediaPlayer.Length / 60000}:{(mediaPlayer.Length % 60000) / 1000:D2}";
             }
 
-            return true; // Continue updating
+            return true; // Keep the timer running
         }
     }
 }

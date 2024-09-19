@@ -5,10 +5,6 @@
              xmlns:local="clr-namespace:Nyaa_Streamer"
              x:Class="Nyaa_Streamer.LibVLCLocalPage"
              BackgroundColor="Black">
-    <ContentPage.BindingContext>
-        <local:LocalViewModel MediaUri="{Binding SelectedMediaUri}" />
-    </ContentPage.BindingContext>
-
     <Grid>
         <shared:VideoView x:Name="VideoView"
                           MediaPlayer="{Binding MediaPlayer}"
@@ -54,7 +50,6 @@
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
 
-                <!-- Progress Bar -->
                 <Slider x:Name="ProgressBar"
                         Grid.Row="0"
                         Grid.Column="0"
@@ -68,7 +63,6 @@
                         MinimumTrackColor="White"
                         DragCompleted="OnProgressBarDragCompleted" />
 
-                <!-- Control Buttons -->
                 <ImageButton x:Name="SeekBackwardButton"
                              Grid.Row="2"
                              Grid.Column="2"
@@ -114,7 +108,6 @@
                              BackgroundColor="Transparent"
                              Clicked="OnUnSkipOpeningClicked" />
 
-                <!-- Time Display -->
                 <Label x:Name="TimeLabel"
                        Grid.Row="1"
                        Grid.Column="0"
