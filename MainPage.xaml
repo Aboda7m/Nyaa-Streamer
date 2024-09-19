@@ -110,7 +110,7 @@
                 <!-- Button to Start manager with Selected -->
                 <Button
                     x:Name="ManagerBtn"
-                    Text="Start manager"
+                    Text="Open Download Manager"
                     BackgroundColor="#4CAF50"
                     TextColor="#FFF"
                     IsEnabled="False"
