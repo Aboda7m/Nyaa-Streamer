@@ -222,10 +222,10 @@ namespace Nyaa_Streamer
                 // Stop media and reset play button if video ends
                 if (mediaPlayer.Time >= mediaPlayer.Length)
                 {
-                    mediaPlayer.Stop();
+                    mediaPlayer.Pause();
                     _isPlaying = false;
                     PlayPauseButton.Source = "Play.png"; // Reset to play button
-                    return false; // Stop updating
+                    //return false; // Stop updating // it broke aapp so commented
                 }
             }
 
