@@ -244,7 +244,7 @@ namespace Nyaa_Streamer
             await Navigation.PushModalAsync(new MenuPopUpPage(this));
         }
 
-        public async void NavigateToDownloadedFilesPage()
+        public async Task NavigateToDownloadedFilesPage()
         {
             var downloadedFilesPage = new DownloadedFilesPage();
             await Navigation.PushAsync(downloadedFilesPage);

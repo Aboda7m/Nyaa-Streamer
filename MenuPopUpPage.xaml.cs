@@ -21,10 +21,10 @@ public partial class MenuPopUpPage : ContentPage
     private async void OnOption2Clicked(object sender, EventArgs e)
     {
         // Navigate to the DownloadedFilesPage
-        _mainPage.NavigateToDownloadedFilesPage();
+        await _mainPage.NavigateToDownloadedFilesPage();
 
         // Optionally close the popup after the action
-        await Navigation.PopModalAsync();
+        //await Navigation.PopModalAsync();
     }
 
 
