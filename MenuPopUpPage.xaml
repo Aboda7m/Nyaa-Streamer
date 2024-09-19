@@ -16,7 +16,7 @@
     <VerticalStackLayout Padding="20" Spacing="15" VerticalOptions="Center">
         <!-- Menu Options -->
         <Button Text="Clear Downloads" Clicked="OnOption1Clicked" />
-        <Button Text="Clear Registered Torrents" Clicked="OnOption2Clicked" />
+        <Button Text="Open Downloads Folder" Clicked="OnOption2Clicked" />
         <Button Text="Close" Clicked="OnCloseClicked" />
     </VerticalStackLayout>
     </Grid>
