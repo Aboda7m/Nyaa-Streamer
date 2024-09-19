@@ -46,10 +46,11 @@ namespace Nyaa_Streamer
         private void DisposeMediaPlayer()
         {
             var mediaPlayer = ((MainViewModel)BindingContext)?.MediaPlayer;
-            if (mediaPlayer != null)
+            if (mediaPlayer != null && mediaPlayer.IsPlaying)
             {
                 try
                 {
+                    mediaPlayer.Stop(); // Ensure it stops before disposing
                     mediaPlayer.Dispose();
                 }
                 catch (Exception ex)
@@ -58,6 +59,7 @@ namespace Nyaa_Streamer
                 }
             }
         }
+
 
         private void VideoView_MediaPlayerChanged(object sender, MediaPlayerChangedEventArgs e)
         {
@@ -128,7 +130,15 @@ namespace Nyaa_Streamer
             var mediaPlayer = ((MainViewModel)BindingContext)?.MediaPlayer;
             if (mediaPlayer != null)
             {
-                mediaPlayer.Time += 10000; // Seek forward 10 seconds
+                // Prevent seeking beyond video length
+                if (mediaPlayer.Time + 10000 > mediaPlayer.Length)
+                {
+                    mediaPlayer.Time = mediaPlayer.Length; // Set time to video length
+                }
+                else
+                {
+                    mediaPlayer.Time += 10000; // Seek forward 10 seconds
+                }
             }
         }
 
@@ -137,7 +147,15 @@ namespace Nyaa_Streamer
             var mediaPlayer = ((MainViewModel)BindingContext)?.MediaPlayer;
             if (mediaPlayer != null)
             {
-                mediaPlayer.Time += 90000; // Skip forward 90 seconds
+                // Prevent skipping beyond video length
+                if (mediaPlayer.Time + 90000 > mediaPlayer.Length)
+                {
+                    mediaPlayer.Time = mediaPlayer.Length; // Set time to video length
+                }
+                else
+                {
+                    mediaPlayer.Time += 90000; // Skip forward 90 seconds
+                }
             }
         }
 
@@ -190,10 +208,20 @@ namespace Nyaa_Streamer
 
                 // Update the time label
                 TimeLabel.Text = $"{TimeSpan.FromMilliseconds(mediaPlayer.Time):mm\\:ss} / {TimeSpan.FromMilliseconds(mediaPlayer.Length):mm\\:ss}";
+
+                // Stop media and reset play button if video ends
+                if (mediaPlayer.Time >= mediaPlayer.Length)
+                {
+                    mediaPlayer.Stop();
+                    _isPlaying = false;
+                    PlayPauseButton.Source = "Play.png"; // Reset to play button
+                    return false; // Stop updating progress
+                }
             }
 
             return true; // Continue updating
         }
+
 
         private string UpdateTimeBar()
         {
