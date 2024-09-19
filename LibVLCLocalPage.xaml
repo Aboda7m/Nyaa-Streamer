@@ -5,6 +5,10 @@
              xmlns:local="clr-namespace:Nyaa_Streamer"
              x:Class="Nyaa_Streamer.LibVLCLocalPage"
              BackgroundColor="Black">
+    <ContentPage.BindingContext>
+        <local:LocalViewModel MediaUri="{Binding SelectedMediaUri}" />
+    </ContentPage.BindingContext>
+
     <Grid>
         <shared:VideoView x:Name="VideoView"
                           MediaPlayer="{Binding MediaPlayer}"
@@ -15,6 +19,7 @@
         <Grid VerticalOptions="End"
               HorizontalOptions="FillAndExpand"
               Padding="0">
+
             <Grid x:Name="ControlBar"
                   Padding="0"
                   VerticalOptions="End"
@@ -22,6 +27,16 @@
                   IsVisible="False"
                   RowSpacing="10"
                   ColumnSpacing="10">
+
+                <!-- Background Image -->
+                <Image x:Name="barImage"
+                       Source="bar.jpg"
+                       Aspect="AspectFill"
+                       HorizontalOptions="FillAndExpand"
+                       VerticalOptions="FillAndExpand"
+                       Grid.RowSpan="3"
+                       Grid.ColumnSpan="7"
+                       ZIndex="-1" />
 
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
@@ -39,6 +54,7 @@
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
 
+                <!-- Progress Bar -->
                 <Slider x:Name="ProgressBar"
                         Grid.Row="0"
                         Grid.Column="0"
@@ -49,7 +65,18 @@
                         BackgroundColor="Transparent"
                         ThumbColor="White"
                         MaximumTrackColor="Gray"
-                        MinimumTrackColor="White" />
+                        MinimumTrackColor="White"
+                        DragCompleted="OnProgressBarDragCompleted" />
+
+                <!-- Control Buttons -->
+                <ImageButton x:Name="SeekBackwardButton"
+                             Grid.Row="2"
+                             Grid.Column="2"
+                             Source="back.png"
+                             WidthRequest="30"
+                             HeightRequest="30"
+                             BackgroundColor="Transparent"
+                             Clicked="OnSeekBackwardClicked" />
 
                 <ImageButton x:Name="PlayPauseButton"
                              Grid.Row="2"
@@ -57,8 +84,37 @@
                              Source="play.png"
                              WidthRequest="30"
                              HeightRequest="30"
-                             BackgroundColor="Transparent" />
+                             BackgroundColor="Transparent"
+                             Clicked="OnPlayPauseButtonClicked" />
 
+                <ImageButton x:Name="SeekForwardButton"
+                             Grid.Row="2"
+                             Grid.Column="4"
+                             Source="forward.png"
+                             WidthRequest="30"
+                             HeightRequest="30"
+                             BackgroundColor="Transparent"
+                             Clicked="OnSeekForwardClicked" />
+
+                <ImageButton x:Name="SkipOpeningButton"
+                             Grid.Row="2"
+                             Grid.Column="5"
+                             Source="skip.png"
+                             WidthRequest="30"
+                             HeightRequest="30"
+                             BackgroundColor="Transparent"
+                             Clicked="OnSkipOpeningClicked" />
+
+                <ImageButton x:Name="UnSkipOpeningButton"
+                             Grid.Row="2"
+                             Grid.Column="1"
+                             Source="Unskip.png"
+                             WidthRequest="30"
+                             HeightRequest="30"
+                             BackgroundColor="Transparent"
+                             Clicked="OnUnSkipOpeningClicked" />
+
+                <!-- Time Display -->
                 <Label x:Name="TimeLabel"
                        Grid.Row="1"
                        Grid.Column="0"

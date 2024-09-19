@@ -16,10 +16,32 @@ namespace Nyaa_Streamer
             InitializeComponent();
             BindingContext = new LocalViewModel(mediaUri);
 
+            // Add tap gesture recognizer for touch controls
+            var tapGestureRecognizer = new TapGestureRecognizer();
+            tapGestureRecognizer.Tapped += OnScreenTapped;
+            VideoView.GestureRecognizers.Add(tapGestureRecognizer);
+
             // Start updating the progress bar
             Device.StartTimer(TimeSpan.FromMilliseconds(500), UpdateProgressBar);
         }
 
+        private void OnScreenTapped(object sender, EventArgs e)
+        {
+            // Toggle play/pause on tap
+            if (_isPlaying)
+            {
+                ((LocalViewModel)BindingContext)?.MediaPlayer.Pause();
+                _isPlaying = false;
+            }
+            else
+            {
+                ((LocalViewModel)BindingContext)?.MediaPlayer.Play();
+                _isPlaying = true;
+            }
+
+            // Update play/pause button image based on the state
+            PlayPauseButton.Source = _isPlaying ? "pause.png" : "play.png";
+        }
 
         protected override void OnAppearing()
         {
