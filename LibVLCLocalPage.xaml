@@ -5,10 +5,6 @@
              xmlns:local="clr-namespace:Nyaa_Streamer"
              x:Class="Nyaa_Streamer.LibVLCLocalPage"
              BackgroundColor="Black">
-    <ContentPage.BindingContext>
-        <local:LocalViewModel MediaUri="{Binding SelectedMediaUri}" />
-    </ContentPage.BindingContext>
-
     <Grid>
         <shared:VideoView x:Name="VideoView"
                           MediaPlayer="{Binding MediaPlayer}"
@@ -19,7 +15,6 @@
         <Grid VerticalOptions="End"
               HorizontalOptions="FillAndExpand"
               Padding="0">
-
             <Grid x:Name="ControlBar"
                   Padding="0"
                   VerticalOptions="End"

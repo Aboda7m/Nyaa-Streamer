@@ -1,3 +1,5 @@
+#if WINDOWS
+#else
 using LibVLCSharp.MAUI;
 using LibVLCSharp.Shared;
 using System.Diagnostics;
@@ -17,6 +19,7 @@ namespace Nyaa_Streamer
             // Start updating the progress bar
             Device.StartTimer(TimeSpan.FromMilliseconds(500), UpdateProgressBar);
         }
+
 
         protected override void OnAppearing()
         {
@@ -52,3 +55,4 @@ namespace Nyaa_Streamer
         }
     }
 }
+#endif

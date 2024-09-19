@@ -9,8 +9,21 @@ namespace Nyaa_Streamer
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public LocalViewModel(Uri mediaUri)
+        private Uri _mediaUri;
+        public Uri MediaUri
         {
+            get => _mediaUri;
+            set => Set(nameof(MediaUri), ref _mediaUri, value);
+        }
+
+        public LocalViewModel()
+        {
+            // Parameterless constructor
+        }
+
+        public LocalViewModel(Uri mediaUri) : this() // Calls the parameterless constructor
+        {
+            MediaUri = mediaUri;
             Initialize(mediaUri);
             Debug.WriteLine($"LocalViewModel initialized with URI: {mediaUri}");
         }

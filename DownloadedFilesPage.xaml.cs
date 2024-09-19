@@ -47,9 +47,13 @@ namespace Nyaa_Streamer
         {
             if (!string.IsNullOrEmpty(selectedFilePath))
             {
+
+#if WINDOWS
+#else
                 // Navigate to the local video page and play the selected file
                 var mediaUri = new Uri(selectedFilePath);
                 await Navigation.PushAsync(new LibVLCLocalPage(mediaUri));
+#endif
             }
             else
             {
