@@ -111,7 +111,15 @@ namespace Nyaa_Streamer
             var mediaPlayer = ((MainViewModel)BindingContext)?.MediaPlayer;
             if (mediaPlayer != null)
             {
-                mediaPlayer.Time -= 10000; // Seek backward 10 seconds
+                // Prevent time from going below 0
+                if (mediaPlayer.Time <= 10000)
+                {
+                    mediaPlayer.Time = 0; // Set time to 0 if less than 10 seconds
+                }
+                else
+                {
+                    mediaPlayer.Time -= 10000; // Seek backward 10 seconds
+                }
             }
         }
 
@@ -138,7 +146,15 @@ namespace Nyaa_Streamer
             var mediaPlayer = ((MainViewModel)BindingContext)?.MediaPlayer;
             if (mediaPlayer != null)
             {
-                mediaPlayer.Time -= 90000; // Skip backward 90 seconds
+                // Prevent time from going below 0
+                if (mediaPlayer.Time <= 90000)
+                {
+                    mediaPlayer.Time = 0; // Set time to 0 if less than 90 seconds
+                }
+                else
+                {
+                    mediaPlayer.Time -= 90000; // Skip backward 90 seconds
+                }
             }
         }
 
