@@ -28,23 +28,28 @@
                     </ListView>
                 </ScrollView>
 
-                <!-- Download Progress Section -->
-                <Label Text="Download Progress:" 
-                       FontAttributes="Bold" 
-                       IsVisible="False" 
-                       x:Name="ProgressLabel"/>
+                <!-- Container for progress bar and related elements -->
+                <Frame BackgroundColor="White" Opacity="0.7" Padding="10" CornerRadius="5" IsVisible="True" x:Name="ProgressContainer">
+                    <StackLayout>
+                        <!-- Download Progress Label -->
+                        <Label Text="Download Progress:" 
+                               FontAttributes="Bold" 
+                               TextColor="Black"
+                               x:Name="ProgressLabel"/>
 
-                <ProgressBar x:Name="DownloadProgressBar" 
-                             IsVisible="False"
-                             Progress="0" 
-                             HorizontalOptions="FillAndExpand"
-                             HeightRequest="10"/>
+                        <!-- Progress Bar for download -->
+                        <ProgressBar x:Name="DownloadProgressBar" 
+                                     Progress="0" 
+                                     HorizontalOptions="FillAndExpand"
+                                     HeightRequest="10"/>
 
-                <!-- Label to show the detailed progress in bytes -->
-                <Label x:Name="DownloadProgressText" 
-                       Text=""
-                       IsVisible="False"
-                       HorizontalOptions="Center"/>
+                        <!-- Label to show detailed progress in bytes -->
+                        <Label x:Name="DownloadProgressText" 
+                               Text=""
+                               TextColor="Black"
+                               HorizontalOptions="Center"/>
+                    </StackLayout>
+                </Frame>
 
                 <!-- Button to start streaming -->
                 <Button x:Name="StreamButton"
