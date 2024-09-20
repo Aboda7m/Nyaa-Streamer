@@ -19,6 +19,7 @@ namespace Nyaa_Streamer
         private List<TorrentManager> managers; // List to hold multiple TorrentManager instances
         private HttpListener redirectListener; // HTTP redirect listener
         private string currentStreamUrl; // URL of the currently streaming file
+        private bool isUpdatingProgress = false;
 
         public TorrentManagerPage(List<TorrentManager> managers)
         {
@@ -49,7 +50,10 @@ namespace Nyaa_Streamer
                             FileName = file.Path,
                             Size = file.Length,
                             File = file,
-                            SizeString = FormatBytes(file.Length)
+                            SizeString = FormatBytes(file.Length),
+                            BytesDownloaded= file.BytesDownloaded(),
+                            DownloadedString = FormatBytes(file.BytesDownloaded())
+
                         });
                         Debug.WriteLine("TorrentFiles.Add(new TorrentFile: " + file.Length);
                     }
@@ -64,6 +68,63 @@ namespace Nyaa_Streamer
         private void OnFileSelected(object sender, SelectedItemChangedEventArgs e)
         {
             StreamButton.IsEnabled = e.SelectedItem != null;
+            if (e.SelectedItem != null)
+            {
+                // Reset the progress bar when a file is selected
+                DownloadProgressBar.Progress = 0;
+                DownloadProgressBar.IsVisible = true;
+                ProgressLabel.IsVisible = true;
+                DownloadProgressText.IsVisible = true;
+
+                // Start updating the progress bar
+                var selectedFile = e.SelectedItem as TorrentFile;
+                StartProgressUpdate(selectedFile);
+            }
+            else
+            {
+                DownloadProgressBar.IsVisible = false;
+                ProgressLabel.IsVisible = false;
+                DownloadProgressText.IsVisible = false;
+            }
+        }
+
+        private async void StartProgressUpdate(TorrentFile selectedFile)
+        {
+            if (isUpdatingProgress)
+                return;
+
+            isUpdatingProgress = true;
+
+            while (isUpdatingProgress)
+            {
+                // Get the manager handling the selected file
+                var manager = managers.FirstOrDefault(m => m.Files.Contains(selectedFile.File));
+                if (manager != null && selectedFile != null)
+                {
+                    // Update the file's downloaded bytes
+                    selectedFile.BytesDownloaded = selectedFile.File.BytesDownloaded();
+                    selectedFile.DownloadedString = FormatBytes(selectedFile.BytesDownloaded);
+
+                    // Calculate the progress as a percentage
+                    double progress = (double)selectedFile.BytesDownloaded / selectedFile.Size;
+
+                    // Update the progress bar and text
+                    DownloadProgressBar.Progress = progress;
+                    DownloadProgressText.Text = $"{selectedFile.DownloadedString} / {selectedFile.SizeString} downloaded";
+
+                    Debug.WriteLine($"Progress: {progress:P}");
+
+                    // Stop updating if the file is fully downloaded
+                    if (selectedFile.BytesDownloaded >= selectedFile.Size)
+                    {
+                        isUpdatingProgress = false;
+                        break;
+                    }
+                }
+
+                // Wait for 1 second before updating again
+                await Task.Delay(1000);
+            }
         }
 
         private async void OnStreamButtonClicked(object sender, EventArgs e)
@@ -237,6 +298,9 @@ namespace Nyaa_Streamer
         public string FileName { get; set; }
         public long Size { get; set; }
         public string SizeString { get; set; }
+        public long BytesDownloaded { get; set; } // Track the downloaded bytes
+        public string DownloadedString { get; set; }
+        // => $"{FormatBytes(BytesDownloaded)} / {SizeString} downloaded"; // Format download progress
         public MonoTorrent.ITorrentManagerFile File { get; set; }
     }
 }
