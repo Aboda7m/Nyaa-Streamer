@@ -74,8 +74,8 @@
                              Grid.Row="2"
                              Grid.Column="2"
                              Source="back.png"
-                             WidthRequest="30"
-                             HeightRequest="30"
+                             WidthRequest="60"
+                             HeightRequest="60"
                              BackgroundColor="Transparent"
                              Clicked="OnSeekBackwardClicked" />
 
@@ -83,8 +83,8 @@
                              Grid.Row="2"
                              Grid.Column="3"
                              Source="play.png"
-                             WidthRequest="30"
-                             HeightRequest="30"
+                             WidthRequest="60"
+                             HeightRequest="60"
                              BackgroundColor="Transparent"
                              Clicked="OnPlayPauseButtonClicked" />
 
@@ -92,8 +92,8 @@
                              Grid.Row="2"
                              Grid.Column="4"
                              Source="forward.png"
-                             WidthRequest="30"
-                             HeightRequest="30"
+                             WidthRequest="60"
+                             HeightRequest="60"
                              BackgroundColor="Transparent"
                              Clicked="OnSeekForwardClicked" />
 
@@ -101,8 +101,8 @@
                              Grid.Row="2"
                              Grid.Column="5"
                              Source="skip.png"
-                             WidthRequest="30"
-                             HeightRequest="30"
+                             WidthRequest="60"
+                             HeightRequest="60"
                              BackgroundColor="Transparent"
                              Clicked="OnSkipOpeningClicked" />
 
@@ -110,8 +110,8 @@
                              Grid.Row="2"
                              Grid.Column="1"
                              Source="Unskip.png"
-                             WidthRequest="30"
-                             HeightRequest="30"
+                             WidthRequest="60"
+                             HeightRequest="60"
                              BackgroundColor="Transparent"
                              Clicked="OnUnSkipOpeningClicked" />
 
