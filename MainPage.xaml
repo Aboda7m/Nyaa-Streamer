@@ -14,7 +14,7 @@
         <Grid>
             <Image
                 x:Name="backgroundImage"
-                Source="backgroung.jpg"
+                Source="background.jpg"
                 Aspect="AspectFill"
                 HorizontalOptions="Start"/>
         </Grid>
