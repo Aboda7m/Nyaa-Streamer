@@ -36,8 +36,8 @@ namespace Nyaa_Streamer
             // Check if the media player is playing and update the button state accordingly
             if (mediaPlayer != null)
             {
-                _isPlaying = mediaPlayer.IsPlaying;
-                PlayPauseButton.Source = _isPlaying ? "Pause.png" : "Play.png";
+                _isPlaying = true;
+                PlayPauseButton.Source ="Pause.png" ;
             }
 
     ((MainViewModel)BindingContext).OnAppearing();
