@@ -3,7 +3,6 @@ using MonoTorrent;
 using MonoTorrent.Client;
 using MonoTorrent.Streaming;
 using Microsoft.Maui.Controls;
-using System.Collections.ObjectModel; // Add this using statement
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -11,13 +10,15 @@ using System.IO;
 using System.Net;
 using System.Linq;
 using System.Diagnostics;
+using Microsoft.Win32;
+using CommunityToolkit.Maui.Views;
+//using Android.Net.Rtp;
 
 namespace Nyaa_Streamer
 {
     public partial class MainPage : ContentPage
     {
         private const string NyaaBaseUrl = "https://nyaa.si/?f=0&c=0_0&q={0}&s=seeders&o=desc";
-        private ObservableCollection<string> resultsList = new ObservableCollection<string>(); // Change to ObservableCollection
         private Dictionary<string, string> resultsDictionary = new Dictionary<string, string>();
         private string downloadDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"downloads");
         private ClientEngine engine;
@@ -28,9 +29,6 @@ namespace Nyaa_Streamer
             InitializeComponent();
             Directory.CreateDirectory(downloadDirectory);
 
-            // Populate ListView with the ObservableCollection
-            ResultsListView.ItemsSource = resultsList;
-
             var engineSettings = new EngineSettingsBuilder()
             {
                 CacheDirectory = Path.Combine(downloadDirectory, "cache"),
@@ -40,6 +38,8 @@ namespace Nyaa_Streamer
 
             engine = new ClientEngine(engineSettings);
             Debug.WriteLine("ClientEngine initialized.");
+
+            
         }
 
         private async void OnSearchButtonClicked(object sender, EventArgs e)
@@ -49,15 +49,7 @@ namespace Nyaa_Streamer
             if (!string.IsNullOrEmpty(animeName))
             {
                 var results = await SearchNyaaAsync(animeName);
-                // Update UI on the main thread
-                MainThread.BeginInvokeOnMainThread(() =>
-                {
-                    resultsList.Clear(); // Clear previous results
-                    foreach (var title in results.Keys)
-                    {
-                        resultsList.Add(title); // Add new results
-                    }
-                });
+                ResultsListView.ItemsSource = results.Keys; // Set titles as the source
                 resultsDictionary = results; // Store the results dictionary
             }
         }
@@ -103,7 +95,7 @@ namespace Nyaa_Streamer
 
             return resultTitles;
         }
-        
+
         private void OnResultSelected(object sender, SelectedItemChangedEventArgs e)
         {
             if (e.SelectedItem != null)
