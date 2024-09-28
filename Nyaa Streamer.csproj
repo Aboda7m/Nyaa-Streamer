@@ -57,6 +57,7 @@
 	  <ApplicationId>com.Aboda7m.nyaastreamer</ApplicationId>
 	  <WarningLevel>9999</WarningLevel>
 	  <Optimize>True</Optimize>
+	  <BuildIpa>True</BuildIpa>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-maccatalyst|AnyCPU'">
@@ -79,6 +80,7 @@
 	  <ApplicationId>com.Aboda7m.nyaastreamer</ApplicationId>
 	  <Optimize>True</Optimize>
 	  <WarningLevel>9999</WarningLevel>
+	  <BuildIpa>True</BuildIpa>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-maccatalyst|AnyCPU'">
