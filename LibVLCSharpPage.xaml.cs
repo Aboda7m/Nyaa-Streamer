@@ -8,7 +8,6 @@ using MonoTorrent.Streaming;
 using System.ComponentModel;
 using LibVLCSharp;
 using Microsoft.Maui.Controls;
-using Android.Media;
 
 namespace Nyaa_Streamer
 {
@@ -35,8 +34,7 @@ namespace Nyaa_Streamer
         {
             InitializeComponent();
             _httpStream = httpStream;
-
-            Initialize();
+            Initialize(); // Call the initialize method
 
             var tapGestureRecognizer = new TapGestureRecognizer();
             tapGestureRecognizer.Tapped += OnScreenTapped;
@@ -47,20 +45,18 @@ namespace Nyaa_Streamer
         }
 
         // New constructor that takes a media URI as an input
-        public LibVLCSharpPage(Uri mediaUri)  // Calls the existing constructor
+        public LibVLCSharpPage(Uri mediaUri)
         {
-            //MediaUri = mediaUri
             InitializeComponent();
             Initialize(mediaUri);
             Debug.WriteLine($"LibVLCSharpPage initialized with URI: {mediaUri}");
-                var tapGestureRecognizer = new TapGestureRecognizer();
+            var tapGestureRecognizer = new TapGestureRecognizer();
             tapGestureRecognizer.Tapped += OnScreenTapped;
             VideoView.GestureRecognizers.Add(tapGestureRecognizer);
 
             // Start updating the progress bar
             Device.StartTimer(TimeSpan.FromMilliseconds(500), UpdateProgressBar);
         }
-
 
         private void Set<T>(string propertyName, ref T field, T value)
         {
@@ -82,7 +78,7 @@ namespace Nyaa_Streamer
         }
 
         // Overloaded Initialize method to accept media URI
-        private void Initialize(Uri mediaUri )
+        private void Initialize(Uri mediaUri)
         {
             LibVLC = new LibVLC(enableDebugLogs: true);
             var media = new Media(LibVLC, mediaUri ?? new Uri("http://localhost:8888")); // Default to localhost if mediaUri is null
@@ -91,6 +87,7 @@ namespace Nyaa_Streamer
             // Subscribe to MediaPlayer.MediaChanged event
             MediaPlayer.MediaChanged += OnMediaPlayerMediaChanged;
         }
+
         protected override void OnAppearing()
         {
             base.OnAppearing();
@@ -197,9 +194,6 @@ namespace Nyaa_Streamer
                 Debug.WriteLine($"Error in OnPlayPauseButtonClicked: {ex.Message}");
             }
         }
-
-       
-
 
         private void OnSeekBackwardClicked(object sender, EventArgs e)
         {
