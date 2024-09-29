@@ -149,22 +149,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Compile Update="webViewPage.xaml.cs">
-	    <DependentUpon>webViewPage.xaml</DependentUpon>
-	  </Compile>
-	</ItemGroup>
-
-	<ItemGroup>
 	  <MauiXaml Update="DownloadedFilesPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="LibVLCLocalPage.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
 	  <MauiXaml Update="MenuPopUpPage.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="webViewPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	</ItemGroup>

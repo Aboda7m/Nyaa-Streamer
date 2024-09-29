@@ -8,6 +8,7 @@ using MonoTorrent.Streaming;
 using System.ComponentModel;
 using LibVLCSharp;
 using Microsoft.Maui.Controls;
+using Android.Media;
 
 namespace Nyaa_Streamer
 {
@@ -45,6 +46,22 @@ namespace Nyaa_Streamer
             Device.StartTimer(TimeSpan.FromMilliseconds(500), UpdateProgressBar);
         }
 
+        // New constructor that takes a media URI as an input
+        public LibVLCSharpPage(Uri mediaUri)  // Calls the existing constructor
+        {
+            //MediaUri = mediaUri
+            InitializeComponent();
+            Initialize(mediaUri);
+            Debug.WriteLine($"LibVLCSharpPage initialized with URI: {mediaUri}");
+                var tapGestureRecognizer = new TapGestureRecognizer();
+            tapGestureRecognizer.Tapped += OnScreenTapped;
+            VideoView.GestureRecognizers.Add(tapGestureRecognizer);
+
+            // Start updating the progress bar
+            Device.StartTimer(TimeSpan.FromMilliseconds(500), UpdateProgressBar);
+        }
+
+
         private void Set<T>(string propertyName, ref T field, T value)
         {
             if (!EqualityComparer<T>.Default.Equals(field, value))
@@ -64,6 +81,16 @@ namespace Nyaa_Streamer
             MediaPlayer.MediaChanged += OnMediaPlayerMediaChanged;
         }
 
+        // Overloaded Initialize method to accept media URI
+        private void Initialize(Uri mediaUri )
+        {
+            LibVLC = new LibVLC(enableDebugLogs: true);
+            var media = new Media(LibVLC, mediaUri ?? new Uri("http://localhost:8888")); // Default to localhost if mediaUri is null
+            MediaPlayer = new LibVLCSharp.Shared.MediaPlayer(LibVLC) { Media = media };
+
+            // Subscribe to MediaPlayer.MediaChanged event
+            MediaPlayer.MediaChanged += OnMediaPlayerMediaChanged;
+        }
         protected override void OnAppearing()
         {
             base.OnAppearing();
