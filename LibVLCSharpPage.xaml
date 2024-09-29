@@ -5,10 +5,7 @@
              xmlns:local="clr-namespace:Nyaa_Streamer"
              x:Class="Nyaa_Streamer.LibVLCSharpPage"
              BackgroundColor="Black">
-    <ContentPage.BindingContext>
-        <local:MainViewModel />
-    </ContentPage.BindingContext>
-
+    
     <Grid>
         <shared:VideoView x:Name="VideoView"
                           MediaPlayer="{Binding MediaPlayer}"

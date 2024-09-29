@@ -30,7 +30,14 @@
 	<string>Assets.xcassets/appicon.appiconset</string>
 	<key>UIBackgroundModes</key>
 	<array>
+		<string>audio</string>
+		<string>location</string>
+		<string>voip</string>
+		<string>external-accessory</string>
+		<string>bluetooth-central</string>
+		<string>bluetooth-peripheral</string>
 		<string>fetch</string>
+		<string>remote-notification</string>
 		<string>processing</string>
 	</array>
 	<key>NSAppTransportSecurity</key>
@@ -79,5 +86,7 @@
 		<key>UIApplicationSupportsMultipleScenes</key>
 		<false/>
 	</dict>
+	<key>CFBundleIdentifier</key>
+	<string></string>
 </dict>
 </plist>
