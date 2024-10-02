@@ -1,26 +1,61 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              x:Class="Nyaa_Streamer.TrendingAnimePage">
 
+    <!-- Toolbar Items -->
     <ContentPage.ToolbarItems>
         <ToolbarItem Text="Refresh" IconImageSource="refresh.png" Clicked="OnRefreshClicked"/>
     </ContentPage.ToolbarItems>
 
-    <StackLayout Padding="10">
-        <Label Text="Trending Anime" FontSize="24" FontAttributes="Bold" />
+    <!-- Main Grid to hold the background and content -->
+    <Grid>
 
-        <CollectionView ItemsSource="{Binding TrendingAnimeList}">
-            <CollectionView.ItemTemplate>
-                <DataTemplate>
-                    <StackLayout Padding="10">
-                        <Image Source="{Binding ImageUrl}" HeightRequest="150" />
-                        <Label Text="{Binding Title}" FontSize="18" />
-                        <Button Text="Watch/Download" Clicked="OnWatchDownloadClicked" />
-                    </StackLayout>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
-    </StackLayout>
+        <!-- Background Image -->
+        <Image
+            x:Name="backgroundImage"
+            Source="background.jpg"
+            Aspect="AspectFill"
+            HorizontalOptions="Fill"
+            VerticalOptions="Fill" />
+
+        <!-- ScrollView for page content -->
+        <ScrollView>
+            <StackLayout Padding="10" BackgroundColor="Transparent">
+
+                <Label Text="Trending Anime" 
+                       FontSize="24" 
+                       FontAttributes="Bold" 
+                       TextColor="White" 
+                       HorizontalOptions="Center" />
+
+                <CollectionView ItemsSource="{Binding TrendingAnimeList}">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <StackLayout Padding="10">
+                                <Image Source="{Binding ImageUrl}" 
+                                       HeightRequest="150" 
+                                       Aspect="AspectFit" />
+                                <Label Text="{Binding Title}" 
+                                       FontSize="18" 
+                                       TextColor="White" />
+
+                                <!-- Entry for Episode Number -->
+                                <Entry x:Name="EpisodeEntry" 
+                                       Placeholder="Enter episode number" 
+                                       Keyboard="Numeric" 
+                                       Margin="0,5,0,5"/>
+                                <Button Text="Watch/Download" 
+                                        Clicked="OnWatchDownloadClicked" />
+                            </StackLayout>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+            </StackLayout>
+        </ScrollView>
+
+    </Grid>
 
 </ContentPage>
