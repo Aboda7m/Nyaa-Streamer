@@ -41,10 +41,9 @@
                                        FontSize="18" 
                                        TextColor="White" />
 
-                                <!-- Entry for Episode Number -->
+                                <!-- Entry for any argument (sub-group, file format, etc.) -->
                                 <Entry x:Name="EpisodeEntry" 
-                                       Placeholder="Enter episode number" 
-                                       Keyboard="Numeric" 
+                                       Placeholder="Enter argument (sub-group or file format)" 
                                        Margin="0,5,0,5"/>
                                 <Button Text="Watch/Download" 
                                         Clicked="OnWatchDownloadClicked" />

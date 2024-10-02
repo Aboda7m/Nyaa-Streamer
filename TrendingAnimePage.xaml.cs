@@ -2,6 +2,7 @@ using System.Collections.ObjectModel;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
+using Microsoft.Maui.Controls;
 
 namespace Nyaa_Streamer
 {
@@ -25,11 +26,11 @@ namespace Nyaa_Streamer
         private async void OnRefreshClicked(object sender, EventArgs e)
         {
             await DisplayAlert("Refreshing", "Refreshing anime list...", "OK");
-            LoadTrendingAnime();
+            await LoadTrendingAnime();
         }
 
         // Method to fetch trending anime using Jikan API
-        private async void LoadTrendingAnime()
+        private async Task LoadTrendingAnime()
         {
             try
             {
@@ -66,32 +67,33 @@ namespace Nyaa_Streamer
             }
         }
 
-        // Placeholder for Watch/Download button functionality
+        // Method to handle Watch/Download button functionality
+        // Method to handle Watch/Download button functionality
         private async void OnWatchDownloadClicked(object sender, EventArgs e)
         {
             Button button = (Button)sender;
+            var parentStackLayout = (StackLayout)button.Parent; // Get the parent StackLayout of the Button
+
+            // Find the Entry in the parent StackLayout
+            Entry episodeEntry = (Entry)parentStackLayout.FindByName("EpisodeEntry");
+
+            // Get the text from the Entry
+            string episodeArgument = episodeEntry.Text;
+
             Anime selectedAnime = (Anime)button.BindingContext;
 
             // Show a popup with the anime title
-            await DisplayAlert("Watch/Download", $"You clicked Watch/Download for {selectedAnime.Title}", "OK");
+            await DisplayAlert("Watch/Download", $"You clicked Watch/Download for {selectedAnime.Title} {episodeArgument}", "OK");
 
-            // Return the anime title as a string (you can use it for further processing)
-            string animeTitle = selectedAnime.Title;
-
-            // Here you can call a method to search on nyaa.si with the animeTitle
-            SearchOnNyaaSi(animeTitle);
+            // Navigate to the MainPage and pass the anime title
+            var mainPage = new MainPage();
+            await Navigation.PushAsync(mainPage);
+            mainPage.OnReceiveAnimeTitle($"{selectedAnime.Title} {episodeArgument}"); // Call the method to handle the title
         }
+
+
 
         // Method to handle searching on nyaa.si
-        private void SearchOnNyaaSi(string animeTitle)
-        {
-            // Implement your logic to search on nyaa.si using the animeTitle
-            // This could be opening a browser or passing the title to another method
-            // Example: 
-            // var url = $"https://nyaa.si/?f=0&c=0_0&q={Uri.EscapeDataString(animeTitle)}";
-            // Launcher.OpenAsync(url); // This would open the URL in the default browser (if using Xamarin.Essentials)
-        }
-
 
         // Model for Anime
         public class Anime
@@ -100,7 +102,7 @@ namespace Nyaa_Streamer
             public string ImageUrl { get; set; }
         }
 
-        // Model for API responseemo
+        // Model for API response
         public class JikanApiResponse
         {
             public List<AnimeData> data { get; set; }

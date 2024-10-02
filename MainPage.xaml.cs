@@ -253,6 +253,12 @@ namespace Nyaa_Streamer
             await Navigation.PushAsync(downloadedFilesPage);
         }
 
+        public void OnReceiveAnimeTitle(string animeTitle)
+        {
+            // Use the anime title for your logic, e.g., perform a search
+            AnimeNameEntry.Text = animeTitle; // Set it to the entry for demonstration
+            OnSearchButtonClicked(null, null); // Trigger the search if necessary
+        }
     }
 
 
