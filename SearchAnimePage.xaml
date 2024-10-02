@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="AnimeLibraryApp.SearchAnimePage"
+             Title="Search Anime">
+
+    <StackLayout Padding="10">
+        <!-- Search Bar -->
+        <SearchBar Placeholder="Search for anime..."
+                   SearchButtonPressed="OnSearchClicked"
+                   x:Name="SearchBar"/>
+
+        <!-- Loading Indicator -->
+        <ActivityIndicator IsRunning="{Binding IsLoading}" IsVisible="{Binding IsLoading}"/>
+
+        <!-- Anime Results List -->
+        <CollectionView ItemsSource="{Binding AnimeList}"
+                        SelectionMode="Single"
+                        SelectionChanged="OnAnimeSelected">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <StackLayout Orientation="Horizontal" Padding="10">
+                        <Image Source="{Binding ImageUrl}" WidthRequest="100" HeightRequest="150" Aspect="AspectFit"/>
+                        <Label Text="{Binding Title}" VerticalOptions="Center" Margin="10,0,0,0" FontSize="16"/>
+                    </StackLayout>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </StackLayout>
+
+</ContentPage>
