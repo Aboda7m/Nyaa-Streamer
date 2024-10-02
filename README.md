@@ -11,6 +11,8 @@ The project includes the following main components:
 1. **Main Page**
 2. **Torrent Manager Page**
 3. **Video Player Page**
+4. **Trending Anime Page**  <!-- New Page Added -->
+5. **Search Page**  <!-- New Page Added -->
 
 ### Main Page
 
@@ -51,6 +53,22 @@ The `LibVLCSharpPage.xaml` is the custom video player page that uses the LibVLCS
 - **SeekForwardButton:** Moves the video forward by a set duration.
 - **SkipOpeningButton:** Skips the current video opening.
 - **UnSkipOpeningButton:** Reverts the skip if the opening was missed.
+
+### Trending Anime Page  <!-- New Page Section -->
+
+The `TrendingAnimePage.xaml` displays a list of trending anime titles. Users can view images and titles of popular anime, along with an entry field for additional arguments (like sub-groups or file formats).
+
+**Key Features:**
+- **CollectionView:** Displays a list of trending anime with images and titles.
+- **Watch/Download Button:** Initiates the watch/download process for the selected anime.
+
+### Search Page  <!-- New Page Section -->
+
+The `SearchPage.xaml` allows users to search for specific anime titles. This page provides a search interface and displays results based on user queries.
+
+**Key Features:**
+- **Search Bar:** Enables users to input their desired anime title.
+- **Results Display:** Shows the list of anime that match the search criteria.
 
 ## Setup and Build
 
