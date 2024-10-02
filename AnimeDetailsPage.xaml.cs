@@ -1,6 +1,6 @@
 using Microsoft.Maui.Controls;
 
-namespace AnimeLibraryApp
+namespace Nyaa_Streamer
 {
     public partial class AnimeDetailsPage : ContentPage
     {

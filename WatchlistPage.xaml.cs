@@ -1,4 +1,4 @@
-namespace AnimeLibraryApp;
+namespace Nyaa_Streamer;
 
 public partial class WatchlistPage : ContentPage
 {

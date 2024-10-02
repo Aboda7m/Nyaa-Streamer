@@ -1,6 +1,6 @@
 using System.Collections.ObjectModel;
 
-namespace AnimeLibraryApp
+namespace Nyaa_Streamer
 {
     public partial class FavoriteAnimePage : ContentPage
     {

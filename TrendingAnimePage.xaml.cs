@@ -3,7 +3,7 @@ using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 
-namespace AnimeLibraryApp
+namespace Nyaa_Streamer
 {
     public partial class TrendingAnimePage : ContentPage
     {

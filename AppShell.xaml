@@ -7,9 +7,20 @@
     Shell.FlyoutBehavior="Disabled"
     Title="Nyaa_Streamer">
 
-    <ShellContent
-        Title="Home"
-        ContentTemplate="{DataTemplate local:MainPage}"
-        Route="MainPage" />
 
+    <FlyoutItem Title="Home">
+        <ShellContent ContentTemplate="{DataTemplate local:MainPage}" />
+    </FlyoutItem>
+    <FlyoutItem Title="Trending">
+        <ShellContent ContentTemplate="{DataTemplate local:TrendingAnimePage}" />
+    </FlyoutItem>
+    <FlyoutItem Title="Favorites">
+        <ShellContent ContentTemplate="{DataTemplate local:FavoriteAnimePage}" />
+    </FlyoutItem>
+    <FlyoutItem Title="Watchlist">
+        <ShellContent ContentTemplate="{DataTemplate local:WatchlistPage}" />
+    </FlyoutItem>
+    <FlyoutItem Title="Search">
+        <ShellContent ContentTemplate="{DataTemplate local:SearchAnimePage}" />
+    </FlyoutItem>
 </Shell>

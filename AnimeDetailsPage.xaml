@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="AnimeLibraryApp.AnimeDetailsPage"
+             x:Class="Nyaa_Streamer.AnimeDetailsPage"
              Title="{Binding Title}">
     <StackLayout Padding="10">
         <!-- Anime Image -->
