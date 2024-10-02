@@ -38,8 +38,13 @@ namespace Nyaa_Streamer
 
             engine = new ClientEngine(engineSettings);
             Debug.WriteLine("ClientEngine initialized.");
+            Uri testUri = new Uri("https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4");
 
-            
+#if WINDOWS
+#else
+            //test libvlc
+            Navigation.PushAsync(new LibVLCSharpPage(testUri));
+#endif
         }
 
         private async void OnSearchButtonClicked(object sender, EventArgs e)
