@@ -10,8 +10,15 @@
             Aspect="AspectFill"
             HorizontalOptions="Fill"
             VerticalOptions="Fill" />
-        <Label Text="Sunday Anime List" 
-               HorizontalOptions="Center" 
-               VerticalOptions="Center" />
+
+        <ListView x:Name="AnimeListView" 
+                  VerticalOptions="FillAndExpand"
+                  BackgroundColor="Transparent">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <TextCell Text="{Binding Title}" Detail="{Binding Synopsis}" />
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
     </Grid>
 </ContentPage>

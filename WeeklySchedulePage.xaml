@@ -4,30 +4,31 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:Nyaa_Streamer"
+    xmlns:weekly="clr-namespace:Nyaa_Streamer.Weekly"
     Title="Weekly Schedule"
     Shell.FlyoutBehavior="Disabled">
 
     <TabBar>
         <Tab Title="Sunday">
-            <ShellContent ContentTemplate="{DataTemplate local:Weekly.SundayPage}" />
+            <ShellContent ContentTemplate="{DataTemplate local:SundayPage}" />
         </Tab>
         <Tab Title="Monday">
-            <ShellContent ContentTemplate="{DataTemplate local:Weekly.MondayPage}" />
+            <ShellContent ContentTemplate="{DataTemplate local:MondayPage}" />
         </Tab>
         <Tab Title="Tuesday">
-            <ShellContent ContentTemplate="{DataTemplate local:Weekly.TuesdayPage}" />
+            <ShellContent ContentTemplate="{DataTemplate local:TuesdayPage}" />
         </Tab>
         <Tab Title="Wednesday">
-            <ShellContent ContentTemplate="{DataTemplate local:Weekly.WednesdayPage}" />
+            <ShellContent ContentTemplate="{DataTemplate local:WednesdayPage}" />
         </Tab>
         <Tab Title="Thursday">
-            <ShellContent ContentTemplate="{DataTemplate local:Weekly.ThursdayPage}" />
+            <ShellContent ContentTemplate="{DataTemplate local:ThursdayPage}" />
         </Tab>
         <Tab Title="Friday">
-            <ShellContent ContentTemplate="{DataTemplate local:Weekly.FridayPage}" />
+            <ShellContent ContentTemplate="{DataTemplate local:FridayPage}" />
         </Tab>
         <Tab Title="Saturday">
-            <ShellContent ContentTemplate="{DataTemplate local:Weekly.SaturdayPage}" />
+            <ShellContent ContentTemplate="{DataTemplate local:SaturdayPage}" />
         </Tab>
     </TabBar>
 </Shell>
