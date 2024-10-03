@@ -24,12 +24,7 @@ namespace Nyaa_Streamer
         }
 
         // Model for Anime
-        public class Anime
-        {
-            public string Title { get; set; }
-            public string ImageUrl { get; set; }  // Anime image URL
-            public string Synopsis { get; set; }  // Anime synopsis
-        }
+       
 
         // Fetch data from Jikan API using HttpClient.GetFromJsonAsync
         private async Task FetchSundayAnimeData()
@@ -46,16 +41,16 @@ namespace Nyaa_Streamer
                 SundayAnimeList.Clear();
 
                 // Check if the response contains data
-                if (response != null && response.Data != null)
+                if (response != null && response.data != null)
                 {
-                    foreach (var animeData in response.Data)
+                    foreach (var animeData in response.data)
                     {
                         // Add each anime to the ObservableCollection
                         SundayAnimeList.Add(new Anime
                         {
-                            Title = animeData.Title,
-                            Synopsis = animeData.Synopsis ?? "No synopsis available.",
-                            ImageUrl = animeData.Images.Jpg.ImageUrl // Bind image URL
+                            Title = animeData.title,
+                            
+                            ImageUrl = animeData.images.jpg.image_url // Bind image URL
                         });
                     }
                 }
@@ -71,26 +66,35 @@ namespace Nyaa_Streamer
         }
 
         // API response models
-        public class JikanApiResponse
-        {
-            public AnimeData[] Data { get; set; }
-        }
-
-        public class AnimeData
+        public class Anime
         {
             public string Title { get; set; }
-            public string Synopsis { get; set; }
-            public AnimeImages Images { get; set; }
+            public string ImageUrl { get; set; }
         }
 
+        // Model for API response
+        public class JikanApiResponse
+        {
+            public List<AnimeData> data { get; set; }
+        }
+
+        // Model for each anime in the API response
+        public class AnimeData
+        {
+            public string title { get; set; }
+            public AnimeImages images { get; set; }
+        }
+
+        // Model for anime images
         public class AnimeImages
         {
-            public AnimeImageFormat Jpg { get; set; }
+            public AnimeImageTypes jpg { get; set; }
         }
 
-        public class AnimeImageFormat
+        // Model for image types
+        public class AnimeImageTypes
         {
-            public string ImageUrl { get; set; }
+            public string image_url { get; set; }
         }
     }
 }
