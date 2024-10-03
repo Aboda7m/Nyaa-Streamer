@@ -15,7 +15,10 @@
         <!-- Anime ListView -->
         <ListView x:Name="AnimeListView"
                   ItemsSource="{Binding SundayAnimeList}"
-                  BackgroundColor="Transparent">
+                  BackgroundColor="Transparent"
+                  SelectedItem="{Binding SelectedAnime, Mode=TwoWay}"
+                  SelectionMode="Single"
+                  SelectedItemChanged="OnAnimeTapped">
             <!-- ListView itself is transparent -->
 
             <ListView.ItemTemplate>
@@ -44,13 +47,6 @@
                                        FontSize="20"
                                        TextColor="White"
                                        LineBreakMode="TailTruncation" />
-
-                                <!-- Anime Synopsis -->
-                                <Label Text="{Binding Synopsis}"
-                                       FontSize="14"
-                                       TextColor="White"
-                                       LineBreakMode="WordWrap"
-                                       MaxLines="2" />
                             </StackLayout>
                         </Grid>
                     </ViewCell>
