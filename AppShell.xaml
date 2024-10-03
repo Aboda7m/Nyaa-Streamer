@@ -7,7 +7,7 @@
    
     Title="Nyaa_Streamer">
 
-
+    <!-- Existing Flyout Items -->
     <FlyoutItem Title="Home">
         <ShellContent ContentTemplate="{DataTemplate local:MainPage}" />
     </FlyoutItem>
@@ -23,4 +23,10 @@
     <FlyoutItem Title="Search">
         <ShellContent ContentTemplate="{DataTemplate local:SearchAnimePage}" />
     </FlyoutItem>
+
+    <!-- New FlyoutItem for Weekly Schedule -->
+    <FlyoutItem Title="Weekly Schedule">
+        <ShellContent ContentTemplate="{DataTemplate local:WeeklySchedulePage}" />
+    </FlyoutItem>
+
 </Shell>
