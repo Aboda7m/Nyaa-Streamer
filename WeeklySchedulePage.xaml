@@ -1,67 +1,33 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="Nyaa_Streamer.WeeklySchedulePage"
-             Title="Weekly Schedule">
+<Shell
+    x:Class="Nyaa_Streamer.WeeklySchedulePage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:Nyaa_Streamer"
+    Title="Weekly Schedule"
+    Shell.FlyoutBehavior="Disabled">
 
-    <!-- Main Grid Layout with Background -->
-    <Grid>
-
-        <!-- Background Image -->
-        <Grid>
-            <Image
-                x:Name="backgroundImage"
-                Source="background.jpg"
-                Aspect="AspectFill"
-                HorizontalOptions="Fill"
-                VerticalOptions="Fill" />
-        </Grid>
-
-        <!-- Page Content -->
-        <Grid Padding="10">
-            <!-- Title Label -->
-            <Label Text="Select a Day" 
-                   FontSize="24" 
-                   FontAttributes="Bold" 
-                   HorizontalOptions="Center"
-                   VerticalOptions="Start" 
-                   TextColor="White"/>
-
-            <!-- Days of the Week Selection -->
-            <CollectionView ItemsSource="{Binding DaysOfWeek}" 
-                            SelectionMode="Single" 
-                            SelectedItem="{Binding SelectedDay, Mode=TwoWay}"
-                            Margin="0,50,0,0">
-                <CollectionView.ItemTemplate>
-                    <DataTemplate>
-                        <Frame Margin="10" Padding="10" BackgroundColor="LightGray" Opacity="0.7">
-                            <Label Text="{Binding}" 
-                                   FontSize="20" 
-                                   HorizontalOptions="Center" 
-                                   TextColor="Black"/>
-                        </Frame>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
-
-            <!-- Anime List Filtered by Day -->
-            <CollectionView ItemsSource="{Binding FilteredAnimeList}"
-                            Margin="0,150,0,0">
-                <CollectionView.ItemTemplate>
-                    <DataTemplate>
-                        <StackLayout Padding="10" BackgroundColor="Transparent">
-                            <Image Source="{Binding ImageUrl}" 
-                                   HeightRequest="150" 
-                                   Aspect="AspectFit" />
-                            <Label Text="{Binding Title}" 
-                                   FontSize="18" 
-                                   TextColor="White" />
-                        </StackLayout>
-                    </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
-        </Grid>
-
-    </Grid>
-
-</ContentPage>
+    <TabBar>
+        <Tab Title="Sunday">
+            <ShellContent ContentTemplate="{DataTemplate local:SundayPage}" />
+        </Tab>
+        <Tab Title="Monday">
+            <ShellContent ContentTemplate="{DataTemplate local:MondayPage}" />
+        </Tab>
+        <Tab Title="Tuesday">
+            <ShellContent ContentTemplate="{DataTemplate local:TuesdayPage}" />
+        </Tab>
+        <Tab Title="Wednesday">
+            <ShellContent ContentTemplate="{DataTemplate local:WednesdayPage}" />
+        </Tab>
+        <Tab Title="Thursday">
+            <ShellContent ContentTemplate="{DataTemplate local:ThursdayPage}" />
+        </Tab>
+        <Tab Title="Friday">
+            <ShellContent ContentTemplate="{DataTemplate local:FridayPage}" />
+        </Tab>
+        <Tab Title="Saturday">
+            <ShellContent ContentTemplate="{DataTemplate local:SaturdayPage}" />
+        </Tab>
+    </TabBar>
+</Shell>
