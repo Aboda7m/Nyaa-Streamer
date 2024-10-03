@@ -15,7 +15,9 @@
         <!-- Anime ListView -->
         <ListView x:Name="AnimeListView"
                   ItemsSource="{Binding SundayAnimeList}"
-                  BackgroundColor="Transparent">
+                  BackgroundColor="Transparent"
+                  ItemSelected="OnAnimeSelected">
+            <!-- Added ItemSelected Event -->
             <!-- ListView itself is transparent -->
 
             <ListView.ItemTemplate>

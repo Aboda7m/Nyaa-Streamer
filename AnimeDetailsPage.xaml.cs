@@ -4,7 +4,15 @@ namespace Nyaa_Streamer
 {
     public partial class AnimeDetailsPage : ContentPage
     {
+        
+
         public AnimeDetailsPage(Anime anime)
+        {
+            InitializeComponent();
+            BindingContext = anime; // Bind the selected anime to the details page
+        }
+
+        public AnimeDetailsPage(SundayPage.Anime anime)
         {
             InitializeComponent();
             BindingContext = anime; // Bind the selected anime to the details page
