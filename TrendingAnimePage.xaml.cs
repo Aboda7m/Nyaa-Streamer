@@ -35,7 +35,7 @@ namespace Nyaa_Streamer
             try
             {
                 // Replace the static data with a call to the Jikan API
-                string apiUrl = "https://api.jikan.moe/v4/top/anime";
+                string apiUrl = "https://api.jikan.moe/v4/top/anime?type=tv&filter=airing&page=1&limit=10";
 
                 using HttpClient client = new HttpClient();
                 var response = await client.GetFromJsonAsync<JikanApiResponse>(apiUrl);
