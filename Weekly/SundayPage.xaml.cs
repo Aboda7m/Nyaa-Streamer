@@ -23,6 +23,9 @@ namespace Nyaa_Streamer
             FetchSundayAnimeData();
         }
 
+        // Model for Anime
+       
+
         // Fetch data from Jikan API using HttpClient.GetFromJsonAsync
         private async Task FetchSundayAnimeData()
         {
@@ -46,6 +49,7 @@ namespace Nyaa_Streamer
                         SundayAnimeList.Add(new Anime
                         {
                             Title = animeData.title,
+                            
                             ImageUrl = animeData.images.jpg.image_url // Bind image URL
                         });
                     }
@@ -58,17 +62,6 @@ namespace Nyaa_Streamer
             catch (Exception ex)
             {
                 await DisplayAlert("Error", "Failed to load anime data: " + ex.Message, "OK");
-            }
-        }
-
-        // Navigate to AnimeDetailsPage when an anime is selected
-        private async void OnAnimeTapped(object sender, SelectedItemChangedEventArgs e)
-        {
-            if (e.SelectedItem is Anime selectedAnime)
-            {
-                // Navigate to the AnimeDetailsPage and pass the selected anime
-                await Navigation.PushAsync(new AnimeDetailsPage(selectedAnime));
-                ((ListView)sender).SelectedItem = null; // Deselect the item
             }
         }
 
