@@ -2,23 +2,24 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Nyaa_Streamer.SundayPage"
-             Title="Sunday">
+             Title="Sunday Anime">
 
-    <Grid>
-        <Image
-            Source="background.jpg"
-            Aspect="AspectFill"
-            HorizontalOptions="Fill"
-            VerticalOptions="Fill" />
+    <StackLayout>
+        <Label Text="Sunday Anime Schedule" 
+               FontSize="24"
+               HorizontalOptions="Center" />
 
-        <ListView x:Name="AnimeListView" 
-                  VerticalOptions="FillAndExpand"
-                  BackgroundColor="Transparent">
+        <ListView x:Name="AnimeListView">
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <TextCell Text="{Binding Title}" Detail="{Binding Synopsis}" />
+                    <ViewCell>
+                        <StackLayout>
+                            <Label Text="{Binding Title}" FontAttributes="Bold" FontSize="18" />
+                            <Label Text="{Binding Synopsis}" FontSize="14" />
+                        </StackLayout>
+                    </ViewCell>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
-    </Grid>
+    </StackLayout>
 </ContentPage>
