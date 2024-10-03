@@ -6,7 +6,7 @@
     xmlns:local="clr-namespace:Nyaa_Streamer"
     xmlns:weekly="clr-namespace:Nyaa_Streamer.Weekly"
     Title="Weekly Schedule"
-    Shell.FlyoutBehavior="Disabled">
+    >
 
     <TabBar>
         <Tab Title="Sunday">

@@ -1,7 +1,7 @@
 using System;
 using System.Collections.ObjectModel;
 using System.Net.Http;
-using System.Text.Json;
+using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Microsoft.Maui.Controls;
 
@@ -15,7 +15,9 @@ namespace Nyaa_Streamer
         {
             InitializeComponent();
             SundayAnimeList = new ObservableCollection<Anime>();
-            AnimeListView.ItemsSource = SundayAnimeList; // Set the ItemSource for the ListView
+
+            // Set the BindingContext for data binding
+            BindingContext = this;
 
             // Fetch anime data when the page loads
             FetchSundayAnimeData();
@@ -25,51 +27,51 @@ namespace Nyaa_Streamer
         public class Anime
         {
             public string Title { get; set; }
-            public string Synopsis { get; set; }
+            public string ImageUrl { get; set; }  // Anime image URL
+            public string Synopsis { get; set; }  // Anime synopsis
         }
 
-        // Fetch data from Jikan API
-        private async void FetchSundayAnimeData()
+        // Fetch data from Jikan API using HttpClient.GetFromJsonAsync
+        private async Task FetchSundayAnimeData()
         {
             try
             {
-                using (HttpClient client = new HttpClient())
+                // URL for Sunday anime schedule
+                string apiUrl = "https://api.jikan.moe/v4/schedules?filter=sunday";
+
+                using HttpClient client = new HttpClient();
+                var response = await client.GetFromJsonAsync<JikanApiResponse>(apiUrl);
+
+                // Clear the existing list
+                SundayAnimeList.Clear();
+
+                // Check if the response contains data
+                if (response != null && response.Data != null)
                 {
-                    // Send GET request to Jikan API
-                    string url = "https://api.jikan.moe/v4/schedules?filter=sunday";
-                    HttpResponseMessage response = await client.GetAsync(url);
-
-                    if (response.IsSuccessStatusCode)
+                    foreach (var animeData in response.Data)
                     {
-                        string jsonString = await response.Content.ReadAsStringAsync();
-                        var apiResponse = JsonSerializer.Deserialize<AnimeApiResponse>(jsonString, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-
-                        if (apiResponse?.Data != null)
+                        // Add each anime to the ObservableCollection
+                        SundayAnimeList.Add(new Anime
                         {
-                            foreach (var anime in apiResponse.Data)
-                            {
-                                SundayAnimeList.Add(new Anime
-                                {
-                                    Title = anime.Title,
-                                    Synopsis = anime.Synopsis ?? "No synopsis available."
-                                });
-                            }
-                        }
+                            Title = animeData.Title,
+                            Synopsis = animeData.Synopsis ?? "No synopsis available.",
+                            ImageUrl = animeData.Images.Jpg.ImageUrl // Bind image URL
+                        });
                     }
-                    else
-                    {
-                        await DisplayAlert("Error", "Failed to load anime data", "OK");
-                    }
+                }
+                else
+                {
+                    await DisplayAlert("Error", "No anime found for Sunday.", "OK");
                 }
             }
             catch (Exception ex)
             {
-                await DisplayAlert("Error", ex.Message, "OK");
+                await DisplayAlert("Error", "Failed to load anime data: " + ex.Message, "OK");
             }
         }
 
-        // Model for API response
-        public class AnimeApiResponse
+        // API response models
+        public class JikanApiResponse
         {
             public AnimeData[] Data { get; set; }
         }
@@ -78,6 +80,17 @@ namespace Nyaa_Streamer
         {
             public string Title { get; set; }
             public string Synopsis { get; set; }
+            public AnimeImages Images { get; set; }
+        }
+
+        public class AnimeImages
+        {
+            public AnimeImageFormat Jpg { get; set; }
+        }
+
+        public class AnimeImageFormat
+        {
+            public string ImageUrl { get; set; }
         }
     }
 }
