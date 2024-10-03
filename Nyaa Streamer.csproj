@@ -140,28 +140,28 @@
 		<MauiXaml Update="DownloadedFilesPage.xaml">
 			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
-		<MauiXaml Update="FridayPage.xaml">
+		<MauiXaml Update="Weekly\FridayPage.xaml">
 		  <Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 		<MauiXaml Update="MenuPopUpPage.xaml">
 			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
-		<MauiXaml Update="MondayPage.xaml">
+		<MauiXaml Update="Weekly\MondayPage.xaml">
 		  <Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
-		<MauiXaml Update="SaturdayPage.xaml">
+		<MauiXaml Update="Weekly\SaturdayPage.xaml">
 		  <Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
-		<MauiXaml Update="SundayPage.xaml">
+		<MauiXaml Update="Weekly\SundayPage.xaml">
 		  <Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
-		<MauiXaml Update="ThursdayPage.xaml">
+		<MauiXaml Update="Weekly\ThursdayPage.xaml">
 		  <Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
-		<MauiXaml Update="TuesdayPage.xaml">
+		<MauiXaml Update="Weekly\TuesdayPage.xaml">
 		  <Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
-		<MauiXaml Update="WednesdayPage.xaml">
+		<MauiXaml Update="Weekly\WednesdayPage.xaml">
 		  <Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 		<MauiXaml Update="WeeklySchedulePage.xaml">

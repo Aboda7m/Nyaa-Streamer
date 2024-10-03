@@ -9,25 +9,25 @@
 
     <TabBar>
         <Tab Title="Sunday">
-            <ShellContent ContentTemplate="{DataTemplate local:SundayPage}" />
+            <ShellContent ContentTemplate="{DataTemplate local:Weekly.SundayPage}" />
         </Tab>
         <Tab Title="Monday">
-            <ShellContent ContentTemplate="{DataTemplate local:MondayPage}" />
+            <ShellContent ContentTemplate="{DataTemplate local:Weekly.MondayPage}" />
         </Tab>
         <Tab Title="Tuesday">
-            <ShellContent ContentTemplate="{DataTemplate local:TuesdayPage}" />
+            <ShellContent ContentTemplate="{DataTemplate local:Weekly.TuesdayPage}" />
         </Tab>
         <Tab Title="Wednesday">
-            <ShellContent ContentTemplate="{DataTemplate local:WednesdayPage}" />
+            <ShellContent ContentTemplate="{DataTemplate local:Weekly.WednesdayPage}" />
         </Tab>
         <Tab Title="Thursday">
-            <ShellContent ContentTemplate="{DataTemplate local:ThursdayPage}" />
+            <ShellContent ContentTemplate="{DataTemplate local:Weekly.ThursdayPage}" />
         </Tab>
         <Tab Title="Friday">
-            <ShellContent ContentTemplate="{DataTemplate local:FridayPage}" />
+            <ShellContent ContentTemplate="{DataTemplate local:Weekly.FridayPage}" />
         </Tab>
         <Tab Title="Saturday">
-            <ShellContent ContentTemplate="{DataTemplate local:SaturdayPage}" />
+            <ShellContent ContentTemplate="{DataTemplate local:Weekly.SaturdayPage}" />
         </Tab>
     </TabBar>
 </Shell>
