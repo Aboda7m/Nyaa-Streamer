@@ -12,7 +12,16 @@
 
         <!-- Anime Synopsis -->
         <Label Text="Synopsis:" FontAttributes="Bold"/>
-        <Label Text="{Binding Synopsis}" />
+        <ScrollView x:Name="SynopsisScrollView" HeightRequest="100">
+            <Label x:Name="SynopsisLabel" 
+                   Text="{Binding Synopsis}" 
+                   LineBreakMode="TailTruncation" 
+                   MaxLines="3">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnSynopsisTapped" />
+                </Label.GestureRecognizers>
+            </Label>
+        </ScrollView>
 
         <!-- Other Details -->
         <Label Text="Episodes:" FontAttributes="Bold" Margin="0,10,0,0"/>

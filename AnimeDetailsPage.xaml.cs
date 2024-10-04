@@ -11,6 +11,8 @@ namespace Nyaa_Streamer
         // ObservableCollection to hold anime data (if needed)
         public ObservableCollection<AnimeData> AnimeCollection { get; set; } = new ObservableCollection<AnimeData>();
 
+        private bool _isExpanded = false; // Track the expansion state
+
         public AnimeDetailsPage(Anime anime)
         {
             InitializeComponent();
@@ -31,7 +33,7 @@ namespace Nyaa_Streamer
                 var response = await client.GetFromJsonAsync<AnimeData>(jikanUrl); // Use correct response type
 
                 // Check if the response contains data
-                if (response != null && response != null )
+                if (response != null && response != null)
                 {
                     var animeData = response; // Access the first AnimeData object from the list
 
@@ -76,9 +78,25 @@ namespace Nyaa_Streamer
             }
         }
 
+        private void OnSynopsisTapped(object sender, EventArgs e)
+        {
+            var synopsisLabel = (Label)FindByName("SynopsisLabel");
+            var scrollView = (ScrollView)FindByName("SynopsisScrollView");
 
+            if (_isExpanded)
+            {
+                // Collapse the synopsis
+                synopsisLabel.MaxLines = 3; // Show only the first three lines
+                scrollView.HeightRequest = 100; // Reset scroll view height
+            }
+            else
+            {
+                // Expand the synopsis
+                synopsisLabel.MaxLines = int.MaxValue; // Show full text
+                scrollView.HeightRequest = double.NaN; // Remove height limit to show all text
+            }
+
+            _isExpanded = !_isExpanded; // Toggle the state
+        }
     }
-
-    // Correct response type for anime details
-   
 }
