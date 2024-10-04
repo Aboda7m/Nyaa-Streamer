@@ -21,7 +21,6 @@ namespace Nyaa_Streamer
         }
 
         // Method to fetch anime details from Jikan API
-        // In your FetchAnimeDetailsFromJikan method
         private async void FetchAnimeDetailsFromJikan(Anime anime)
         {
             try
@@ -29,16 +28,16 @@ namespace Nyaa_Streamer
                 string jikanUrl = $"https://api.jikan.moe/v4/anime/{anime.Id}";
 
                 using HttpClient client = new HttpClient();
-                var response = await client.GetFromJsonAsync<AnimeApiResponse>(jikanUrl);
+                var response = await client.GetFromJsonAsync<AnimeApiResponse>(jikanUrl); // Use correct response type
 
                 // Check if the response contains data
-                if (response != null && response.data != null)
+                if (response != null && response.data != null && response.data.Count > 0)
                 {
-                    var animeData = response.data; // Access the AnimeData object directly
+                    var animeData = response.data[0]; // Access the first AnimeData object from the list
 
                     // Update the properties of the bound Anime object
                     anime.Synopsis = animeData.synopsis;
-                    anime.Episodes = animeData.episodes; // Assuming episodes is an integer
+                    //anime.Episodes = animeData.episodes; // Assuming episodes is an integer
 
                     // Notify UI of property changes
                     OnPropertyChanged(nameof(anime.Synopsis));
@@ -77,4 +76,7 @@ namespace Nyaa_Streamer
             }
         }
     }
+
+    // Correct response type for anime details
+   
 }
