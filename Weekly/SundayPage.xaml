@@ -4,6 +4,15 @@
              x:Class="Nyaa_Streamer.SundayPage"
              Title="Sunday Anime">
 
+    <Grid>
+        <Image
+            Source="background.jpg"
+            Aspect="AspectFill"
+            HorizontalOptions="Fill"
+            VerticalOptions="Fill" />
+        <Label Text="MondayPage Anime List" 
+               HorizontalOptions="Center" 
+               VerticalOptions="Center" />
     <!-- Main Layout -->
     <StackLayout>
         <Label Text="Sunday Anime Schedule"
@@ -60,4 +69,5 @@
             </ListView.ItemTemplate>
         </ListView>
     </StackLayout>
+    </Grid>
 </ContentPage>
