@@ -30,7 +30,9 @@
                        TextColor="White" 
                        HorizontalOptions="Center" />
 
-                <CollectionView ItemsSource="{Binding TrendingAnimeList}">
+                <CollectionView ItemsSource="{Binding TrendingAnimeList}"
+                                SelectionMode="Single"
+                                SelectionChanged="OnAnimeSelected">
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
                             <StackLayout Padding="10">

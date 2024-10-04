@@ -93,6 +93,15 @@ namespace Nyaa_Streamer
             mainPage.OnReceiveAnimeTitle($"{selectedAnime.Title} {episodeArgument}"); // Call the method to handle the title
         }
 
+        private async void OnAnimeSelected(object sender, SelectionChangedEventArgs e)
+        {
+            var selectedAnime = e.CurrentSelection.FirstOrDefault() as Anime;
+            if (selectedAnime != null)
+            {
+                await Navigation.PushAsync(new AnimeDetailsPage(selectedAnime));
+            }
+        }
+
 
 
     }
