@@ -2,6 +2,7 @@ using System.Collections.ObjectModel;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using Microsoft.Maui.Controls;
 
 namespace Nyaa_Streamer
@@ -53,7 +54,9 @@ namespace Nyaa_Streamer
                         {
                             Title = animeData.title,
                             ImageUrl = animeData.images.jpg.image_url,
-                            Id = animeData.mal_id // Assign the ID from the API to the Anime object
+                            Id = animeData.mal_id, // Assign the ID from the API to the Anime object
+                            Synopsis = animeData.synopsis//,
+                           // Episodes = animeData.episodes
 
                         });
                     }

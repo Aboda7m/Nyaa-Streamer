@@ -75,6 +75,8 @@ namespace Nyaa_Streamer
                 await DisplayAlert("Error", "Please enter a valid episode number.", "OK");
             }
         }
+
+
     }
 
     // Correct response type for anime details
