@@ -28,12 +28,12 @@ namespace Nyaa_Streamer
                 string jikanUrl = $"https://api.jikan.moe/v4/anime/{anime.Id}";
 
                 using HttpClient client = new HttpClient();
-                var response = await client.GetFromJsonAsync<AnimeApiResponse>(jikanUrl); // Use correct response type
+                var response = await client.GetFromJsonAsync<AnimeData>(jikanUrl); // Use correct response type
 
                 // Check if the response contains data
-                if (response != null && response.data != null && response.data.Count > 0)
+                if (response != null && response != null )
                 {
-                    var animeData = response.data[0]; // Access the first AnimeData object from the list
+                    var animeData = response; // Access the first AnimeData object from the list
 
                     // Update the properties of the bound Anime object
                     anime.Synopsis = animeData.synopsis;
