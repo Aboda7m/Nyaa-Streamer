@@ -46,7 +46,9 @@ namespace Nyaa_Streamer
                         SundayAnimeList.Add(new Anime
                         {
                             Title = animeData.title,
-                            ImageUrl = animeData.images.jpg.image_url // Bind image URL
+                            ImageUrl = animeData.images.jpg.image_url,
+                            Id = animeData.mal_id, // Assign the ID from the API to the Anime object
+                            Synopsis = animeData.synopsis//,
                         });
                     }
                 }
