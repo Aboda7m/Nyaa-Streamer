@@ -39,6 +39,7 @@ namespace Nyaa_Streamer
 
                     // Update the properties of the bound Anime object
                     anime.Synopsis = animeData.synopsis;
+                    anime.Episodes = animeData.episodes;
                     //anime.Episodes = animeData.episodes; // Assuming episodes is an integer
 
                     // Notify UI of property changes

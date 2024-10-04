@@ -55,8 +55,8 @@ namespace Nyaa_Streamer
                             Title = animeData.title,
                             ImageUrl = animeData.images.jpg.image_url,
                             Id = animeData.mal_id, // Assign the ID from the API to the Anime object
-                            Synopsis = animeData.synopsis//,
-                           // Episodes = animeData.episodes
+                            Synopsis = animeData.synopsis,
+                            Episodes = animeData.episodes
 
                         });
                     }

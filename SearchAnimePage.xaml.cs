@@ -49,7 +49,10 @@ namespace Nyaa_Streamer
                     AnimeList.Add(new Anime
                     {
                         Title = anime.title,
-                        ImageUrl = anime.images.jpg.image_url
+                        ImageUrl = anime.images.jpg.image_url,
+                        Id = anime.mal_id, // Assign the ID from the API to the Anime object
+                        Synopsis = anime.synopsis,
+                        Episodes = anime.episodes
                     });
                 }
 
