@@ -13,13 +13,13 @@
 
     public class AnimeApiResponse
     {
-        public AnimeData[] data { get; set; }
+       public List<AnimeData> data { get; set; }
     }
 
   public class AnimeData
 {
     public string synopsis { get; set; }
-    public int episodes { get; set; }
+    //public string episodes { get; set; }
     public string title { get; set; }
     public AnimeImages images { get; set; }
 }

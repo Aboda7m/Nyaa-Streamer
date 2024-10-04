@@ -38,7 +38,7 @@ namespace Nyaa_Streamer
                 string apiUrl = "https://api.jikan.moe/v4/top/anime?type=tv&filter=airing&page=1&limit=10";
 
                 using HttpClient client = new HttpClient();
-                var response = await client.GetFromJsonAsync<JikanApiResponse>(apiUrl);
+                var response = await client.GetFromJsonAsync<AnimeApiResponse>(apiUrl);
 
                 // Clear the existing list
                 TrendingAnimeList.Clear();
@@ -93,38 +93,5 @@ namespace Nyaa_Streamer
 
 
 
-        // Method to handle searching on nyaa.si
-
-        // Model for Anime
-        public class Anime
-        {
-            public string Title { get; set; }
-            public string ImageUrl { get; set; }
-        }
-
-        // Model for API response
-        public class JikanApiResponse
-        {
-            public List<AnimeData> data { get; set; }
-        }
-
-        // Model for each anime in the API response
-        public class AnimeData
-        {
-            public string title { get; set; }
-            public AnimeImages images { get; set; }
-        }
-
-        // Model for anime images
-        public class AnimeImages
-        {
-            public AnimeImageTypes jpg { get; set; }
-        }
-
-        // Model for image types
-        public class AnimeImageTypes
-        {
-            public string image_url { get; set; }
-        }
     }
 }

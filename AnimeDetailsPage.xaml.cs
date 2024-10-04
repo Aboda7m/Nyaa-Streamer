@@ -1,4 +1,5 @@
 using System.Net.Http;
+using System.Net.Http.Json;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.Maui.Controls;
@@ -17,47 +18,34 @@ namespace Nyaa_Streamer
         }
 
         // Method to fetch anime details from Jikan API
-        
         private async void FetchAnimeDetailsFromJikan(Anime anime)
-{
-    try
-    {
-        string jikanUrl = $"https://api.jikan.moe/v4/anime/{anime.Id}"; // Use anime ID in the API URL
-
-        using HttpClient client = new HttpClient();
-        HttpResponseMessage response = await client.GetAsync(jikanUrl);
-
-        if (response.IsSuccessStatusCode)
         {
-            string jsonResponse = await response.Content.ReadAsStringAsync();
-
-            // Parse the response JSON
-            var jikanResponse = JsonSerializer.Deserialize<AnimeApiResponse>(jsonResponse);
-
-            if (jikanResponse != null && jikanResponse.data.Length > 0) // Ensure there is at least one entry
+            try
             {
-                var animeData = jikanResponse.data; // Access the first AnimeData object
+                string jikanUrl = $"https://api.jikan.moe/v4/anime/01"; // Use anime ID in the API URL
 
-                // Update anime properties based on the API response
-                anime.Synopsis = animeData.synopsis;
-                anime.Episodes = animeData.episodes;
+                using HttpClient client = new HttpClient();
+                var response = await client.GetFromJsonAsync<AnimeApiResponse>(jikanUrl);
 
-                // Notify UI of property changes if needed
-                OnPropertyChanged(nameof(anime.Synopsis));
-                OnPropertyChanged(nameof(anime.Episodes));
+                // Check if the response contains data
+                if (response != null && response.data != null)
+                {
+                    foreach (var animeData in response.data)
+                    {
+                        // Add each anime to the ObservableCollection
+                       
+                    }
+                }
+                else
+                {
+                    await DisplayAlert("Error", "No trending anime found.", "OK");
+                }
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlert("Error", "Failed to load trending anime: " + ex.Message, "OK");
             }
         }
-        else
-        {
-            await DisplayAlert("Error", "Failed to retrieve anime details.", "OK");
-        }
-    }
-    catch (Exception ex)
-    {
-        await DisplayAlert("Error", ex.Message, "OK");
-    }
-}
-
 
         private async void OnWatchDownloadClicked(object sender, EventArgs e)
         {
