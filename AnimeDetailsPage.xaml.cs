@@ -1,3 +1,6 @@
+using System.Net.Http;
+using System.Text.Json;
+using System.Threading.Tasks;
 using Microsoft.Maui.Controls;
 
 namespace Nyaa_Streamer
@@ -8,6 +11,51 @@ namespace Nyaa_Streamer
         {
             InitializeComponent();
             BindingContext = anime; // Bind the selected anime to the details page
+
+            // Fetch additional details from Jikan API
+            FetchAnimeDetailsFromJikan(anime);
+        }
+
+        // Method to fetch anime details from Jikan API
+        private async void FetchAnimeDetailsFromJikan(Anime anime)
+        {
+            try
+            {
+                // Assuming that the Anime class contains an ID property (replace this with the correct ID source)
+                string jikanUrl = $"https://api.jikan.moe/v4/anime/{anime.Id}"; // Use anime ID in the API URL
+
+                using HttpClient client = new HttpClient();
+                HttpResponseMessage response = await client.GetAsync(jikanUrl);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    string jsonResponse = await response.Content.ReadAsStringAsync();
+
+                    // Parse the response JSON
+                    var jikanResponse = JsonSerializer.Deserialize<AnimeApiResponse>(jsonResponse);
+
+                    if (jikanResponse != null)
+                    {
+                        var animeData = jikanResponse.data[0]; // Adjust indexing as necessary
+
+                        // Update anime properties based on the API response
+                        anime.Synopsis = animeData.synopsis;
+                        anime.Episodes = animeData.episodes; // Assuming episodes is part of the response
+
+                        // Notify UI of property changes if needed
+                        OnPropertyChanged(nameof(anime.Synopsis));
+                        OnPropertyChanged(nameof(anime.Episodes));
+                    }
+                }
+                else
+                {
+                    await DisplayAlert("Error", "Failed to retrieve anime details.", "OK");
+                }
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlert("Error", ex.Message, "OK");
+            }
         }
 
         private async void OnWatchDownloadClicked(object sender, EventArgs e)
@@ -37,7 +85,7 @@ namespace Nyaa_Streamer
                 await Navigation.PushAsync(mainPage);
 
                 // Call the method to handle the anime title and episode number in MainPage
-                mainPage.OnReceiveAnimeTitle($"{selectedAnime.Title} Episode {episodeArgument}");
+                mainPage.OnReceiveAnimeTitle($"{selectedAnime.Title} {episodeArgument}");
             }
             else
             {
