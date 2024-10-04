@@ -1,13 +1,16 @@
 using System.Net.Http;
 using System.Net.Http.Json;
-using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.Maui.Controls;
+using System.Collections.ObjectModel;
 
 namespace Nyaa_Streamer
 {
     public partial class AnimeDetailsPage : ContentPage
     {
+        // ObservableCollection to hold anime data (if needed)
+        public ObservableCollection<AnimeData> AnimeCollection { get; set; } = new ObservableCollection<AnimeData>();
+
         public AnimeDetailsPage(Anime anime)
         {
             InitializeComponent();
@@ -18,11 +21,12 @@ namespace Nyaa_Streamer
         }
 
         // Method to fetch anime details from Jikan API
+        // In your FetchAnimeDetailsFromJikan method
         private async void FetchAnimeDetailsFromJikan(Anime anime)
         {
             try
             {
-                string jikanUrl = $"https://api.jikan.moe/v4/anime/01"; // Use anime ID in the API URL
+                string jikanUrl = $"https://api.jikan.moe/v4/anime/{anime.Id}";
 
                 using HttpClient client = new HttpClient();
                 var response = await client.GetFromJsonAsync<AnimeApiResponse>(jikanUrl);
@@ -30,20 +34,24 @@ namespace Nyaa_Streamer
                 // Check if the response contains data
                 if (response != null && response.data != null)
                 {
-                    foreach (var animeData in response.data)
-                    {
-                        // Add each anime to the ObservableCollection
-                       
-                    }
+                    var animeData = response.data; // Access the AnimeData object directly
+
+                    // Update the properties of the bound Anime object
+                    anime.Synopsis = animeData.synopsis;
+                    anime.Episodes = animeData.episodes; // Assuming episodes is an integer
+
+                    // Notify UI of property changes
+                    OnPropertyChanged(nameof(anime.Synopsis));
+                    OnPropertyChanged(nameof(anime.Episodes));
                 }
                 else
                 {
-                    await DisplayAlert("Error", "No trending anime found.", "OK");
+                    await DisplayAlert("Error", "No anime details found.", "OK");
                 }
             }
             catch (Exception ex)
             {
-                await DisplayAlert("Error", "Failed to load trending anime: " + ex.Message, "OK");
+                await DisplayAlert("Error", "Failed to load anime details: " + ex.Message, "OK");
             }
         }
 

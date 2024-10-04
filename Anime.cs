@@ -16,13 +16,14 @@
        public List<AnimeData> data { get; set; }
     }
 
-  public class AnimeData
-{
-    public string synopsis { get; set; }
-    //public string episodes { get; set; }
-    public string title { get; set; }
-    public AnimeImages images { get; set; }
-}
+    public class AnimeData
+    {
+        public string synopsis { get; set; }
+        public string title { get; set; }
+        public int mal_id { get; set; } // The ID from the API response
+        public AnimeImages images { get; set; }
+    }
+
 
     public class AnimeImages
     {

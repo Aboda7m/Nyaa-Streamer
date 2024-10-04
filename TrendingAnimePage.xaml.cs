@@ -52,7 +52,9 @@ namespace Nyaa_Streamer
                         TrendingAnimeList.Add(new Anime
                         {
                             Title = animeData.title,
-                            ImageUrl = animeData.images.jpg.image_url
+                            ImageUrl = animeData.images.jpg.image_url,
+                            Id = animeData.mal_id // Assign the ID from the API to the Anime object
+
                         });
                     }
                 }
