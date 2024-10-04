@@ -21,8 +21,12 @@
         <Label Text="Episodes:" FontAttributes="Bold"/>
         <Label Text="{Binding Episodes}"/>
 
-        <!-- Nyaa.si Search Button -->
-        <Button Text="Search on Nyaa.si" Clicked="OnNyaaSearchClicked"/>
+        <!-- Episode Input -->
+        <Label Text="Enter Episode:" FontAttributes="Bold" Margin="0,10,0,0"/>
+        <Entry x:Name="EpisodeEntry" Placeholder="Episode Number"/>
+
+        <!-- Watch/Download Button -->
+        <Button Text="Watch/Download" Clicked="OnWatchDownloadClicked"/>
     </StackLayout>
-    
+
 </ContentPage>
