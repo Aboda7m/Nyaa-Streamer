@@ -12,12 +12,7 @@ namespace Nyaa_Streamer
             BindingContext = anime; // Bind the selected anime to the details page
         }
 
-        public AnimeDetailsPage(SundayPage.Anime anime)
-        {
-            InitializeComponent();
-            BindingContext = anime; // Bind the selected anime to the details page
-        }
-
+     
         private void OnNyaaSearchClicked(object sender, EventArgs e)
         {
             var anime = BindingContext as Anime;

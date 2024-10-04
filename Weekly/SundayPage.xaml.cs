@@ -32,7 +32,7 @@ namespace Nyaa_Streamer
                 string apiUrl = "https://api.jikan.moe/v4/schedules?filter=sunday";
 
                 using HttpClient client = new HttpClient();
-                var response = await client.GetFromJsonAsync<JikanApiResponse>(apiUrl);
+                var response = await client.GetFromJsonAsync<AnimeApiResponse>(apiUrl);
 
                 // Clear the existing list
                 SundayAnimeList.Clear();
@@ -74,36 +74,7 @@ namespace Nyaa_Streamer
             }
         }
 
-        // API response models
-        public class Anime
-        {
-            public string Title { get; set; }
-            public string ImageUrl { get; set; }
-        }
-
-        // Model for API response
-        public class JikanApiResponse
-        {
-            public List<AnimeData> data { get; set; }
-        }
-
-        // Model for each anime in the API response
-        public class AnimeData
-        {
-            public string title { get; set; }
-            public AnimeImages images { get; set; }
-        }
-
-        // Model for anime images
-        public class AnimeImages
-        {
-            public AnimeImageTypes jpg { get; set; }
-        }
-
-        // Model for image types
-        public class AnimeImageTypes
-        {
-            public string image_url { get; set; }
-        }
+       
+      
     }
 }
