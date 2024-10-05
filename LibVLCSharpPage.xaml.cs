@@ -163,6 +163,7 @@ namespace Nyaa_Streamer
         {
             IsVideoViewInitialized = true;
             Play();
+            _isPlaying = true;
         }
 
         private void OnScreenTapped(object sender, EventArgs e)
@@ -338,6 +339,7 @@ namespace Nyaa_Streamer
                     _isPlaying = false;
                     PlayPauseButton.Source = "Play.png"; // Reset to play button
                 }
+                UpdatePlayPauseButton();
             }
 
             return true; // Continue updating
