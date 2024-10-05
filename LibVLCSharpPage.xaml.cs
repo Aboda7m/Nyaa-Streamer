@@ -216,36 +216,37 @@ namespace Nyaa_Streamer
 
                 // Check if subtitles are available
                 int spuCount = MediaPlayer.SpuCount;
-                string subtitleInfo;
 
                 if (spuCount > 0)
                 {
-                    // Print available subtitle names and mark the selected one
+                    // Retrieve available subtitle tracks
                     var subtitleTracks = MediaPlayer.SpuDescription;
-                    subtitleInfo = "Available Subtitle Tracks:\n";
 
+                    // Create a list to hold subtitle names
+                    var subtitleOptions = new List<string>();
                     foreach (var track in subtitleTracks)
                     {
-                        // Mark the currently selected subtitle track
-                        if (track.Id == currentSpu)
-                        {
-                            subtitleInfo += $"- **{track.Name} (ID: {track.Id})** (Currently Selected)\n"; // Use bold or asterisks to mark it
-                        }
-                        else
-                        {
-                            subtitleInfo += $"- {track.Name} (ID: {track.Id})\n";
-                        }
+                        subtitleOptions.Add(track.Name);
+                    }
+
+                    // Create an action sheet for subtitle selection
+                    string subtitleChoice = await DisplayActionSheet("Select Subtitle", "Cancel", null, subtitleOptions.ToArray());
+
+                    // Check if the user made a selection
+                    if (subtitleChoice != null && subtitleChoice != "Cancel")
+                    {
+                        // For now, just display which subtitle was selected
+                        await DisplayAlert("Selected Subtitle", $"You selected: {subtitleChoice}", "OK");
                     }
                 }
                 else
                 {
-                    subtitleInfo = "No subtitle tracks available.";
+                    await DisplayAlert("Subtitle Information", "No subtitle tracks available.", "OK");
                 }
-
-                // Display the subtitle info in an alert
-                await DisplayAlert("Subtitle Information", subtitleInfo, "OK");
             }
         }
+
+
 
 
         private void OnSeekBackwardClicked(object sender, EventArgs e)
