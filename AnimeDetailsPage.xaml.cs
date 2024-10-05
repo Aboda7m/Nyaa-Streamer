@@ -57,6 +57,7 @@ namespace Nyaa_Streamer
             }
         }
 
+
         private async void OnWatchDownloadClicked(object sender, EventArgs e)
         {
             Button button = (Button)sender;
@@ -66,18 +67,28 @@ namespace Nyaa_Streamer
 
             Anime selectedAnime = (Anime)button.BindingContext;
 
-            if (selectedAnime != null && !string.IsNullOrEmpty(episodeArgument))
+            if (selectedAnime != null)
             {
-                await DisplayAlert("Watch/Download", $"You clicked Watch/Download for {selectedAnime.Title}, Episode: {episodeArgument}", "OK");
+                string message = string.IsNullOrEmpty(episodeArgument)
+                    ? $"You clicked Watch/Download for {selectedAnime.Title} (all episodes or season)"
+                    : $"You clicked Watch/Download for {selectedAnime.Title}, Episode: {episodeArgument}";
+
+                await DisplayAlert("Watch/Download", message, "OK");
+
                 var mainPage = new MainPage();
                 await Navigation.PushAsync(mainPage);
-                mainPage.OnReceiveAnimeTitle($"{selectedAnime.Title} {episodeArgument}");
+
+                string searchQuery = string.IsNullOrEmpty(episodeArgument)
+                    ? selectedAnime.Title
+                    : $"{selectedAnime.Title} {episodeArgument}";
+                mainPage.OnReceiveAnimeTitle(searchQuery);
             }
             else
             {
-                await DisplayAlert("Error", "Please enter a valid episode number.", "OK");
+                await DisplayAlert("Error", "No anime selected.", "OK");
             }
         }
+
 
         private void OnSynopsisTapped(object sender, EventArgs e)
         {
