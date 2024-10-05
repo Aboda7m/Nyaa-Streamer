@@ -211,19 +211,30 @@ namespace Nyaa_Streamer
         {
             if (MediaPlayer != null)
             {
+                // Get the currently selected subtitle track ID
+                int currentSpu = MediaPlayer.Spu;
+
                 // Check if subtitles are available
                 int spuCount = MediaPlayer.SpuCount;
                 string subtitleInfo;
 
                 if (spuCount > 0)
                 {
-                    // Print available subtitle names
+                    // Print available subtitle names and mark the selected one
                     var subtitleTracks = MediaPlayer.SpuDescription;
                     subtitleInfo = "Available Subtitle Tracks:\n";
 
                     foreach (var track in subtitleTracks)
                     {
-                        subtitleInfo += $"- {track.Name} (ID: {track.Id})\n";
+                        // Mark the currently selected subtitle track
+                        if (track.Id == currentSpu)
+                        {
+                            subtitleInfo += $"- **{track.Name} (ID: {track.Id})** (Currently Selected)\n"; // Use bold or asterisks to mark it
+                        }
+                        else
+                        {
+                            subtitleInfo += $"- {track.Name} (ID: {track.Id})\n";
+                        }
                     }
                 }
                 else
@@ -235,6 +246,7 @@ namespace Nyaa_Streamer
                 await DisplayAlert("Subtitle Information", subtitleInfo, "OK");
             }
         }
+
 
         private void OnSeekBackwardClicked(object sender, EventArgs e)
         {

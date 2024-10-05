@@ -123,7 +123,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <None Remove="Resources\Images\subtitles.png" />
+	  <None Remove="Resources\Images\subtitle.png" />
 	</ItemGroup>
 
 	<ItemGroup>
