@@ -142,8 +142,16 @@ namespace Nyaa_Streamer
         }
 
 
+        private bool isButtonClicked = false; // Flag to track button state
+
         private async void OnStreamButtonClicked(object sender, EventArgs e)
         {
+            // Check if the button is already clicked
+            if (isButtonClicked) return;
+
+            isButtonClicked = true; // Set flag to true to prevent further clicks
+            StreamButton.IsEnabled = false; // Optionally disable the button visually
+
             var selectedFile = TorrentFilesListView.SelectedItem as TorrentFile;
             if (selectedFile != null)
             {
@@ -157,7 +165,13 @@ namespace Nyaa_Streamer
                     await StartTorrentStreamAsync(manager, selectedFile.File);
                 }
             }
+
+            isButtonClicked = false; // Reset flag after the streaming is done
+            StreamButton.IsEnabled = true; // Re-enable the button
         }
+
+
+
 
         private async Task StartTorrentStreamAsync(TorrentManager manager, ITorrentManagerFile selectedFile)
         {
