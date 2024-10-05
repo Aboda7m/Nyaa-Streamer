@@ -9,6 +9,7 @@ using System.ComponentModel;
 using LibVLCSharp;
 using Microsoft.Maui.Controls;
 
+
 namespace Nyaa_Streamer
 {
     public partial class LibVLCSharpPage : ContentPage, INotifyPropertyChanged
@@ -75,11 +76,10 @@ namespace Nyaa_Streamer
 
             // Subscribe to MediaPlayer.MediaChanged event
             MediaPlayer.MediaChanged += OnMediaPlayerMediaChanged;
-
-
-            // Load the media and print subtitle names
             media.Parse(); // Ensure the media is parsed before accessing tracks
-            PrintSubtitleNames();
+
+
+
         }
 
         // Overloaded Initialize method to accept media URI
@@ -91,11 +91,9 @@ namespace Nyaa_Streamer
 
             // Subscribe to MediaPlayer.MediaChanged event
             MediaPlayer.MediaChanged += OnMediaPlayerMediaChanged;
-
-
-            // Load the media and print subtitle names
             media.Parse(); // Ensure the media is parsed before accessing tracks
-            PrintSubtitleNames();
+
+
         }
 
         private async Task PrintSubtitleNames()
@@ -254,6 +252,10 @@ namespace Nyaa_Streamer
         private void OnUnSkipOpeningClicked(object sender, EventArgs e)
         {
             AdjustMediaTime(-90000); // Skip backward 90 seconds
+
+            // Load the media and print subtitle names
+           
+            PrintSubtitleNames();
         }
 
         private void AdjustMediaTime(long offset)
