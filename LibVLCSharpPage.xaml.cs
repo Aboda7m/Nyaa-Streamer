@@ -75,6 +75,11 @@ namespace Nyaa_Streamer
 
             // Subscribe to MediaPlayer.MediaChanged event
             MediaPlayer.MediaChanged += OnMediaPlayerMediaChanged;
+
+
+            // Load the media and print subtitle names
+            media.Parse(); // Ensure the media is parsed before accessing tracks
+            PrintSubtitleNames();
         }
 
         // Overloaded Initialize method to accept media URI
@@ -86,7 +91,43 @@ namespace Nyaa_Streamer
 
             // Subscribe to MediaPlayer.MediaChanged event
             MediaPlayer.MediaChanged += OnMediaPlayerMediaChanged;
+
+
+            // Load the media and print subtitle names
+            media.Parse(); // Ensure the media is parsed before accessing tracks
+            PrintSubtitleNames();
         }
+
+        private async Task PrintSubtitleNames()
+        {
+            if (MediaPlayer.Media != null)
+            {
+                // Get the number of available subtitle tracks
+                int spuCount = MediaPlayer.SpuCount;
+                string subtitleInfo;
+
+                if (spuCount > 0)
+                {
+                    // Retrieve the subtitle descriptions
+                    var subtitleTracks = MediaPlayer.SpuDescription;
+                    subtitleInfo = "Available Subtitle Tracks:\n";
+
+                    foreach (var track in subtitleTracks)
+                    {
+                        subtitleInfo += $"- {track.Name} (ID: {track.Id})\n";
+                    }
+                }
+                else
+                {
+                    subtitleInfo = "No subtitle tracks available.";
+                }
+
+                // Display the subtitle info in an alert
+                await DisplayAlert("Subtitle Information", subtitleInfo, "OK");
+            }
+        }
+
+
 
         protected override void OnAppearing()
         {
