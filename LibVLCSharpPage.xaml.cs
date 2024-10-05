@@ -224,9 +224,11 @@ namespace Nyaa_Streamer
 
                     // Create a list to hold subtitle names
                     var subtitleOptions = new List<string>();
-                    foreach (var track in subtitleTracks)
+                    int selectedSpuId = -1; // Variable to hold selected subtitle ID
+
+                    for (int i = 0; i < subtitleTracks.Length; i++)
                     {
-                        subtitleOptions.Add(track.Name);
+                        subtitleOptions.Add(subtitleTracks[i].Name);
                     }
 
                     // Create an action sheet for subtitle selection
@@ -235,8 +237,14 @@ namespace Nyaa_Streamer
                     // Check if the user made a selection
                     if (subtitleChoice != null && subtitleChoice != "Cancel")
                     {
-                        // For now, just display which subtitle was selected
-                        await DisplayAlert("Selected Subtitle", $"You selected: {subtitleChoice}", "OK");
+                        // Find the selected subtitle ID
+                        selectedSpuId = Array.Find(subtitleTracks, track => track.Name == subtitleChoice).Id;
+
+                        // Instead of Native, call the method directly on MediaPlayer
+                        MediaPlayer.SetSpu(selectedSpuId); // Use MediaPlayer to set the SPU
+
+                        // Confirm the selected subtitle
+                        await DisplayAlert("Subtitle Set", $"You have set the subtitle to: {subtitleChoice}", "OK");
                     }
                 }
                 else
