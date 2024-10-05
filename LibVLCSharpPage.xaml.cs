@@ -96,34 +96,7 @@ namespace Nyaa_Streamer
 
         }
 
-        private async Task PrintSubtitleNames()
-        {
-            if (MediaPlayer.Media != null)
-            {
-                // Get the number of available subtitle tracks
-                int spuCount = MediaPlayer.SpuCount;
-                string subtitleInfo;
-
-                if (spuCount > 0)
-                {
-                    // Retrieve the subtitle descriptions
-                    var subtitleTracks = MediaPlayer.SpuDescription;
-                    subtitleInfo = "Available Subtitle Tracks:\n";
-
-                    foreach (var track in subtitleTracks)
-                    {
-                        subtitleInfo += $"- {track.Name} (ID: {track.Id})\n";
-                    }
-                }
-                else
-                {
-                    subtitleInfo = "No subtitle tracks available.";
-                }
-
-                // Display the subtitle info in an alert
-                await DisplayAlert("Subtitle Information", subtitleInfo, "OK");
-            }
-        }
+       
 
 
 
@@ -234,6 +207,35 @@ namespace Nyaa_Streamer
             }
         }
 
+        private async void OnSubtitleButtonClicked(object sender, EventArgs e)
+        {
+            if (MediaPlayer != null)
+            {
+                // Check if subtitles are available
+                int spuCount = MediaPlayer.SpuCount;
+                string subtitleInfo;
+
+                if (spuCount > 0)
+                {
+                    // Print available subtitle names
+                    var subtitleTracks = MediaPlayer.SpuDescription;
+                    subtitleInfo = "Available Subtitle Tracks:\n";
+
+                    foreach (var track in subtitleTracks)
+                    {
+                        subtitleInfo += $"- {track.Name} (ID: {track.Id})\n";
+                    }
+                }
+                else
+                {
+                    subtitleInfo = "No subtitle tracks available.";
+                }
+
+                // Display the subtitle info in an alert
+                await DisplayAlert("Subtitle Information", subtitleInfo, "OK");
+            }
+        }
+
         private void OnSeekBackwardClicked(object sender, EventArgs e)
         {
             AdjustMediaTime(-10000); // Seek backward 10 seconds
@@ -255,7 +257,7 @@ namespace Nyaa_Streamer
 
             // Load the media and print subtitle names
            
-            PrintSubtitleNames();
+           // PrintSubtitleNames();
         }
 
         private void AdjustMediaTime(long offset)

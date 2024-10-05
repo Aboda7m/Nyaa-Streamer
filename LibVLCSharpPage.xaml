@@ -121,6 +121,17 @@
                        TextColor="White"
                        HorizontalOptions="Center"
                        VerticalOptions="Center" FontSize="Micro" />
+
+                <!-- Subtitle Button -->
+                <ImageButton x:Name="SubtitleButton"
+                              Grid.Row="1"
+                              Grid.Column="5" 
+                              Source="subtitle.png"
+                              WidthRequest="30"
+                              HeightRequest="30"
+                              BackgroundColor="Transparent"
+                              Clicked="OnSubtitleButtonClicked" />
+
             </Grid>
         </Grid>
     </Grid>
