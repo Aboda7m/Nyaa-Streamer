@@ -328,8 +328,8 @@ namespace Nyaa_Streamer
                 // Update progress based on the percentage (0-1)
                 ProgressBar.Value = (double)mediaPlayer.Time / mediaPlayer.Length;
 
-                // Update the time label
-                TimeLabel.Text = $"{TimeSpan.FromMilliseconds(mediaPlayer.Time):mm\\:ss} / {TimeSpan.FromMilliseconds(mediaPlayer.Length):mm\\:ss}";
+                // Update the time label with HH:mm:ss format
+                TimeLabel.Text = UpdateTimeBar(); // Call UpdateTimeBar for consistent formatting
 
                 // Stop media and reset play button if video ends
                 if (mediaPlayer.Time >= mediaPlayer.Length)
@@ -355,6 +355,7 @@ namespace Nyaa_Streamer
             string FormatTime(int timeInMilliseconds)
             {
                 TimeSpan timeSpan = TimeSpan.FromMilliseconds(timeInMilliseconds);
+                // Return the formatted time with hours, minutes, and seconds
                 return $"{timeSpan.Hours:D2}:{timeSpan.Minutes:D2}:{timeSpan.Seconds:D2}";
             }
 
@@ -363,6 +364,7 @@ namespace Nyaa_Streamer
 
             return $"{currentFormattedTime} / {maxFormattedTime}";
         }
+
 
         private void UpdatePlayPauseButton()
         {
