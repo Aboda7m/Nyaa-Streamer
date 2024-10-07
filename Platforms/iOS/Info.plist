@@ -46,6 +46,18 @@
 				<key>NSIncludesSubdomains</key>
 				<true/>
 			</dict>
+			<key>localhost:8889</key>
+			<dict>
+				<key>NSExceptionAllowsInsecureHTTPLoads</key>
+				<true/>
+				<key>NSIncludesSubdomains</key>
+				<true/>
+			</dict>
+			<key>*</key>
+			<dict>
+				<key>NSExceptionAllowsInsecureHTTPLoads</key>
+				<true/>
+			</dict>
 		</dict>
 	</dict>
 	<key>UIBackgroundModes</key>
