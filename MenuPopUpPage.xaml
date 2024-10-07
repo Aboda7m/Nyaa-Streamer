@@ -9,7 +9,7 @@
     <Grid>
         <Image
                 x:Name="backgroundImage"
-                Source="tier.jpg"
+                Source="tier.png"
                 Aspect="AspectFill"
                 HorizontalOptions="Start"/>
    
