@@ -1,4 +1,6 @@
-﻿
+﻿#if WINDOWS
+// Windows-specific code can be added here
+#else
 using LibVLCSharp.Shared;
 using LibVLCSharp.MAUI;
 using System.Diagnostics;
@@ -376,3 +378,4 @@ namespace Nyaa_Streamer
         }
     }
 }
+#endif
