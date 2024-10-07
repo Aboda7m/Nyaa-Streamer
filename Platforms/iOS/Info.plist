@@ -84,9 +84,11 @@
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>
-		<false/>
+		<true/>
 	</dict>
 	<key>CFBundleIdentifier</key>
 	<string></string>
+	<key>UILaunchStoryboardName</key>
+	<string>MauiSplashScreen</string>
 </dict>
 </plist>
