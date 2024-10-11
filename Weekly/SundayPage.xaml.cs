@@ -43,7 +43,7 @@ namespace Nyaa_Streamer
                 }
                 else
                 {
-                    await DisplayAlert("Error", "No anime found for Sunday.", "OK"); // Correct error message
+                    await DisplayAlert("Error", "No anime found for Sunday.", "OK");
                 }
             }
             catch (Exception ex)
@@ -57,21 +57,10 @@ namespace Nyaa_Streamer
         }
 
         // Handle anime selection
-        private async void OnAnimeSelected(object sender, SelectionChangedEventArgs e)
+        private async void OnAnimeSelected(object sender, EventArgs e)
         {
-            var selectedAnime = e.CurrentSelection.FirstOrDefault() as Anime;
-
-            if (selectedAnime != null)
-            {
-                // Navigate to AnimeDetailsPage and pass the selected anime details
-                await Navigation.PushAsync(new AnimeDetailsPage(selectedAnime));
-            }
-        }
-
-        // Handle anime tap
-        private async void OnAnimeTapped(object sender, EventArgs e)
-        {
-            var selectedAnime = ((Frame)sender).BindingContext as Anime;
+            // Get the tapped anime item from the sender's BindingContext
+            var selectedAnime = ((Grid)sender).BindingContext as Anime;
 
             if (selectedAnime != null)
             {

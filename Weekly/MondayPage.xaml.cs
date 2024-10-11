@@ -21,7 +21,7 @@ namespace Nyaa_Streamer
             FetchMondayAnimeData();
         }
 
-        // Fetch data for Monday anime
+        // Fetch data from Jikan API using HttpClient.GetFromJsonAsync
         private async Task FetchMondayAnimeData()
         {
             try
@@ -43,7 +43,7 @@ namespace Nyaa_Streamer
                 }
                 else
                 {
-                    await DisplayAlert("Error", "No anime found for Monday.", "OK"); // Corrected error message
+                    await DisplayAlert("Error", "No anime found for Sunday.", "OK");
                 }
             }
             catch (Exception ex)
@@ -57,9 +57,10 @@ namespace Nyaa_Streamer
         }
 
         // Handle anime selection
-        private async void OnAnimeSelected(object sender, SelectionChangedEventArgs e)
+        private async void OnAnimeSelected(object sender, EventArgs e)
         {
-            var selectedAnime = e.CurrentSelection.FirstOrDefault() as Anime;
+            // Get the tapped anime item from the sender's BindingContext
+            var selectedAnime = ((Grid)sender).BindingContext as Anime;
 
             if (selectedAnime != null)
             {
