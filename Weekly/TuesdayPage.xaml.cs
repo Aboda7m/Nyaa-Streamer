@@ -1,7 +1,5 @@
 using System;
 using System.Collections.ObjectModel;
-using System.Net.Http;
-using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Microsoft.Maui.Controls;
 
@@ -15,33 +13,32 @@ namespace Nyaa_Streamer
         {
             InitializeComponent();
             TuesdayAnimeList = new ObservableCollection<Anime>();
+
+            // Set the BindingContext for data binding
             BindingContext = this;
 
+            // Fetch anime data when the page loads
             FetchTuesdayAnimeData();
         }
 
+        // Fetch data for Tuesday anime
         private async Task FetchTuesdayAnimeData()
         {
             try
             {
+                IsBusy = true; // Optional loading indicator
+
                 string apiUrl = "https://api.jikan.moe/v4/schedules?filter=tuesday";
-                using HttpClient client = new HttpClient();
-                var response = await client.GetFromJsonAsync<AnimeApiResponse>(apiUrl);
 
-                TuesdayAnimeList.Clear();
+                var animeList = await Anime.FetchAnimeDetailsAsync(apiUrl);
 
-                if (response != null && response.data != null)
+                TuesdayAnimeList.Clear(); // Clear existing list
+
+                if (animeList != null && animeList.Count > 0)
                 {
-                    foreach (var animeData in response.data)
+                    foreach (var anime in animeList)
                     {
-                        TuesdayAnimeList.Add(new Anime
-                        {
-                            Title = animeData.title,
-                            ImageUrl = animeData.images.jpg.image_url,
-                            Id = animeData.mal_id,
-                            Synopsis = animeData.synopsis,
-                            Episodes = animeData.episodes
-                        });
+                        TuesdayAnimeList.Add(anime);
                     }
                 }
                 else
@@ -53,14 +50,20 @@ namespace Nyaa_Streamer
             {
                 await DisplayAlert("Error", "Failed to load anime data: " + ex.Message, "OK");
             }
+            finally
+            {
+                IsBusy = false; // Hide loading indicator
+            }
         }
 
-        private async void OnAnimeSelected(object sender, SelectedItemChangedEventArgs e)
+        // Handle anime selection
+        private async void OnAnimeSelected(object sender, EventArgs e)
         {
-            if (e.SelectedItem is Anime selectedAnime)
+            var selectedAnime = ((Grid)sender).BindingContext as Anime;
+
+            if (selectedAnime != null)
             {
                 await Navigation.PushAsync(new AnimeDetailsPage(selectedAnime));
-                ((ListView)sender).SelectedItem = null;
             }
         }
     }

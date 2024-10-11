@@ -4,25 +4,20 @@
              x:Class="Nyaa_Streamer.MondayPage"
              Title="Monday Anime Schedule">
 
-    <!-- Root Grid Layout -->
     <Grid>
 
-        <!-- Fullscreen background image -->
         <Image Source="background.jpg"
                Aspect="AspectFill"
                HorizontalOptions="Fill"
                VerticalOptions="Fill" />
 
-        <!-- Semi-transparent gradient overlay to enhance readability -->
         <BoxView BackgroundColor="Black"
                  Opacity="0.5"
                  HorizontalOptions="Fill"
                  VerticalOptions="Fill" />
 
-        <!-- Main Content Layout -->
         <StackLayout Padding="20" VerticalOptions="FillAndExpand" Spacing="15">
 
-            <!-- Header Section -->
             <Label Text="Monday Anime Schedule"
                    FontSize="36"
                    HorizontalOptions="Center"
@@ -30,7 +25,6 @@
                    FontAttributes="Bold"
                    Margin="20,40,20,10" />
 
-            <!-- Anime List View -->
             <CollectionView x:Name="AnimeCollectionView"
                             ItemsSource="{Binding MondayAnimeList}"
                             SelectionMode="Single"
@@ -50,7 +44,6 @@
                                     <TapGestureRecognizer Tapped="OnAnimeSelected" />
                                 </Grid.GestureRecognizers>
 
-                                <!-- Anime Poster Image -->
                                 <Image Source="{Binding ImageUrl}"
                                        Aspect="AspectFill"
                                        HeightRequest="150"
@@ -58,28 +51,24 @@
                                        Grid.RowSpan="2"
                                        VerticalOptions="Center" />
 
-                                <!-- Anime Details -->
                                 <StackLayout Orientation="Vertical"
                                              Grid.Column="1"
                                              Padding="10"
                                              VerticalOptions="Center"
                                              BackgroundColor="#77000000">
 
-                                    <!-- Anime Title -->
                                     <Label Text="{Binding Title}"
                                            FontAttributes="Bold"
                                            FontSize="20"
                                            TextColor="White"
                                            LineBreakMode="TailTruncation" />
 
-                                    <!-- Anime Synopsis -->
                                     <Label Text="{Binding Synopsis}"
                                            FontSize="14"
                                            TextColor="LightGray"
                                            LineBreakMode="WordWrap"
                                            MaxLines="2" />
 
-                                    <!-- Airing Time -->
                                     <Label Text="{Binding AiringTimeLocal}"
                                            FontSize="14"
                                            TextColor="Yellow"

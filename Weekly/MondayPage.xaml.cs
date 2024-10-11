@@ -21,7 +21,7 @@ namespace Nyaa_Streamer
             FetchMondayAnimeData();
         }
 
-        // Fetch data from Jikan API using HttpClient.GetFromJsonAsync
+        // Fetch data for Monday anime
         private async Task FetchMondayAnimeData()
         {
             try
@@ -43,7 +43,7 @@ namespace Nyaa_Streamer
                 }
                 else
                 {
-                    await DisplayAlert("Error", "No anime found for Sunday.", "OK");
+                    await DisplayAlert("Error", "No anime found for Monday.", "OK");
                 }
             }
             catch (Exception ex)
