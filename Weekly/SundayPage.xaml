@@ -47,7 +47,7 @@
                                BackgroundColor="Transparent">
                             <Grid RowDefinitions="Auto, Auto" ColumnDefinitions="Auto, *">
                                 <Grid.GestureRecognizers>
-                                    <TapGestureRecognizer Tapped="OnAnimeSelected" />
+                                    <TapGestureRecognizer Tapped="OnAnimeTapped" />
                                 </Grid.GestureRecognizers>
 
                                 <!-- Anime Poster Image -->

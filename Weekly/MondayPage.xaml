@@ -4,6 +4,7 @@
              x:Class="Nyaa_Streamer.MondayPage"
              Title="Monday Anime Schedule">
 
+    <!-- Root Grid Layout -->
     <Grid>
 
         <!-- Fullscreen background image -->
@@ -29,11 +30,11 @@
                    FontAttributes="Bold"
                    Margin="20,40,20,10" />
 
-            <!-- Anime CollectionView -->
+            <!-- Anime List View -->
             <CollectionView x:Name="AnimeCollectionView"
                             ItemsSource="{Binding MondayAnimeList}"
                             SelectionMode="Single"
-                            SelectionChanged="OnAnimeSelected"
+                            SelectionChanged="OnAnimeSelected"  
                             BackgroundColor="Transparent"
                             VerticalOptions="FillAndExpand">
 
@@ -78,7 +79,7 @@
                                            LineBreakMode="WordWrap"
                                            MaxLines="2" />
 
-                                    <!-- Airing Time (if applicable) -->
+                                    <!-- Airing Time -->
                                     <Label Text="{Binding AiringTimeLocal}"
                                            FontSize="14"
                                            TextColor="Yellow"
