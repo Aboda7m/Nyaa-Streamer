@@ -1,7 +1,5 @@
 using System;
 using System.Collections.ObjectModel;
-using System.Net.Http;
-using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Microsoft.Maui.Controls;
 
@@ -23,7 +21,7 @@ namespace Nyaa_Streamer
             FetchSundayAnimeData();
         }
 
-        // Fetch data from Jikan API using HttpClient.GetFromJsonAsync
+        // Fetch data for Sunday anime using the existing method in Anime class
         private async Task FetchSundayAnimeData()
         {
             try
@@ -34,26 +32,18 @@ namespace Nyaa_Streamer
                 // URL for Sunday anime schedule
                 string apiUrl = "https://api.jikan.moe/v4/schedules?filter=sunday";
 
-                using HttpClient client = new HttpClient();
-                var response = await client.GetFromJsonAsync<AnimeApiResponse>(apiUrl);
+                // Fetch anime details using the existing method
+                var animeList = await Anime.FetchAnimeDetailsAsync(apiUrl);
 
                 // Clear the existing list
                 SundayAnimeList.Clear();
 
-                // Check if the response contains data
-                if (response != null && response.data != null)
+                // Add each anime to the ObservableCollection
+                if (animeList != null && animeList.Count > 0)
                 {
-                    foreach (var animeData in response.data)
+                    foreach (var anime in animeList)
                     {
-                        // Add each anime to the ObservableCollection
-                        SundayAnimeList.Add(new Anime
-                        {
-                            Title = animeData.title,
-                            ImageUrl = animeData.images.jpg.image_url,
-                            Id = animeData.mal_id, // Assign the ID from the API to the Anime object
-                            Synopsis = animeData.synopsis,
-                            Episodes = animeData.episodes
-                        });
+                        SundayAnimeList.Add(anime);
                     }
                 }
                 else
