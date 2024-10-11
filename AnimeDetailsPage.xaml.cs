@@ -34,7 +34,7 @@ namespace Nyaa_Streamer
 
                 if (response != null)
                 {
-                    // Use the new method in Anime.cs to update the details
+                    // Update anime details
                     UpdateAnimeFromApiResponse(anime, response);
                 }
                 else
@@ -48,24 +48,19 @@ namespace Nyaa_Streamer
             }
         }
 
-        // New method in Anime.cs to update anime details from API response
         public void UpdateAnimeFromApiResponse(Anime anime, AnimeData response)
         {
             anime.Synopsis = response.synopsis;
             anime.Episodes = response.episodes;
             anime.Score = response.score;
 
-            // Convert airing time from JST to GMT using the new method
-            if (response.broadcast != null)
-            {
-                anime.AiringTime = Anime.ConvertJSTToGMT(response.broadcast.day, response.broadcast.time);
-            }
-
-            // Notify UI of property changes
+            // Airing times are already updated in the Anime class
             OnPropertyChanged(nameof(anime.Synopsis));
             OnPropertyChanged(nameof(anime.Episodes));
             OnPropertyChanged(nameof(anime.Score));
             OnPropertyChanged(nameof(anime.AiringTime));
+            OnPropertyChanged(nameof(anime.AiringTimeGMT));
+            OnPropertyChanged(nameof(anime.AiringTimeLocal));
         }
 
         private async void OnWatchDownloadClicked(object sender, EventArgs e)

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Net.Http.Json;
+using System.Threading.Tasks;
 
 namespace Nyaa_Streamer
 {
@@ -10,27 +11,59 @@ namespace Nyaa_Streamer
         public string Title { get; set; }
         public string ImageUrl { get; set; }
         public string Synopsis { get; set; }
-        public int? Episodes { get; set; } // Assuming episodes are an integer
-        public int Id { get; set; } // Add Id to reference the correct anime
-        public double? Score { get; set; } // Added property for score
-        public string AiringTime { get; set; } // Added property for airing time in GMT as a string
+        public int? Episodes { get; set; }
+        public int Id { get; set; }
+        public double? Score { get; set; }
+        public string AiringTime { get; set; } // Original airing time (JST)
+        public string AiringTimeLocal { get; set; } // Local time converted from JST
+        public string AiringTimeGMT { get; set; } // GMT time converted from JST
+
+        // Method to convert JST time to Local time
+        public static string ConvertJSTToLocal(string day, string time)
+        {
+            try
+            {
+                DateTime airingTimeJST = DateTime.ParseExact(time, "HH:mm", CultureInfo.InvariantCulture);
+                DateTime airingDateTime = airingTimeJST.Date + airingTimeJST.TimeOfDay;
+
+                // Get the correct day of the week
+                string daySingular = day.TrimEnd('s'); // Convert 'Saturdays' to 'Saturday'
+
+                // Adjust airingDateTime to the correct day
+                while (airingDateTime.DayOfWeek != (DayOfWeek)Enum.Parse(typeof(DayOfWeek), daySingular, true))
+                {
+                    airingDateTime = airingDateTime.AddDays(1);
+                }
+
+                // Convert JST to Local Time
+                TimeZoneInfo jstZone = TimeZoneInfo.FindSystemTimeZoneById("Tokyo Standard Time");
+                DateTime localDateTime = TimeZoneInfo.ConvertTime(airingDateTime, jstZone, TimeZoneInfo.Local);
+
+                // Get the day of the week in the local timezone
+                string localDay = localDateTime.ToString("dddd", CultureInfo.InvariantCulture);
+                string timezoneName = TimeZoneInfo.Local.StandardName; // Get the local timezone name
+
+                return $"{localDay} {localDateTime:HH:mm} ({timezoneName})"; // Format the output
+            }
+            catch (FormatException)
+            {
+                return "Invalid time format";
+            }
+            catch (ArgumentException ex)
+            {
+                return "Invalid day format: " + ex.Message;
+            }
+        }
 
         // Method to convert JST time to GMT
         public static string ConvertJSTToGMT(string day, string time)
         {
-            // Combine day and time for DateTime parsing
-            string dateTimeString = $"{day} {time}";
-
             try
             {
-                // Assuming the broadcast day is in English (like "Saturdays")
                 DateTime airingTimeJST = DateTime.ParseExact(time, "HH:mm", CultureInfo.InvariantCulture);
-
-                // Get the current date and combine with the time
-                var today = DateTime.Now;
                 DateTime airingDateTime = airingTimeJST.Date + airingTimeJST.TimeOfDay;
 
-                // Convert 'Saturdays' to 'Saturday' for the enum
+                // Get the correct day of the week
                 string daySingular = day.TrimEnd('s'); // Convert 'Saturdays' to 'Saturday'
 
                 // Adjust airingDateTime to the correct day
@@ -43,22 +76,19 @@ namespace Nyaa_Streamer
                 TimeZoneInfo jstZone = TimeZoneInfo.FindSystemTimeZoneById("Tokyo Standard Time");
                 DateTime airingTimeGMT = TimeZoneInfo.ConvertTime(airingDateTime, jstZone, TimeZoneInfo.Utc);
 
-                // Return in "HH:mm" format
-                return airingTimeGMT.ToString("HH:mm");
+                // Get the day in GMT
+                string gmtDay = airingTimeGMT.ToString("dddd", CultureInfo.InvariantCulture);
+                return $"{gmtDay} {airingTimeGMT:HH:mm} GMT"; // Format the output
             }
             catch (FormatException)
             {
-                // Handle format exceptions and log if necessary
-                return "Invalid time format"; // or handle as you see fit
+                return "Invalid time format";
             }
             catch (ArgumentException ex)
             {
-                // Handle cases where the day is invalid
-                return "Invalid day format: " + ex.Message; // or handle as you see fit
+                return "Invalid day format: " + ex.Message;
             }
         }
-
-
 
         // Method to populate anime details from API response
         public static async Task<List<Anime>> FetchAnimeDetailsAsync(string apiUrl)
@@ -71,17 +101,25 @@ namespace Nyaa_Streamer
             {
                 foreach (var animeData in response.data)
                 {
-                    animeList.Add(new Anime
+                    var anime = new Anime
                     {
                         Title = animeData.title,
                         ImageUrl = animeData.images.jpg.image_url,
                         Id = animeData.mal_id,
                         Synopsis = animeData.synopsis,
                         Episodes = animeData.episodes,
-                        Score = animeData.score,
-                        // Convert airing time from JST to GMT, if available
-                        AiringTime = animeData.broadcast != null ? ConvertJSTToGMT(animeData.broadcast.day, animeData.broadcast.time) : null
-                    });
+                        Score = animeData.score
+                    };
+
+                    // Convert airing time from JST to Local and GMT
+                    if (animeData.broadcast != null)
+                    {
+                        anime.AiringTime = $"{animeData.broadcast.day} {animeData.broadcast.time} (JST)";
+                        anime.AiringTimeLocal = ConvertJSTToLocal(animeData.broadcast.day, animeData.broadcast.time);
+                        anime.AiringTimeGMT = ConvertJSTToGMT(animeData.broadcast.day, animeData.broadcast.time); // Added GMT conversion
+                    }
+
+                    animeList.Add(anime);
                 }
             }
             return animeList;
@@ -97,18 +135,18 @@ namespace Nyaa_Streamer
     {
         public string synopsis { get; set; }
         public string title { get; set; }
-        public int mal_id { get; set; } // The ID from the API response
+        public int mal_id { get; set; }
         public AnimeImages images { get; set; }
         public int? episodes { get; set; }
-        public double? score { get; set; } // Added property for score
-        public BroadcastInfo broadcast { get; set; } // Added property for broadcast info
+        public double? score { get; set; }
+        public BroadcastInfo broadcast { get; set; }
     }
 
     public class BroadcastInfo
     {
-        public string day { get; set; } // Day of airing
-        public string time { get; set; } // Time of airing (in JST)
-        public string timezone { get; set; } // Timezone information
+        public string day { get; set; }
+        public string time { get; set; }
+        public string timezone { get; set; }
     }
 
     public class AnimeImages

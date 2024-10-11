@@ -29,7 +29,10 @@
 
         <!-- Airing Time -->
         <Label Text="Airing Time (GMT):" FontAttributes="Bold" Margin="0,10,0,0"/>
-        <Label Text="{Binding AiringTime}"/>
+        <Label Text="{Binding AiringTime}" />
+        <Label Text="{Binding AiringTimeGMT}" />
+        <Label Text="{Binding AiringTimeLocal}" />
+
 
         <!-- Score -->
         <Label Text="Score:" FontAttributes="Bold" Margin="0,10,0,0"/>
