@@ -2,72 +2,87 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Nyaa_Streamer.SundayPage"
-             Title="Sunday Anime">
+             Title="Sunday Anime Schedule">
 
+    <!-- Root Grid Layout -->
     <Grid>
-        <Image
-            Source="background.jpg"
-            Aspect="AspectFill"
-            HorizontalOptions="Fill"
-            VerticalOptions="Fill" />
-        <Label Text="MondayPage Anime List" 
-               HorizontalOptions="Center" 
-               VerticalOptions="Center" />
-    <!-- Main Layout -->
-    <StackLayout>
-        <Label Text="Sunday Anime Schedule"
-               FontSize="24"
-               HorizontalOptions="Center"
-               TextColor="White"
-               Margin="10" />
 
-        <!-- Anime ListView -->
-        <ListView x:Name="AnimeListView"
-                  ItemsSource="{Binding SundayAnimeList}"
-                  BackgroundColor="Transparent"
-                  ItemSelected="OnAnimeSelected">
-            <!-- Added ItemSelected Event -->
-            <!-- ListView itself is transparent -->
+        <!-- Fullscreen background image with gradient overlay -->
+        <Image Source="background.jpg"
+               Aspect="AspectFill"
+               HorizontalOptions="Fill"
+               VerticalOptions="Fill" />
 
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <ViewCell>
-                        <Grid Padding="1">
-                            <!-- Anime Image as Background -->
-                            <Image Source="{Binding ImageUrl}"
-                                   Aspect="AspectFill"
-                                   Opacity="1.3"
-                                   VerticalOptions="FillAndExpand"
-                                   HorizontalOptions="FillAndExpand"
-                                   Grid.RowSpan="2" />
-                            <!-- Ensures the image spans the grid -->
+        <!-- Semi-transparent gradient overlay to enhance readability -->
+        <BoxView BackgroundColor="Black"
+                 Opacity="0.5"
+                 HorizontalOptions="Fill"
+                 VerticalOptions="Fill" />
 
-                            <!-- Overlay content on top of the background -->
-                            <StackLayout Orientation="Vertical"
-                                         Padding="10"
-                                         VerticalOptions="Center"
-                                         BackgroundColor="#88000000">
-                                <!-- Semi-transparent dark overlay to ensure text readability -->
+        <!-- Main Content Layout -->
+        <StackLayout Padding="20" VerticalOptions="FillAndExpand" Spacing="15">
 
-                                <!-- Anime Title -->
-                                <Label Text="{Binding Title}"
-                                       FontAttributes="Bold"
-                                       FontSize="20"
-                                       TextColor="White"
-                                       LineBreakMode="TailTruncation" />
+            <!-- Header Section -->
+            <Label Text="Sunday Anime Schedule"
+                   FontSize="36"
+                   HorizontalOptions="Center"
+                   TextColor="White"
+                   FontAttributes="Bold"
+                   Margin="20,40,20,10" />
 
-                                <!-- Anime Synopsis -->
-                                <Label Text="{Binding Synopsis}"
-                                       FontSize="14"
-                                       TextColor="White"
-                                       LineBreakMode="WordWrap"
-                                       MaxLines="2" />
-                            </StackLayout>
-                        </Grid>
-                    </ViewCell>
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
-    </StackLayout>
+            <!-- Anime List View (using CollectionView for a modern approach) -->
+            <CollectionView x:Name="AnimeCollectionView"
+                            ItemsSource="{Binding SundayAnimeList}"
+                            SelectionMode="Single"
+                            SelectionChanged="OnAnimeSelected"  
+                BackgroundColor="Transparent"
+                            VerticalOptions="FillAndExpand">
+
+                <!-- Define ItemTemplate for CollectionView -->
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Frame HasShadow="True"
+                               CornerRadius="10"
+                               Margin="0,10,0,10"
+                               Padding="0"
+                               BackgroundColor="Transparent">
+                            <Grid RowDefinitions="Auto, Auto" ColumnDefinitions="Auto, *">
+
+                                <!-- Anime Poster Image -->
+                                <Image Source="{Binding ImageUrl}"
+                                       Aspect="AspectFill"
+                                       HeightRequest="150"
+                                       WidthRequest="100"
+                                       Grid.RowSpan="2"
+                                       VerticalOptions="Center" />
+
+                                <!-- Anime Details -->
+                                <StackLayout Orientation="Vertical"
+                                             Grid.Column="1"
+                                             Padding="10"
+                                             BackgroundColor="#77000000"
+                                             VerticalOptions="Center">
+
+                                    <!-- Anime Title -->
+                                    <Label Text="{Binding Title}"
+                                           FontAttributes="Bold"
+                                           FontSize="18"
+                                           TextColor="White"
+                                           LineBreakMode="TailTruncation" />
+
+                                    <!-- Anime Synopsis (max 3 lines) -->
+                                    <Label Text="{Binding Synopsis}"
+                                           FontSize="14"
+                                           TextColor="LightGray"
+                                           LineBreakMode="WordWrap"
+                                           MaxLines="3" />
+
+                                </StackLayout>
+                            </Grid>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </StackLayout>
     </Grid>
 </ContentPage>

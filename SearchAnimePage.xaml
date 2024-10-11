@@ -8,10 +8,23 @@
         <!-- Search Bar -->
         <SearchBar Placeholder="Search for anime..."
                    SearchButtonPressed="OnSearchClicked"
+                   TextChanged="OnSearchTextChanged"
                    x:Name="SearchBar"/>
 
+        <!-- Suggestions List -->
+        <ListView ItemsSource="{Binding AnimeSuggestions}"
+                  IsVisible="{Binding AreSuggestionsVisible}"
+                  SelectionMode="Single"
+                  ItemTapped="OnSuggestionTapped">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <TextCell Text="{Binding Title}" />
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+
         <!-- Loading Indicator -->
-        <ActivityIndicator IsRunning="{Binding IsLoading}" IsVisible="{Binding IsLoading}"/>
+        <ActivityIndicator IsRunning="{Binding IsLoading}" IsVisible="{Binding IsLoading}" />
 
         <!-- Anime Results List -->
         <CollectionView ItemsSource="{Binding AnimeList}"

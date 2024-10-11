@@ -28,6 +28,9 @@ namespace Nyaa_Streamer
         {
             try
             {
+                // Display loading indicator (optional)
+                IsBusy = true;
+
                 // URL for Sunday anime schedule
                 string apiUrl = "https://api.jikan.moe/v4/schedules?filter=sunday";
 
@@ -62,22 +65,27 @@ namespace Nyaa_Streamer
             {
                 await DisplayAlert("Error", "Failed to load anime data: " + ex.Message, "OK");
             }
-        }
-
-        // Handle anime selection
-        private async void OnAnimeSelected(object sender, SelectedItemChangedEventArgs e)
-        {
-            if (e.SelectedItem is Anime selectedAnime)
+            finally
             {
-                // Navigate to AnimeDetailsPage and pass the selected anime details
-                await Navigation.PushAsync(new AnimeDetailsPage(selectedAnime));
-
-                // Optionally, deselect the item
-                ((ListView)sender).SelectedItem = null;
+                // Hide loading indicator
+                IsBusy = false;
             }
         }
 
-       
-      
+        // Handle anime selection (CollectionView uses SelectionChangedEventArgs instead of SelectedItemChangedEventArgs)
+        private async void OnAnimeSelected(object sender, SelectionChangedEventArgs e)
+        {
+            if (e.CurrentSelection.Count > 0)
+            {
+                if (e.CurrentSelection[0] is Anime selectedAnime)
+                {
+                    // Navigate to AnimeDetailsPage and pass the selected anime details
+                    await Navigation.PushAsync(new AnimeDetailsPage(selectedAnime));
+
+                    // Optionally, deselect the item
+                    ((CollectionView)sender).SelectedItem = null;
+                }
+            }
+        }
     }
 }
