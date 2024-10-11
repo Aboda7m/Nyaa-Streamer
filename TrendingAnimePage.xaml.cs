@@ -31,34 +31,26 @@ namespace Nyaa_Streamer
         }
 
         // Method to fetch trending anime using Jikan API
+        // Method to fetch trending anime using Jikan API
         private async Task LoadTrendingAnime()
         {
             try
             {
-                // Replace the static data with a call to the Jikan API
+                // URL for fetching trending anime
                 string apiUrl = "https://api.jikan.moe/v4/top/anime?type=tv&filter=airing&page=1&limit=10";
 
-                using HttpClient client = new HttpClient();
-                var response = await client.GetFromJsonAsync<AnimeApiResponse>(apiUrl);
+                // Call the method from Anime class to fetch anime details
+                var trendingAnime = await Anime.FetchAnimeDetailsAsync(apiUrl);
 
                 // Clear the existing list
                 TrendingAnimeList.Clear();
 
-                // Check if the response contains data
-                if (response != null && response.data != null)
+                // Check if there are any anime details to add
+                if (trendingAnime.Count > 0)
                 {
-                    foreach (var animeData in response.data)
+                    foreach (var anime in trendingAnime)
                     {
-                        // Add each anime to the ObservableCollection
-                        TrendingAnimeList.Add(new Anime
-                        {
-                            Title = animeData.title,
-                            ImageUrl = animeData.images.jpg.image_url,
-                            Id = animeData.mal_id, // Assign the ID from the API to the Anime object
-                            Synopsis = animeData.synopsis,
-                            Episodes = animeData.episodes
-
-                        });
+                        TrendingAnimeList.Add(anime);
                     }
                 }
                 else

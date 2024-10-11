@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Net.Http.Json;
 
 namespace Nyaa_Streamer
 {
@@ -20,15 +21,70 @@ namespace Nyaa_Streamer
             // Combine day and time for DateTime parsing
             string dateTimeString = $"{day} {time}";
 
-            // Assuming the broadcast day is in English (like "Saturdays")
-            DateTime airingTimeJST = DateTime.ParseExact(dateTimeString, "dddd HH:mm", CultureInfo.InvariantCulture);
+            try
+            {
+                // Assuming the broadcast day is in English (like "Saturdays")
+                DateTime airingTimeJST = DateTime.ParseExact(time, "HH:mm", CultureInfo.InvariantCulture);
 
-            // Convert JST to GMT
-            TimeZoneInfo jstZone = TimeZoneInfo.FindSystemTimeZoneById("Tokyo Standard Time");
-            DateTime airingTimeGMT = TimeZoneInfo.ConvertTime(airingTimeJST, jstZone, TimeZoneInfo.Utc);
+                // Get the current date and combine with the time
+                var today = DateTime.Now;
+                DateTime airingDateTime = airingTimeJST.Date + airingTimeJST.TimeOfDay;
 
-            // Return in "HH:mm" format
-            return airingTimeGMT.ToString("HH:mm");
+                // Convert 'Saturdays' to 'Saturday' for the enum
+                string daySingular = day.TrimEnd('s'); // Convert 'Saturdays' to 'Saturday'
+
+                // Adjust airingDateTime to the correct day
+                while (airingDateTime.DayOfWeek != (DayOfWeek)Enum.Parse(typeof(DayOfWeek), daySingular, true))
+                {
+                    airingDateTime = airingDateTime.AddDays(1);
+                }
+
+                // Convert JST to GMT
+                TimeZoneInfo jstZone = TimeZoneInfo.FindSystemTimeZoneById("Tokyo Standard Time");
+                DateTime airingTimeGMT = TimeZoneInfo.ConvertTime(airingDateTime, jstZone, TimeZoneInfo.Utc);
+
+                // Return in "HH:mm" format
+                return airingTimeGMT.ToString("HH:mm");
+            }
+            catch (FormatException)
+            {
+                // Handle format exceptions and log if necessary
+                return "Invalid time format"; // or handle as you see fit
+            }
+            catch (ArgumentException ex)
+            {
+                // Handle cases where the day is invalid
+                return "Invalid day format: " + ex.Message; // or handle as you see fit
+            }
+        }
+
+
+
+        // Method to populate anime details from API response
+        public static async Task<List<Anime>> FetchAnimeDetailsAsync(string apiUrl)
+        {
+            using HttpClient client = new HttpClient();
+            var response = await client.GetFromJsonAsync<AnimeApiResponse>(apiUrl);
+
+            List<Anime> animeList = new List<Anime>();
+            if (response != null && response.data != null)
+            {
+                foreach (var animeData in response.data)
+                {
+                    animeList.Add(new Anime
+                    {
+                        Title = animeData.title,
+                        ImageUrl = animeData.images.jpg.image_url,
+                        Id = animeData.mal_id,
+                        Synopsis = animeData.synopsis,
+                        Episodes = animeData.episodes,
+                        Score = animeData.score,
+                        // Convert airing time from JST to GMT, if available
+                        AiringTime = animeData.broadcast != null ? ConvertJSTToGMT(animeData.broadcast.day, animeData.broadcast.time) : null
+                    });
+                }
+            }
+            return animeList;
         }
     }
 
