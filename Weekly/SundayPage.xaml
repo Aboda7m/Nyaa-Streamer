@@ -7,7 +7,7 @@
     <!-- Root Grid Layout -->
     <Grid>
 
-        <!-- Fullscreen background image with gradient overlay -->
+        <!-- Fullscreen background image -->
         <Image Source="background.jpg"
                Aspect="AspectFill"
                HorizontalOptions="Fill"
@@ -30,23 +30,25 @@
                    FontAttributes="Bold"
                    Margin="20,40,20,10" />
 
-            <!-- Anime List View (using CollectionView for a modern approach) -->
+            <!-- Anime List View -->
             <CollectionView x:Name="AnimeCollectionView"
                             ItemsSource="{Binding SundayAnimeList}"
                             SelectionMode="Single"
                             SelectionChanged="OnAnimeSelected"  
-                BackgroundColor="Transparent"
+                            BackgroundColor="Transparent"
                             VerticalOptions="FillAndExpand">
 
-                <!-- Define ItemTemplate for CollectionView -->
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
                         <Frame HasShadow="True"
-                               CornerRadius="10"
-                               Margin="0,10,0,10"
-                               Padding="0"
+                               CornerRadius="15"
+                               Margin="0,10"
+                               Padding="10"
                                BackgroundColor="Transparent">
                             <Grid RowDefinitions="Auto, Auto" ColumnDefinitions="Auto, *">
+                                <Grid.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnAnimeSelected" />
+                                </Grid.GestureRecognizers>
 
                                 <!-- Anime Poster Image -->
                                 <Image Source="{Binding ImageUrl}"
@@ -60,23 +62,28 @@
                                 <StackLayout Orientation="Vertical"
                                              Grid.Column="1"
                                              Padding="10"
-                                             BackgroundColor="#77000000"
-                                             VerticalOptions="Center">
+                                             VerticalOptions="Center"
+                                             BackgroundColor="#77000000">
 
                                     <!-- Anime Title -->
                                     <Label Text="{Binding Title}"
                                            FontAttributes="Bold"
-                                           FontSize="18"
+                                           FontSize="20"
                                            TextColor="White"
                                            LineBreakMode="TailTruncation" />
 
-                                    <!-- Anime Synopsis (max 3 lines) -->
+                                    <!-- Anime Synopsis -->
                                     <Label Text="{Binding Synopsis}"
                                            FontSize="14"
                                            TextColor="LightGray"
                                            LineBreakMode="WordWrap"
-                                           MaxLines="3" />
+                                           MaxLines="2" />
 
+                                    <!-- Airing Time -->
+                                    <Label Text="{Binding AiringTimeLocal}"
+                                           FontSize="14"
+                                           TextColor="Yellow"
+                                           LineBreakMode="TailTruncation" />
                                 </StackLayout>
                             </Grid>
                         </Frame>

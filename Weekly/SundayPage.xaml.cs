@@ -21,24 +21,19 @@ namespace Nyaa_Streamer
             FetchSundayAnimeData();
         }
 
-        // Fetch data for Sunday anime using the existing method in Anime class
+        // Fetch data for Sunday anime
         private async Task FetchSundayAnimeData()
         {
             try
             {
-                // Display loading indicator (optional)
-                IsBusy = true;
+                IsBusy = true; // Optional loading indicator
 
-                // URL for Sunday anime schedule
                 string apiUrl = "https://api.jikan.moe/v4/schedules?filter=sunday";
 
-                // Fetch anime details using the existing method
                 var animeList = await Anime.FetchAnimeDetailsAsync(apiUrl);
 
-                // Clear the existing list
-                SundayAnimeList.Clear();
+                SundayAnimeList.Clear(); // Clear existing list
 
-                // Add each anime to the ObservableCollection
                 if (animeList != null && animeList.Count > 0)
                 {
                     foreach (var anime in animeList)
@@ -57,24 +52,20 @@ namespace Nyaa_Streamer
             }
             finally
             {
-                // Hide loading indicator
-                IsBusy = false;
+                IsBusy = false; // Hide loading indicator
             }
         }
 
-        // Handle anime selection (CollectionView uses SelectionChangedEventArgs instead of SelectedItemChangedEventArgs)
-        private async void OnAnimeSelected(object sender, SelectionChangedEventArgs e)
+        // Handle anime selection
+        private async void OnAnimeSelected(object sender, EventArgs e)
         {
-            if (e.CurrentSelection.Count > 0)
-            {
-                if (e.CurrentSelection[0] is Anime selectedAnime)
-                {
-                    // Navigate to AnimeDetailsPage and pass the selected anime details
-                    await Navigation.PushAsync(new AnimeDetailsPage(selectedAnime));
+            // Get the tapped anime item from the sender's BindingContext
+            var selectedAnime = ((Grid)sender).BindingContext as Anime;
 
-                    // Optionally, deselect the item
-                    ((CollectionView)sender).SelectedItem = null;
-                }
+            if (selectedAnime != null)
+            {
+                // Navigate to AnimeDetailsPage and pass the selected anime details
+                await Navigation.PushAsync(new AnimeDetailsPage(selectedAnime));
             }
         }
     }
