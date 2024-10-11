@@ -19,11 +19,11 @@ namespace Nyaa_Streamer
             BindingContext = anime; // Bind the selected anime to the details page
 
             // Fetch additional details from Jikan API
-            FetchAnimeDetailsFromJikan(anime);
+            UpdateAnimeDetails(anime);
         }
 
-        // Method to fetch anime details from Jikan API
-        private async void FetchAnimeDetailsFromJikan(Anime anime)
+        // Method to update anime details using the new function
+        private async void UpdateAnimeDetails(Anime anime)
         {
             try
             {
@@ -34,21 +34,8 @@ namespace Nyaa_Streamer
 
                 if (response != null)
                 {
-                    anime.Synopsis = response.synopsis;
-                    anime.Episodes = response.episodes;
-                    anime.Score = response.score;
-
-                    // Convert airing time from JST to GMT using the new method
-                    if (response.broadcast != null)
-                    {
-                        anime.AiringTime = Anime.ConvertJSTToGMT(response.broadcast.day, response.broadcast.time);
-                    }
-
-                    // Notify UI of property changes
-                    OnPropertyChanged(nameof(anime.Synopsis));
-                    OnPropertyChanged(nameof(anime.Episodes));
-                    OnPropertyChanged(nameof(anime.Score));
-                    OnPropertyChanged(nameof(anime.AiringTime));
+                    // Use the new method in Anime.cs to update the details
+                    UpdateAnimeFromApiResponse(anime, response);
                 }
                 else
                 {
@@ -61,8 +48,25 @@ namespace Nyaa_Streamer
             }
         }
 
+        // New method in Anime.cs to update anime details from API response
+        public void UpdateAnimeFromApiResponse(Anime anime, AnimeData response)
+        {
+            anime.Synopsis = response.synopsis;
+            anime.Episodes = response.episodes;
+            anime.Score = response.score;
 
+            // Convert airing time from JST to GMT using the new method
+            if (response.broadcast != null)
+            {
+                anime.AiringTime = Anime.ConvertJSTToGMT(response.broadcast.day, response.broadcast.time);
+            }
 
+            // Notify UI of property changes
+            OnPropertyChanged(nameof(anime.Synopsis));
+            OnPropertyChanged(nameof(anime.Episodes));
+            OnPropertyChanged(nameof(anime.Score));
+            OnPropertyChanged(nameof(anime.AiringTime));
+        }
 
         private async void OnWatchDownloadClicked(object sender, EventArgs e)
         {
@@ -94,7 +98,6 @@ namespace Nyaa_Streamer
                 await DisplayAlert("Error", "No anime selected.", "OK");
             }
         }
-
 
         private void OnSynopsisTapped(object sender, EventArgs e)
         {
