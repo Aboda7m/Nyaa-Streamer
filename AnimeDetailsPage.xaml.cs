@@ -30,21 +30,25 @@ namespace Nyaa_Streamer
                 string jikanUrl = $"https://api.jikan.moe/v4/anime/{anime.Id}";
 
                 using HttpClient client = new HttpClient();
-                var response = await client.GetFromJsonAsync<AnimeData>(jikanUrl); // Use correct response type
+                var response = await client.GetFromJsonAsync<AnimeData>(jikanUrl);
 
-                // Check if the response contains data
-                if (response != null && response != null)
+                if (response != null)
                 {
-                    var animeData = response; // Access the first AnimeData object from the list
+                    anime.Synopsis = response.synopsis;
+                    anime.Episodes = response.episodes;
+                    anime.Score = response.score;
 
-                    // Update the properties of the bound Anime object
-                    anime.Synopsis = animeData.synopsis;
-                    anime.Episodes = animeData.episodes;
-                    //anime.Episodes = animeData.episodes; // Assuming episodes is an integer
+                    // Convert airing time from JST to GMT using the new method
+                    if (response.broadcast != null)
+                    {
+                        anime.AiringTime = Anime.ConvertJSTToGMT(response.broadcast.day, response.broadcast.time);
+                    }
 
                     // Notify UI of property changes
                     OnPropertyChanged(nameof(anime.Synopsis));
                     OnPropertyChanged(nameof(anime.Episodes));
+                    OnPropertyChanged(nameof(anime.Score));
+                    OnPropertyChanged(nameof(anime.AiringTime));
                 }
                 else
                 {
@@ -56,6 +60,8 @@ namespace Nyaa_Streamer
                 await DisplayAlert("Error", "Failed to load anime details: " + ex.Message, "OK");
             }
         }
+
+
 
 
         private async void OnWatchDownloadClicked(object sender, EventArgs e)
