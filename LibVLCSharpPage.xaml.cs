@@ -191,12 +191,12 @@ namespace Nyaa_Streamer
                     if (_isPlaying)
                     {
                         mediaPlayer.Pause();
-                        PlayPauseButton.Source = "Play.png";
+                        PlayPauseButton.Source = "play.png";
                     }
                     else
                     {
                         mediaPlayer.Play();
-                        PlayPauseButton.Source = "Pause.png";
+                        PlayPauseButton.Source = "pause.png";
                     }
 
                     _isPlaying = !_isPlaying;
@@ -337,7 +337,7 @@ namespace Nyaa_Streamer
                 {
                     mediaPlayer.Pause();
                     _isPlaying = false;
-                    PlayPauseButton.Source = "Play.png"; // Reset to play button
+                    PlayPauseButton.Source = "play.png"; // Reset to play button
                 }
                 UpdatePlayPauseButton();
             }
@@ -373,7 +373,7 @@ namespace Nyaa_Streamer
             if (MediaPlayer != null)
             {
                 _isPlaying = MediaPlayer.IsPlaying;
-                PlayPauseButton.Source = _isPlaying ? "Pause.png" : "Play.png";
+                PlayPauseButton.Source = _isPlaying ? "pause.png" : "play.png";
             }
         }
     }

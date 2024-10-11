@@ -106,7 +106,7 @@
                 <ImageButton x:Name="UnSkipOpeningButton"
                              Grid.Row="2"
                              Grid.Column="1"
-                             Source="Unskip.png"
+                             Source="unskip.png"
                              WidthRequest="60"
                              HeightRequest="60"
                              BackgroundColor="Transparent"
