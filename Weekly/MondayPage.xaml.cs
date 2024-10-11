@@ -65,15 +65,15 @@ namespace Nyaa_Streamer
         }
 
         // Handle anime selection
-        private async void OnAnimeSelected(object sender, SelectedItemChangedEventArgs e)
+        private async void OnAnimeSelected(object sender, SelectionChangedEventArgs e)
         {
-            if (e.SelectedItem is Anime selectedAnime)
+            // Get the selected anime
+            var selectedAnime = e.CurrentSelection.FirstOrDefault() as Anime;
+
+            if (selectedAnime != null)
             {
                 // Navigate to AnimeDetailsPage and pass the selected anime details
                 await Navigation.PushAsync(new AnimeDetailsPage(selectedAnime));
-
-                // Optionally, deselect the item
-                ((ListView)sender).SelectedItem = null;
             }
         }
     }
