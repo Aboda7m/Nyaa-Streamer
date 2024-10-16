@@ -59,8 +59,22 @@ namespace Nyaa_Streamer
         // Handle anime selection
         private async void OnAnimeSelected(object sender, EventArgs e)
         {
-            var selectedAnime = ((Grid)sender).BindingContext as Anime;
+            // Check if the sender is a Frame or Grid and retrieve the BindingContext
+            var selectedFrame = sender as Frame;
+            var selectedGrid = sender as Grid;
 
+            Anime selectedAnime = null;
+
+            if (selectedFrame != null)
+            {
+                selectedAnime = selectedFrame.BindingContext as Anime;
+            }
+            else if (selectedGrid != null)
+            {
+                selectedAnime = selectedGrid.BindingContext as Anime;
+            }
+
+            // Navigate to AnimeDetailsPage if the selected anime is not null
             if (selectedAnime != null)
             {
                 await Navigation.PushAsync(new AnimeDetailsPage(selectedAnime));
