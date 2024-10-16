@@ -1,57 +1,83 @@
 using System.Collections.ObjectModel;
 
+namespace Nyaa_Streamer;
+
+[QueryProperty(nameof(Day), "day")]
 public partial class BaseDayPage : ContentPage
 {
+    // Properties for binding
     public string Day { get; set; }
     public string PageTitle { get; set; }
-    public ObservableCollection<AnimeItem> AnimeList { get; set; }
+    public ObservableCollection<Anime> AnimeList { get; set; }
 
-    // A dictionary to hold API keys for each day
-    private Dictionary<string, string> dayApiKeys = new Dictionary<string, string>
+    // Dictionary to map days to API URLs
+    private readonly Dictionary<string, string> dayApiUrls = new Dictionary<string, string>
     {
-        { "Sunday", "API_KEY_SUNDAY" },
-        { "Monday", "API_KEY_MONDAY" },
-        { "Tuesday", "API_KEY_TUESDAY" },
-        { "Wednesday", "API_KEY_WEDNESDAY" },
-        { "Thursday", "API_KEY_THURSDAY" },
-        { "Friday", "API_KEY_FRIDAY" },
-        { "Saturday", "API_KEY_SATURDAY" }
+        { "Sunday", "https://api.jikan.moe/v4/schedules?filter=sunday" },
+        { "Monday", "https://api.jikan.moe/v4/schedules?filter=monday" },
+        { "Tuesday", "https://api.jikan.moe/v4/schedules?filter=tuesday" },
+        { "Wednesday", "https://api.jikan.moe/v4/schedules?filter=wednesday" },
+        { "Thursday", "https://api.jikan.moe/v4/schedules?filter=thursday" },
+        { "Friday", "https://api.jikan.moe/v4/schedules?filter=friday" },
+        { "Saturday", "https://api.jikan.moe/v4/schedules?filter=saturday" }
     };
 
-    public BaseDayPage(string day)
+    // Default constructor, required for Shell navigation
+    public BaseDayPage()
     {
         InitializeComponent();
-        Day = day;
-        PageTitle = $"{day} Anime Schedule";  // Set the dynamic page title
-
-        // Bind the dynamic properties to the UI
+        AnimeList = new ObservableCollection<Anime>();
         BindingContext = this;
+    }
 
-        // Fetch the anime data for the day using the correct API key
-        if (dayApiKeys.ContainsKey(day))
+    // This method gets called when the page is about to appear
+    protected override void OnAppearing()
+    {
+        base.OnAppearing();
+        if (!string.IsNullOrEmpty(Day))
         {
-            string apiKey = dayApiKeys[day];
-            LoadAnimeSchedule(apiKey);  // Load data from the API
-        }
-        else
-        {
-            throw new Exception("Invalid day provided.");
+            PageTitle = $"{Day} Anime Schedule";  // Dynamically set the page title
+            if (dayApiUrls.ContainsKey(Day))
+            {
+                string apiUrl = dayApiUrls[Day];
+                LoadAnimeSchedule(apiUrl);  // Fetch and load anime data
+            }
+            else
+            {
+                DisplayAlert("Error", "Invalid day selected.", "OK");
+            }
         }
     }
 
-    private async void LoadAnimeSchedule(string apiKey)
+    // Method to fetch anime schedule from API and populate UI
+    private async void LoadAnimeSchedule(string apiUrl)
     {
-        // Simulate an API call using the API key for the specific day
-        await Task.Delay(1000); // Simulate API delay
-
-        // Example: Populate AnimeList with dummy data or data from an actual API call
-        AnimeList = new ObservableCollection<AnimeItem>
+        try
         {
-            new AnimeItem { Title = "Anime 1", Synopsis = "A cool anime.", ImageUrl = "image1.jpg", AiringTimeLocal = "9:00 AM" },
-            new AnimeItem { Title = "Anime 2", Synopsis = "An even cooler anime.", ImageUrl = "image2.jpg", AiringTimeLocal = "12:00 PM" }
-        };
+            // Fetch anime details from the API
+            var animeData = await Anime.FetchAnimeDetailsAsync(apiUrl);
 
-        // Set the BindingContext to update the UI
-        BindingContext = this;
+            // Update AnimeList, which will automatically update the UI
+            AnimeList.Clear();
+            foreach (var anime in animeData)
+            {
+                AnimeList.Add(anime);
+            }
+        }
+        catch (Exception ex)
+        {
+            // Show an error alert in case of failure
+            await DisplayAlert("Error", $"Failed to load anime schedule: {ex.Message}", "OK");
+        }
+    }
+
+    // Event handler when an anime item is selected
+    private async void OnAnimeSelected(object sender, SelectionChangedEventArgs e)
+    {
+        if (e.CurrentSelection.FirstOrDefault() is Anime selectedAnime)
+        {
+            // Handle anime selection (e.g., navigate to a detailed view)
+            await DisplayAlert("Selected", $"You selected {selectedAnime.Title}", "OK");
+        }
     }
 }

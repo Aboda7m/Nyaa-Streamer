@@ -3,9 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Nyaa_Streamer.BaseDayPage"
              Title="{Binding PageTitle}">
-    <!-- Title dynamically set -->
-
-    <!-- Root Grid Layout -->
+    
     <Grid>
 
         <!-- Fullscreen background image -->
@@ -24,7 +22,7 @@
         <StackLayout Padding="20" VerticalOptions="FillAndExpand" Spacing="15">
 
             <!-- Header Section -->
-            <Label Text="{Binding PageTitle}"  <!-- Header dynamically set -->
+            <Label Text="{Binding PageTitle}"  
                 FontSize="36"
                    HorizontalOptions="Center"
                    TextColor="White"
@@ -33,7 +31,7 @@
 
                 <!-- Anime List View -->
                 <CollectionView x:Name="AnimeCollectionView"
-                            ItemsSource="{Binding AnimeList}"  <!-- Anime list dynamically loaded -->
+                            ItemsSource="{Binding AnimeList}"  
                     SelectionMode="Single"
                             SelectionChanged="OnAnimeSelected"  
                             BackgroundColor="Transparent"

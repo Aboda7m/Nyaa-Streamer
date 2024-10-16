@@ -4,31 +4,50 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:Nyaa_Streamer"
-    xmlns:weekly="clr-namespace:Nyaa_Streamer.Weekly"
-    Title="Weekly Schedule"
-    >
+    Title="Weekly Schedule">
 
     <TabBar>
-        <Tab Title="Sunday">
-            <ShellContent ContentTemplate="{DataTemplate local:SundayPage}" />
+        <Tab Title="Sunday" Route="sundayPage">
+            <ShellContent 
+                ContentTemplate="{DataTemplate local:BaseDayPage}" 
+                Route="BaseDayPage?day=Sunday"
+                Shell.TabBarIsVisible="True" />
         </Tab>
-        <Tab Title="Monday">
-            <ShellContent ContentTemplate="{DataTemplate local:MondayPage}" />
+        <Tab Title="Monday" Route="mondayPage">
+            <ShellContent 
+                ContentTemplate="{DataTemplate local:BaseDayPage}" 
+                Route="BaseDayPage?day=Monday"
+                Shell.TabBarIsVisible="True" />
         </Tab>
-        <Tab Title="Tuesday">
-            <ShellContent ContentTemplate="{DataTemplate local:TuesdayPage}" />
+        <Tab Title="Tuesday" Route="tuesdayPage">
+            <ShellContent 
+                ContentTemplate="{DataTemplate local:BaseDayPage}" 
+                Route="BaseDayPage?day=Tuesday"
+                Shell.TabBarIsVisible="True" />
         </Tab>
-        <Tab Title="Wednesday">
-            <ShellContent ContentTemplate="{DataTemplate local:WednesdayPage}" />
+        <Tab Title="Wednesday" Route="wednesdayPage">
+            <ShellContent 
+                ContentTemplate="{DataTemplate local:BaseDayPage}" 
+                Route="BaseDayPage?day=Wednesday"
+                Shell.TabBarIsVisible="True" />
         </Tab>
-        <Tab Title="Thursday">
-            <ShellContent ContentTemplate="{DataTemplate local:ThursdayPage}" />
+        <Tab Title="Thursday" Route="thursdayPage">
+            <ShellContent 
+                ContentTemplate="{DataTemplate local:BaseDayPage}" 
+                Route="BaseDayPage?day=Thursday"
+                Shell.TabBarIsVisible="True" />
         </Tab>
-        <Tab Title="Friday">
-            <ShellContent ContentTemplate="{DataTemplate local:FridayPage}" />
+        <Tab Title="Friday" Route="fridayPage">
+            <ShellContent 
+                ContentTemplate="{DataTemplate local:BaseDayPage}" 
+                Route="BaseDayPage?day=Friday"
+                Shell.TabBarIsVisible="True" />
         </Tab>
-        <Tab Title="Saturday">
-            <ShellContent ContentTemplate="{DataTemplate local:SaturdayPage}" />
+        <Tab Title="Saturday" Route="saturdayPage">
+            <ShellContent 
+                ContentTemplate="{DataTemplate local:BaseDayPage}" 
+                Route="BaseDayPage?day=Saturday"
+                Shell.TabBarIsVisible="True" />
         </Tab>
     </TabBar>
 </Shell>
