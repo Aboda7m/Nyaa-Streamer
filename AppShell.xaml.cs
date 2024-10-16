@@ -5,7 +5,7 @@
         public AppShell()
         {
             InitializeComponent();
-            Routing.RegisterRoute("BaseDayPage", typeof(BaseDayPage));
+           
         }
     }
 }

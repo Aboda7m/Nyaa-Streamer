@@ -4,50 +4,31 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:Nyaa_Streamer"
-    Title="Weekly Schedule">
+    xmlns:weekly="clr-namespace:Nyaa_Streamer.Weekly"
+    Title="Weekly Schedule"
+    >
 
     <TabBar>
         <Tab Title="Sunday">
-            <ShellContent 
-                Title="Sunday" 
-                ContentTemplate="{DataTemplate local:BaseDayPage}" 
-                Route="BaseDayPage?dayName=Sunday"/>
+            <ShellContent ContentTemplate="{DataTemplate local:SundayPage}" />
         </Tab>
         <Tab Title="Monday">
-            <ShellContent 
-                Title="Monday" 
-                ContentTemplate="{DataTemplate local:BaseDayPage}" 
-                Route="BaseDayPage?dayName=Monday"/>
+            <ShellContent ContentTemplate="{DataTemplate local:MondayPage}" />
         </Tab>
         <Tab Title="Tuesday">
-            <ShellContent 
-                Title="Tuesday" 
-                ContentTemplate="{DataTemplate local:BaseDayPage}" 
-                Route="BaseDayPage?dayName=Tuesday"/>
+            <ShellContent ContentTemplate="{DataTemplate local:TuesdayPage}" />
         </Tab>
         <Tab Title="Wednesday">
-            <ShellContent 
-                Title="Wednesday" 
-                ContentTemplate="{DataTemplate local:BaseDayPage}" 
-                Route="BaseDayPage?dayName=Wednesday"/>
+            <ShellContent ContentTemplate="{DataTemplate local:WednesdayPage}" />
         </Tab>
         <Tab Title="Thursday">
-            <ShellContent 
-                Title="Thursday" 
-                ContentTemplate="{DataTemplate local:BaseDayPage}" 
-                Route="BaseDayPage?dayName=Thursday"/>
+            <ShellContent ContentTemplate="{DataTemplate local:ThursdayPage}" />
         </Tab>
         <Tab Title="Friday">
-            <ShellContent 
-                Title="Friday" 
-                ContentTemplate="{DataTemplate local:BaseDayPage}" 
-                Route="BaseDayPage?dayName=Friday"/>
+            <ShellContent ContentTemplate="{DataTemplate local:FridayPage}" />
         </Tab>
         <Tab Title="Saturday">
-            <ShellContent 
-                Title="Saturday" 
-                ContentTemplate="{DataTemplate local:BaseDayPage}" 
-                Route="BaseDayPage?dayName=Saturday"/>
+            <ShellContent ContentTemplate="{DataTemplate local:SaturdayPage}" />
         </Tab>
     </TabBar>
 </Shell>

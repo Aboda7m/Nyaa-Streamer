@@ -144,9 +144,6 @@
 		<MauiXaml Update="DownloadedFilesPage.xaml">
 			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
-		<MauiXaml Update="BaseDayPage.xaml">
-		  <Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
 		<MauiXaml Update="Weekly\FridayPage.xaml">
 		  <Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
