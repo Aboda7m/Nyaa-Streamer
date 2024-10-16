@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Nyaa_Streamer.BaseDayPage"
+             Title="{Binding PageTitle}">
+    <!-- Title dynamically set -->
+
+    <!-- Root Grid Layout -->
+    <Grid>
+
+        <!-- Fullscreen background image -->
+        <Image Source="background.jpg"
+               Aspect="AspectFill"
+               HorizontalOptions="Fill"
+               VerticalOptions="Fill" />
+
+        <!-- Semi-transparent gradient overlay to enhance readability -->
+        <BoxView BackgroundColor="Black"
+                 Opacity="0.5"
+                 HorizontalOptions="Fill"
+                 VerticalOptions="Fill" />
+
+        <!-- Main Content Layout -->
+        <StackLayout Padding="20" VerticalOptions="FillAndExpand" Spacing="15">
+
+            <!-- Header Section -->
+            <Label Text="{Binding PageTitle}"  <!-- Header dynamically set -->
+                FontSize="36"
+                   HorizontalOptions="Center"
+                   TextColor="White"
+                   FontAttributes="Bold"
+                   Margin="20,40,20,10" />
+
+                <!-- Anime List View -->
+                <CollectionView x:Name="AnimeCollectionView"
+                            ItemsSource="{Binding AnimeList}"  <!-- Anime list dynamically loaded -->
+                    SelectionMode="Single"
+                            SelectionChanged="OnAnimeSelected"  
+                            BackgroundColor="Transparent"
+                            VerticalOptions="FillAndExpand">
+
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Frame HasShadow="True"
+                               CornerRadius="15"
+                               Margin="0,10"
+                               Padding="10"
+                               BackgroundColor="Transparent">
+                                <Grid RowDefinitions="Auto, Auto" ColumnDefinitions="Auto, *">
+                                    <Grid.GestureRecognizers>
+                                        <TapGestureRecognizer Tapped="OnAnimeSelected" />
+                                    </Grid.GestureRecognizers>
+
+                                    <!-- Anime Poster Image -->
+                                    <Image Source="{Binding ImageUrl}"
+                                       Aspect="AspectFill"
+                                       HeightRequest="150"
+                                       WidthRequest="100"
+                                       Grid.RowSpan="2"
+                                       VerticalOptions="Center" />
+
+                                    <!-- Anime Details -->
+                                    <StackLayout Orientation="Vertical"
+                                             Grid.Column="1"
+                                             Padding="10"
+                                             VerticalOptions="Center"
+                                             BackgroundColor="#77000000">
+
+                                        <!-- Anime Title -->
+                                        <Label Text="{Binding Title}"
+                                           FontAttributes="Bold"
+                                           FontSize="20"
+                                           TextColor="White"
+                                           LineBreakMode="TailTruncation" />
+
+                                        <!-- Anime Synopsis -->
+                                        <Label Text="{Binding Synopsis}"
+                                           FontSize="14"
+                                           TextColor="LightGray"
+                                           LineBreakMode="WordWrap"
+                                           MaxLines="2" />
+
+                                        <!-- Airing Time -->
+                                        <Label Text="{Binding AiringTimeLocal}"
+                                           FontSize="14"
+                                           TextColor="Yellow"
+                                           LineBreakMode="TailTruncation" />
+                                    </StackLayout>
+                                </Grid>
+                            </Frame>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+        </StackLayout>
+    </Grid>
+</ContentPage>

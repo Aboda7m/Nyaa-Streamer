@@ -141,6 +141,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<MauiXaml Update="BaseDayPage.xaml">
+		  <Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
 		<MauiXaml Update="DownloadedFilesPage.xaml">
 			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
