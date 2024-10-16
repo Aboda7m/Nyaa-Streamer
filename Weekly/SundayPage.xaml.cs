@@ -56,11 +56,12 @@ namespace Nyaa_Streamer
             }
         }
 
-        // Handle anime selection
-        private async void OnAnimeSelected(object sender, EventArgs e)
+        // Handle anime selection via TapGestureRecognizer
+        private async void OnAnimeTapped(object sender, EventArgs e)
         {
-            // Get the tapped anime item from the sender's BindingContext
-            var selectedAnime = ((Grid)sender).BindingContext as Anime;
+            // Get the tapped Frame's BindingContext (which is the anime)
+            var tappedFrame = (Frame)sender;
+            var selectedAnime = tappedFrame.BindingContext as Anime;
 
             if (selectedAnime != null)
             {

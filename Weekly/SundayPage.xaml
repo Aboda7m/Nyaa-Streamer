@@ -4,92 +4,47 @@
              x:Class="Nyaa_Streamer.SundayPage"
              Title="Sunday Anime Schedule">
 
-    <!-- Root Grid Layout -->
-    <Grid>
+    <ContentPage.Resources>
+        <Style TargetType="ActivityIndicator">
+            <Setter Property="HorizontalOptions" Value="Center" />
+            <Setter Property="VerticalOptions" Value="Center" />
+        </Style>
+    </ContentPage.Resources>
 
-        <!-- Fullscreen background image -->
-        <Image Source="background.jpg"
-               Aspect="AspectFill"
-               HorizontalOptions="Fill"
-               VerticalOptions="Fill" />
+    <ContentPage.Content>
+        <Grid Padding="10">
+            <!-- Loading Indicator -->
+            <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" />
 
-        <!-- Semi-transparent gradient overlay to enhance readability -->
-        <BoxView BackgroundColor="Black"
-                 Opacity="0.5"
-                 HorizontalOptions="Fill"
-                 VerticalOptions="Fill" />
-
-        <!-- Main Content Layout -->
-        <StackLayout Padding="20" VerticalOptions="FillAndExpand" Spacing="15">
-
-            <!-- Header Section -->
-            <Label Text="Sunday Anime Schedule"
-                   FontSize="36"
-                   HorizontalOptions="Center"
-                   TextColor="White"
-                   FontAttributes="Bold"
-                   Margin="20,40,20,10" />
-
-            <!-- Anime List View -->
-            <CollectionView x:Name="AnimeCollectionView"
-                            ItemsSource="{Binding SundayAnimeList}"
-                            SelectionMode="Single"
-                            SelectionChanged="OnAnimeSelected"  
-                            BackgroundColor="Transparent"
-                            VerticalOptions="FillAndExpand">
-
+            <!-- CollectionView to display Sunday anime list -->
+            <CollectionView ItemsSource="{Binding SundayAnimeList}" SelectionMode="Single">
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
-                        <Frame HasShadow="True"
-                               CornerRadius="15"
-                               Margin="0,10"
-                               Padding="10"
-                               BackgroundColor="Transparent">
-                            <Grid RowDefinitions="Auto, Auto" ColumnDefinitions="Auto, *">
-                                <Grid.GestureRecognizers>
-                                    <TapGestureRecognizer Tapped="OnAnimeSelected" />
-                                </Grid.GestureRecognizers>
+                        <!-- Frame to allow CornerRadius -->
+                        <Frame Padding="10" BackgroundColor="{DynamicResource CardBackgroundColor}" Margin="5" CornerRadius="10">
+                            <Frame.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnAnimeTapped" />
+                            </Frame.GestureRecognizers>
 
-                                <!-- Anime Poster Image -->
-                                <Image Source="{Binding ImageUrl}"
-                                       Aspect="AspectFill"
-                                       HeightRequest="150"
-                                       WidthRequest="100"
-                                       Grid.RowSpan="2"
-                                       VerticalOptions="Center" />
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+
+                                <!-- Anime Image -->
+                                <Image Grid.Column="0" WidthRequest="60" HeightRequest="90" Source="{Binding ImageUrl}" Aspect="AspectFill" />
 
                                 <!-- Anime Details -->
-                                <StackLayout Orientation="Vertical"
-                                             Grid.Column="1"
-                                             Padding="10"
-                                             VerticalOptions="Center"
-                                             BackgroundColor="#77000000">
-
-                                    <!-- Anime Title -->
-                                    <Label Text="{Binding Title}"
-                                           FontAttributes="Bold"
-                                           FontSize="20"
-                                           TextColor="White"
-                                           LineBreakMode="TailTruncation" />
-
-                                    <!-- Anime Synopsis -->
-                                    <Label Text="{Binding Synopsis}"
-                                           FontSize="14"
-                                           TextColor="LightGray"
-                                           LineBreakMode="WordWrap"
-                                           MaxLines="2" />
-
-                                    <!-- Airing Time -->
-                                    <Label Text="{Binding AiringTimeLocal}"
-                                           FontSize="14"
-                                           TextColor="Yellow"
-                                           LineBreakMode="TailTruncation" />
+                                <StackLayout Grid.Column="1" Padding="10,0,0,0">
+                                    <Label Text="{Binding Title}" FontAttributes="Bold" FontSize="16" TextColor="{DynamicResource PrimaryTextColor}" />
+                                    <Label Text="{Binding Synopsis}" FontSize="12" MaxLines="3" TextColor="{DynamicResource SecondaryTextColor}" />
                                 </StackLayout>
                             </Grid>
                         </Frame>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
-        </StackLayout>
-    </Grid>
+        </Grid>
+    </ContentPage.Content>
 </ContentPage>
