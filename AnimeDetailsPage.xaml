@@ -3,16 +3,18 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Nyaa_Streamer.AnimeDetailsPage"
              Title="{Binding Title}">
-    <StackLayout Padding="10">
-        <!-- Anime Image -->
-        <Image Source="{Binding ImageUrl}" HeightRequest="200" Aspect="AspectFit"/>
 
-        <!-- Anime Title -->
-        <Label Text="{Binding Title}" FontSize="24" FontAttributes="Bold" HorizontalOptions="Center" Margin="0,10"/>
+    <!-- Wrap the entire content in a ScrollView -->
+    <ScrollView>
+        <StackLayout Padding="10">
+            <!-- Anime Image -->
+            <Image Source="{Binding ImageUrl}" HeightRequest="200" Aspect="AspectFit"/>
 
-        <!-- Anime Synopsis -->
-        <Label Text="Synopsis:" FontAttributes="Bold"/>
-        <ScrollView x:Name="SynopsisScrollView" HeightRequest="100">
+            <!-- Anime Title -->
+            <Label Text="{Binding Title}" FontSize="24" FontAttributes="Bold" HorizontalOptions="Center" Margin="0,10"/>
+
+            <!-- Anime Synopsis -->
+            <Label Text="Synopsis:" FontAttributes="Bold"/>
             <Label x:Name="SynopsisLabel" 
                    Text="{Binding Synopsis}" 
                    LineBreakMode="TailTruncation" 
@@ -21,28 +23,27 @@
                     <TapGestureRecognizer Tapped="OnSynopsisTapped" />
                 </Label.GestureRecognizers>
             </Label>
-        </ScrollView>
 
-        <!-- Other Details -->
-        <Label Text="Episodes:" FontAttributes="Bold" Margin="0,10,0,0"/>
-        <Label Text="{Binding Episodes}"/>
+            <!-- Other Details -->
+            <Label Text="Episodes:" FontAttributes="Bold" Margin="0,10,0,0"/>
+            <Label Text="{Binding Episodes}"/>
 
-        <!-- Airing Time -->
-        <Label Text="Airing Time (GMT):" FontAttributes="Bold" Margin="0,10,0,0"/>
-        <Label Text="{Binding AiringTime}" />
-        <Label Text="{Binding AiringTimeGMT}" />
-        <Label Text="{Binding AiringTimeLocal}" />
+            <!-- Airing Time -->
+            <Label Text="Airing Time (GMT):" FontAttributes="Bold" Margin="0,10,0,0"/>
+            <Label Text="{Binding AiringTime}" />
+            <Label Text="{Binding AiringTimeGMT}" />
+            <Label Text="{Binding AiringTimeLocal}" />
 
+            <!-- Score -->
+            <Label Text="Score:" FontAttributes="Bold" Margin="0,10,0,0"/>
+            <Label Text="{Binding Score}" />
 
-        <!-- Score -->
-        <Label Text="Score:" FontAttributes="Bold" Margin="0,10,0,0"/>
-        <Label Text="{Binding Score}" />
+            <!-- Episode Input -->
+            <Label Text="Enter Episode:" FontAttributes="Bold" Margin="0,10,0,0"/>
+            <Entry x:Name="EpisodeEntry" Placeholder="Episode Number"/>
 
-        <!-- Episode Input -->
-        <Label Text="Enter Episode:" FontAttributes="Bold" Margin="0,10,0,0"/>
-        <Entry x:Name="EpisodeEntry" Placeholder="Episode Number"/>
-
-        <!-- Watch/Download Button -->
-        <Button Text="Watch/Download" Clicked="OnWatchDownloadClicked"/>
-    </StackLayout>
+            <!-- Watch/Download Button -->
+            <Button Text="Watch/Download" Clicked="OnWatchDownloadClicked"/>
+        </StackLayout>
+    </ScrollView>
 </ContentPage>

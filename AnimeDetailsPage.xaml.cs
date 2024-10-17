@@ -3,6 +3,7 @@ using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Microsoft.Maui.Controls;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 
 namespace Nyaa_Streamer
 {
@@ -96,23 +97,29 @@ namespace Nyaa_Streamer
 
         private void OnSynopsisTapped(object sender, EventArgs e)
         {
-            var synopsisLabel = (Label)FindByName("SynopsisLabel");
-            var scrollView = (ScrollView)FindByName("SynopsisScrollView");
+            // Use the SynopsisLabel directly
+            var synopsisLabel = SynopsisLabel; // Directly referencing the label
 
-            if (_isExpanded)
+            if (synopsisLabel != null)
             {
-                // Collapse the synopsis
-                synopsisLabel.MaxLines = 3; // Show only the first three lines
-                scrollView.HeightRequest = 100; // Reset scroll view height
+                if (_isExpanded)
+                {
+                    // Collapse the synopsis
+                    synopsisLabel.MaxLines = 3; // Show only the first three lines
+                }
+                else
+                {
+                    // Expand the synopsis
+                    synopsisLabel.MaxLines = int.MaxValue; // Show full text
+                }
+
+                _isExpanded = !_isExpanded; // Toggle the state
             }
             else
             {
-                // Expand the synopsis
-                synopsisLabel.MaxLines = int.MaxValue; // Show full text
-                scrollView.HeightRequest = double.NaN; // Remove height limit to show all text
+                // Log or handle the null case if necessary
+                Debug.WriteLine("SynopsisLabel is null.");
             }
-
-            _isExpanded = !_isExpanded; // Toggle the state
         }
     }
 }
