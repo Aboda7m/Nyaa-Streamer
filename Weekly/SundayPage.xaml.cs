@@ -10,7 +10,9 @@ namespace Nyaa_Streamer
     public partial class SundayPage : ContentPage
     {
         public ObservableCollection<Anime> SundayAnimeList { get; set; }
-        private string _currentSortMode = "Airing Time"; // Track the current sorting mode
+        private int _currentSortModeIndex = 0; // Track the current sorting mode index
+        private readonly string[] _sortModes = { "Airing Time", "Score", "Title" }; // Sort modes
+        private readonly string[] _sortImages = { "time.png", "score.png", "name.png" }; // Corresponding images
 
         public SundayPage()
         {
@@ -97,8 +99,6 @@ namespace Nyaa_Streamer
             {
                 SundayAnimeList.Add(anime);
             }
-
-            _currentSortMode = "Airing Time"; // Set current sorting mode
         }
 
         // Function to extract time from 'AiringTimeLocal'
@@ -122,8 +122,6 @@ namespace Nyaa_Streamer
             {
                 SundayAnimeList.Add(anime);
             }
-
-            _currentSortMode = "Score"; // Set current sorting mode
         }
 
         // Function to sort by title (name)
@@ -135,38 +133,30 @@ namespace Nyaa_Streamer
             {
                 SundayAnimeList.Add(anime);
             }
-
-            _currentSortMode = "Title"; // Set current sorting mode
         }
 
         // Sort button clicked event handler
-        //private int _currentSortMode = 0; // 0: Airing Time, 1: Score, 2: Title
-
         private void OnSortButtonClicked(object sender, EventArgs e)
         {
-            switch (_currentSortMode)
+            // Increment the current sort mode index and wrap around
+            _currentSortModeIndex = (_currentSortModeIndex + 1) % _sortModes.Length;
+
+            // Update the sort button image
+            SortButton.Source = _sortImages[_currentSortModeIndex];
+
+            // Perform sorting based on the current mode
+            switch (_sortModes[_currentSortModeIndex])
             {
                 case "Airing Time":
-                    SortByScore(); // Sort the list by Score
-                    SortingModeLabel.Text = "SC"; // Update label to show score mode
-                    ((Button)sender).Text = "SC"; // Show current sorting mode
+                    SortByAiringTime();
                     break;
-
                 case "Score":
-                    SortByTitle(); // Sort the list by Title
-                    SortingModeLabel.Text = "AZ"; // Update label to show title mode
-                    ((Button)sender).Text = "AZ"; // Show current sorting mode
-                    
+                    SortByScore();
                     break;
-
                 case "Title":
-                    SortByAiringTime(); // Sort the list by Airing Time
-                    SortingModeLabel.Text = "TI"; // Update label to show airing time mode
-                    ((Button)sender).Text = "TI"; // Show current sorting mode
+                    SortByTitle();
                     break;
             }
         }
-
-
     }
 }

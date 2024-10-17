@@ -4,7 +4,6 @@
              x:Class="Nyaa_Streamer.SundayPage"
              Title="Sunday Anime Schedule">
 
-    
     <Grid>
 
         <!-- Fullscreen background image -->
@@ -30,94 +29,82 @@
                    FontAttributes="Bold"
                    Margin="20,40,20,10" />
 
-            <!-- Placeholder Label for Sorting Mode -->
-            <Label x:Name="SortingModeLabel"
-                   Text="AZ"  
-                FontSize="24"
-                   TextColor="White"
-                   HorizontalOptions="End"
-                   VerticalOptions="Start"
-                   Margin="0, 10, 20, 0" />
+            <!-- Sorting Button -->
+            <ImageButton x:Name="SortButton"
+                         Source="time.png"  
+                Clicked="OnSortButtonClicked"
+                         WidthRequest="50"
+                         HeightRequest="50"
+                         BackgroundColor="Transparent"
+                         HorizontalOptions="End"
+                         VerticalOptions="Start" />
 
-                <!-- Sorting Button -->
-                <Button Text="SC" 
-                    Clicked="OnSortButtonClicked"
-                    BackgroundColor="Gray"
-                    TextColor="White"
-                    HorizontalOptions="End"
-                    VerticalOptions="Start"
-                    Margin="0, 10, 20, 0"
-                    WidthRequest="50"
-                    
-                    HeightRequest="30" />
-                    <!-- Smaller button height -->
-
-                    <!-- Anime List View -->
-                    <CollectionView x:Name="AnimeCollectionView"
+                <!-- Anime List View -->
+                <CollectionView x:Name="AnimeCollectionView"
                             ItemsSource="{Binding SundayAnimeList}"
                             SelectionMode="Single"
                             SelectionChanged="OnAnimeSelected"  
                             BackgroundColor="Transparent"
                             VerticalOptions="FillAndExpand">
 
-                        <CollectionView.ItemTemplate>
-                            <DataTemplate>
-                                <Frame HasShadow="True"
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Frame HasShadow="True"
                                CornerRadius="15"
                                Margin="0,10"
                                Padding="10"
                                BackgroundColor="Transparent">
-                                    <Grid RowDefinitions="Auto, Auto, Auto" ColumnDefinitions="Auto, *">
-                                        <Grid.GestureRecognizers>
-                                            <TapGestureRecognizer Tapped="OnAnimeSelected" />
-                                        </Grid.GestureRecognizers>
+                                <Grid RowDefinitions="Auto, Auto, Auto" ColumnDefinitions="Auto, *">
+                                    <Grid.GestureRecognizers>
+                                        <TapGestureRecognizer Tapped="OnAnimeSelected" />
+                                    </Grid.GestureRecognizers>
 
-                                        <!-- Anime Poster Image -->
-                                        <Image Source="{Binding ImageUrl}"
+                                    <!-- Anime Poster Image -->
+                                    <Image Source="{Binding ImageUrl}"
                                        Aspect="AspectFill"
                                        HeightRequest="150"
                                        WidthRequest="100"
                                        Grid.RowSpan="3"
                                        VerticalOptions="Center" />
 
-                                        <!-- Anime Details -->
-                                        <StackLayout Orientation="Vertical"
+                                    <!-- Anime Details -->
+                                    <StackLayout Orientation="Vertical"
                                              Grid.Column="1"
                                              Padding="10"
                                              VerticalOptions="Center"
                                              BackgroundColor="#77000000">
 
-                                            <!-- Anime Title -->
-                                            <Label Text="{Binding Title}"
+                                        <!-- Anime Title -->
+                                        <Label Text="{Binding Title}"
                                            FontAttributes="Bold"
                                            FontSize="20"
                                            TextColor="White"
                                            LineBreakMode="TailTruncation" />
 
-                                            <!-- Anime Synopsis -->
-                                            <Label Text="{Binding Synopsis}"
+                                        <!-- Anime Synopsis -->
+                                        <Label Text="{Binding Synopsis}"
                                            FontSize="14"
                                            TextColor="LightGray"
                                            LineBreakMode="WordWrap"
                                            MaxLines="2" />
 
-                                            <!-- Airing Time -->
-                                            <Label Text="{Binding AiringTimeLocal}"
+                                        <!-- Airing Time -->
+                                        <Label Text="{Binding AiringTimeLocal}"
                                            FontSize="14"
                                            TextColor="Yellow"
                                            LineBreakMode="TailTruncation" />
 
-                                            <!-- Anime Score -->
-                                            <Label Text="{Binding Score}"
+                                        <!-- Anime Score -->
+                                        <Label Text="{Binding Score}"
                                            FontSize="14"
                                            TextColor="LightGreen"
                                            LineBreakMode="TailTruncation" />
-                                        </StackLayout>
-                                    </Grid>
-                                </Frame>
-                            </DataTemplate>
-                        </CollectionView.ItemTemplate>
-                    </CollectionView>
+                                    </StackLayout>
+                                </Grid>
+                            </Frame>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
         </StackLayout>
     </Grid>
 </ContentPage>
