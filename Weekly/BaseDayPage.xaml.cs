@@ -15,6 +15,7 @@ namespace Nyaa_Streamer.Weekly
         private readonly string[] _sortModes = { "Airing Time", "Score", "Title" };
         private readonly string[] _sortImages = { "time.png", "score.png", "name.png" };
         private string _apiUrl;
+        private static bool _isFetchingData = false; // Static flag to prevent simultaneous fetches
 
         public BaseDayPage(string apiUrl, string pageTitle)
         {
@@ -27,15 +28,25 @@ namespace Nyaa_Streamer.Weekly
 
             BindingContext = this;
 
-            FetchAnimeData();
+            // Start data fetching
+            _ = FetchAnimeData(); // Fire and forget, handle errors internally
         }
 
         // Fetch anime data from the API
         private async Task FetchAnimeData()
         {
+            // Wait until data is not being fetched
+            while (_isFetchingData)
+            {
+                // Optionally notify the user or log that fetching is in progress
+                Console.WriteLine("Data is currently being fetched. Please wait.");
+                await Task.Delay(500); // Wait for a short period before checking again
+            }
+
             try
             {
                 IsBusy = true;
+                _isFetchingData = true; // Set the flag indicating fetching is in progress
 
                 var animeList = await Anime.FetchAnimeDetailsAsync(_apiUrl);
 
@@ -62,7 +73,8 @@ namespace Nyaa_Streamer.Weekly
             }
             finally
             {
-                IsBusy = false;
+                _isFetchingData = false; // Reset the flag when fetching is complete
+                IsBusy = false; // Reset the busy state in the UI
             }
         }
 
