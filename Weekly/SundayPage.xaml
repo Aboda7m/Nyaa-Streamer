@@ -2,5 +2,5 @@
 <local:BaseDayPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
                    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
                    xmlns:local="clr-namespace:Nyaa_Streamer.Weekly"
-                   x:Class="Nyaa_Streamer.SundayPage">
+                   x:Class="Nyaa_Streamer.Weekly.SundayPage">
 </local:BaseDayPage>

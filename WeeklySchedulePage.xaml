@@ -3,7 +3,7 @@
     x:Class="Nyaa_Streamer.WeeklySchedulePage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:local="clr-namespace:Nyaa_Streamer"
+    xmlns:local="clr-namespace:Nyaa_Streamer.Weekly"
     Title="Weekly Schedule">
 
     <!-- Single Tab with multiple ShellContent for top tabs -->
