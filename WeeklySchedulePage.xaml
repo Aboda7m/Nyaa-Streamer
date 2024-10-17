@@ -4,31 +4,18 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:Nyaa_Streamer"
-    xmlns:weekly="clr-namespace:Nyaa_Streamer.Weekly"
-    Title="Weekly Schedule"
-    >
+    Title="Weekly Schedule">
 
+    <!-- Single Tab with multiple ShellContent for top tabs -->
     <TabBar>
-        <Tab Title="Sunday">
-            <ShellContent ContentTemplate="{DataTemplate local:SundayPage}" />
-        </Tab>
-        <Tab Title="Monday">
-            <ShellContent ContentTemplate="{DataTemplate local:MondayPage}" />
-        </Tab>
-        <Tab Title="Tuesday">
-            <ShellContent ContentTemplate="{DataTemplate local:TuesdayPage}" />
-        </Tab>
-        <Tab Title="Wednesday">
-            <ShellContent ContentTemplate="{DataTemplate local:WednesdayPage}" />
-        </Tab>
-        <Tab Title="Thursday">
-            <ShellContent ContentTemplate="{DataTemplate local:ThursdayPage}" />
-        </Tab>
-        <Tab Title="Friday">
-            <ShellContent ContentTemplate="{DataTemplate local:FridayPage}" />
-        </Tab>
-        <Tab Title="Saturday">
-            <ShellContent ContentTemplate="{DataTemplate local:SaturdayPage}" />
+        <Tab Title="Anime Schedule">
+            <ShellContent Title="Sunday" ContentTemplate="{DataTemplate local:SundayPage}" />
+            <ShellContent Title="Monday" ContentTemplate="{DataTemplate local:MondayPage}" />
+            <ShellContent Title="Tuesday" ContentTemplate="{DataTemplate local:TuesdayPage}" />
+            <ShellContent Title="Wednesday" ContentTemplate="{DataTemplate local:WednesdayPage}" />
+            <ShellContent Title="Thursday" ContentTemplate="{DataTemplate local:ThursdayPage}" />
+            <ShellContent Title="Friday" ContentTemplate="{DataTemplate local:FridayPage}" />
+            <ShellContent Title="Saturday" ContentTemplate="{DataTemplate local:SaturdayPage}" />
         </Tab>
     </TabBar>
 </Shell>
