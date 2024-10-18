@@ -12,10 +12,12 @@ The project includes the following main components:
 4. **Trending Anime Page**  <!-- New Page Added -->
 5. **Search Page**  <!-- New Page Added -->
 6. **Weekly Schedule Page**  <!-- New Page Added -->
-7. **Favorite Anime Page**  <!-- New Page Added -->
+7. **Favorite Anime Page**  <!-- New Page Added (WIP) -->
 8. **Downloaded Files Page**  <!-- New Page Added -->
 9. **Anime Details Page**  <!-- New Page Added -->
-10. **Watchlist Page**  <!-- New Page Added -->
+10. **Watchlist Page**  <!-- New Page Added (WIP) -->
+11. **Base Day Page**  <!-- Refactored for Weekly Pages -->
+12. **Daily Pages (Monday to Friday)**  <!-- New Pages Added -->
 
 ### Main Page
 
@@ -96,6 +98,7 @@ The `FavoriteAnimePage.xaml` allows users to manage their favorite anime titles.
 
 **Key Features:**
 - **Favorites List:** Displays a list of user-selected favorite anime titles.
+- **(WIP)**: This feature is still under development.
 
 ### Downloaded Files Page  <!-- New Page Section -->
 
@@ -110,6 +113,26 @@ The `WatchlistPage.xaml` allows users to maintain a list of anime they plan to w
 
 **Key Features:**
 - **Watchlist:** Users can add anime titles they wish to watch.
+- **(WIP)**: This feature is still under development.
+
+### Base Day Page  <!-- New Page Section -->
+
+The `BaseDayPage.xaml` has been refactored to support the weekly anime schedule, consolidating the functionality for each day's page.
+
+**Key Features:**
+- **Dynamic Page Handling:** The structure allows for managing multiple daily pages efficiently.
+
+### Daily Pages (Monday to Friday)  <!-- New Pages Section -->
+
+- **MondayPage.xaml**
+- **TuesdayPage.xaml**
+- **WednesdayPage.xaml**
+- **ThursdayPage.xaml**
+- **FridayPage.xaml**
+- **SaturdayPage.xaml**
+- **SundayPage.xaml**
+
+These pages display the anime schedule for each respective day of the week.
 
 ## Setup and Build
 
